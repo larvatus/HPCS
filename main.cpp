@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <mpi.h>
-#include "BandDepth.hpp"
+#include "bandDepth.hpp"
 #include "GetPot"
 
 
@@ -14,6 +14,7 @@ using namespace HPCS;
 
 typedef double Real;
 typedef unsigned int UInt;
+typedef BandDepthData bandDepthData_Type;
 typedef BandDepth bandDepth_Type;
 
 int main( int argc, char * argv[] )
@@ -26,7 +27,11 @@ int main( int argc, char * argv[] )
       
   GetPot dataFile( data_file_name.data() );
 
-  bandDepth_Type bd( dataFile, "ECG" );
+  bandDepthData_Type bdData( dataFile, "BDALL" ); 
+  
+  bandDepth_Type bd( bdData );
+  
+  bd.compute();  
   
   MPI_Finalize();
   
