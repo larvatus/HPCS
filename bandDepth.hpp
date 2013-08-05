@@ -4,6 +4,7 @@
 
 #include "dataSet.hpp"
 #include "combinationFactory.hpp"
+#include "mpi_utility.hpp"
 #include "GetPot"
 #include <boost/shared_ptr.hpp>
 #include <vector>
@@ -121,14 +122,22 @@ public:
   //@{
     
   typedef double Real;
+  
   typedef GetPot inputData_Type;
+  
   typedef unsigned int UInt;
+  
   typedef BandDepthData bdData_Type;
   typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
+  
   typedef DataSet dataSet_Type;
   typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
+  
   typedef CombinationFactory combinationFactory_Type;
   typedef combinationFactory_Type::tuple_Type tuple_Type;
+  
+  typedef mpiUtility mpiUtility_Type;
+  typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
   
   //@}
    
@@ -144,8 +153,17 @@ public:
   
   //! @name Public Methods
   //@{
+
     
-  void compute();
+  //! Method for the computation of BDs. Computation is made in parallel exploiting MPI.
+  void computeBDs();
+  
+  //! Method for the printing of computed BDs.
+  /*!
+   * The computed BDs are written by MASTER processor
+   * on the file specified by BandDepthData object.
+   */
+  void writeBDs() const;
   
   //! Method for resetting the BandDepthData object.
   /*!
@@ -181,6 +199,9 @@ private:
   
   //! Computed band depths
   std::vector< Real > M_BDs;
+  
+  //! MPI utility pointer object
+  mpiUtilityPtr_Type M_mpiUtilPtr;
   
   //@}
     

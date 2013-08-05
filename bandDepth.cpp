@@ -3,6 +3,7 @@
 
 #include "bandDepth.hpp"
 #include "dataSet.hpp"
+#include <fstream>
 
 namespace HPCS
 {
@@ -101,6 +102,8 @@ namespace HPCS
  {
    this->M_bdDataPtr.reset( new bdData_Type( bdData ) );
    
+   this->M_mpiUtilPtr.reset( new mpiUtility_Type() );
+   
    this->readData();
 
  } 
@@ -128,39 +131,29 @@ namespace HPCS
  
  void
  BandDepth::
- compute()
+ computeBDs()
  {
-   int myRank, nbThreads;
+   const UInt myRank = this->M_mpiUtilPtr->myRank();
+   const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
    
-   const UInt MASTER = 0;
+   const UInt MASTER = this->M_mpiUtilPtr->master();
    
    const UInt nbPz 	= this->M_bdDataPtr->nbPz();
    const UInt nbPts	= this->M_bdDataPtr->nbPts();
    const UInt J	   	= this->M_bdDataPtr->J();
    const UInt verbosity = this->M_bdDataPtr->verbosity();
    
-   const Real * data = this->M_dataSetPtr->getData();   
-   
-   MPI_Comm_size( MPI_COMM_WORLD, & nbThreads );
-
-   MPI_Comm_rank( MPI_COMM_WORLD, & myRank );   
-   
+   const Real * data = this->M_dataSetPtr->getData();  
+            
    const UInt slaveProcNbPz = static_cast< UInt >( nbPz / nbThreads );
    const UInt masterProcNbPz = static_cast< UInt >( nbPz / nbThreads ) + static_cast< UInt >( nbPz % nbThreads );
    
+   this->M_BDs.resize( nbPz );
+   
    UInt nbMyPz;
    
-   if( myRank != MASTER )
-   {
-      nbMyPz = slaveProcNbPz;
-   }
-   if ( myRank == MASTER )
-   {
-      nbMyPz = masterProcNbPz;
-   }
+   this->M_mpiUtilPtr->isMaster() ? nbMyPz = masterProcNbPz : nbMyPz = slaveProcNbPz;
    
-   std::vector< Real > myBandDepths( nbMyPz );
-      
    combinationFactory_Type combinationFactory( nbPz - 1, J );
    
    combinationFactory.generateCombinations();
@@ -170,20 +163,13 @@ namespace HPCS
       if( verbosity > 2 ) printf( "Proc %d is at %d / %d patients\n", myRank, iPz+1, nbMyPz );
 	  
       UInt globalPzID;
+     
+      this->M_mpiUtilPtr->isMaster() ? globalPzID = iPz : globalPzID = masterProcNbPz  + ( myRank - 1 ) * slaveProcNbPz + iPz;
       
-      if ( myRank == MASTER )
-      {
-	globalPzID = iPz;
-      }
-      else
-      {
-	globalPzID = masterProcNbPz  + ( myRank - 1 ) * slaveProcNbPz + iPz;
-      }
-            
       // IMPORTANT: I leave one patient out, so the actual N in the binomial coefficient is nbPz - 1
       //combinationFactory_Type combinationFactory( nbPz - 1, J );
 	
-      myBandDepths[ iPz ] = 0;
+      this->M_BDs[ iPz ] = 0;
       
       Real comprisedLength(0);
       
@@ -230,7 +216,7 @@ namespace HPCS
 	    {  
 	      for ( UInt iJ(0); iJ < J; ++iJ )
 	      {		
-		  currentValues[ iJ ] = this->M_dataSetPtr->getData()[ pzTupleIDs[ iJ ] * nbPts + iPt ];
+		  currentValues[ iJ ] = data[ pzTupleIDs[ iJ ] * nbPts + iPt ];
 	      } 
 	      
 	      envMaxCurr = *( std::max_element( currentValues.begin(), currentValues.end() ) );
@@ -288,34 +274,53 @@ namespace HPCS
 	    }
 	}
 
- 	myBandDepths[ iPz ] = comprisedLength / static_cast< Real > ( ( nbPts - 1 ) * binomial( nbPz - 1, J ) );
+ 	this->M_BDs[ iPz ] = comprisedLength / static_cast< Real > ( ( nbPts - 1 ) * binomial( nbPz - 1, J ) );
   }	    
-    
  
   // COMMUNICATING BAND DEPTHS
-
-  this->M_BDs.resize( nbPz );
     
-  for ( UInt iThread(1); iThread < nbThreads; ++iThread )
+  for ( UInt iThread = 1; iThread < nbThreads; ++iThread )
   {
-      if( iThread == MASTER )
-      {
-	MPI_Bcast( & (this->M_BDs), masterProcNbPz, MPI_DOUBLE_PRECISION, MASTER, MPI_COMM_WORLD );    	  
-      }
-      else
-      {
-	MPI_Bcast( &(this->M_BDs) + masterProcNbPz + ( iThread - 1 ) * slaveProcNbPz, slaveProcNbPz, MPI_DOUBLE_PRECISION, iThread, MPI_COMM_WORLD );
-      }
-  }
+    if ( this->M_mpiUtilPtr->isMaster() )
+    {
+      MPI_Status status;
 
-  MPI_Barrier( MPI_COMM_WORLD );
-    
-  if ( verbosity > 2 && myRank == MASTER ) 
+      MPI_Recv( & this->M_BDs[0] + masterProcNbPz + ( iThread - 1 ) * slaveProcNbPz, slaveProcNbPz, MPI_DOUBLE_PRECISION, iThread, iThread, MPI_COMM_WORLD, & status );
+    }
+    else if ( myRank == iThread )
+    {
+      MPI_Send( & this->M_BDs[0], slaveProcNbPz, MPI_DOUBLE_PRECISION, MASTER, myRank, MPI_COMM_WORLD );
+    }
+  }
+  
+  if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
     printf( " All depths have been gathered\n" );   
  
+   MPI_Barrier( MPI_COMM_WORLD );
+  
    return;
   
 } 
+
+void
+BandDepth::
+writeBDs() const
+{    
+    if ( this->M_mpiUtilPtr->isMaster() )
+    {
+      std::ofstream output( this->M_bdDataPtr->outputFilename().data(), std::ios_base::out );
+      
+      for( UInt iPz(0); iPz < this->M_bdDataPtr->nbPz(); ++iPz )
+      {
+	  output << iPz << " " << this->M_BDs[ iPz ] << std::endl;
+      }
+      
+      output.close();
+    }
+  
+    return;
+}
+
 
 UInt binomial( const UInt & N , const UInt & K )
 {    

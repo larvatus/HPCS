@@ -31,9 +31,12 @@ int main( int argc, char * argv[] )
   
   bandDepth_Type bd( bdData );
   
-  bd.compute();  
+  bd.computeBDs();
+  
+  bd.writeBDs();
   
   MPI_Finalize();
-  
+
+  return EXIT_SUCCESS;
   
 }
