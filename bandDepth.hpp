@@ -21,7 +21,10 @@
  */
 
 namespace HPCS
-{
+{  
+
+typedef unsigned int UInt;
+typedef double Real;
   
 /*!
  * This class implements a data object for the setup of a BandDepth type object.

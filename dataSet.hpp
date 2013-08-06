@@ -8,17 +8,20 @@
 #include <fstream>
 #include <iostream>
 
-typedef unsigned int UInt;
-typedef double Real;
-
 namespace HPCS
 {
 
 class DataSet
 {
 public:
+
+    typedef unsigned int UInt;
+
+    typedef double Real;
   
     DataSet( const UInt & nbSamples, const UInt & nbPts, const UInt & leftOffset = 0, const UInt & rightOffset = 0 );
+    
+    DataSet( Real * data, const UInt & nRows, const UInt & nCols );
     
     ~DataSet()
     {
@@ -34,6 +37,8 @@ public:
     void showMe( std::ostream & ) const;
     
     Real * getData(){ return M_data; };
+    
+    void setData( Real * data, const UInt & nRows, const UInt & nCols);
     
     Real operator()( const UInt & row, const UInt & col ) const;
     

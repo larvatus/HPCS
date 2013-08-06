@@ -16,6 +16,15 @@ M_rightOffset( rightOffset )
   M_data = new Real[ M_nbSamples * M_nbPts ];
 }
 
+DataSet::
+DataSet( Real * data, const UInt & nRows, const UInt & nCols )
+:
+M_leftOffset( 0 ),
+M_rightOffset( 0 )
+{
+  this->setData( data, nRows, nCols ) ;
+}
+
 void
 DataSet::
 readCSV( const std::string & filename)
@@ -63,7 +72,7 @@ writeCSV( std::ostream & output ) const
   return;
 }
 
-Real
+DataSet::Real
 DataSet::
 operator()( const UInt & row, const UInt & col ) const
 {  
@@ -86,6 +95,23 @@ showMe( std::ostream & output  ) const
   output << " ************************* " << std::endl;
 
   return;
+}
+
+void
+DataSet::
+setData( Real * data, const UInt & nRows, const UInt & nCols )
+{
+    this->M_nbSamples = nRows;
+    
+    this->M_nbPts = nCols;
+  
+    this->M_data = data;
+    
+    this->M_leftOffset = 0;
+    
+    this->M_rightOffset = 0;
+    
+    return;
 }
 
 }
