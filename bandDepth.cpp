@@ -149,12 +149,15 @@ namespace HPCS
  BandDepth::
  readData()
  {
-   this->M_dataSetPtr.reset( new dataSet_Type( M_bdDataPtr->nbPz(), M_bdDataPtr->nbPts(), M_bdDataPtr->leftOffset(), M_bdDataPtr->rightOffset() ) );
+   this->M_dataSetPtr.reset( new dataSet_Type( M_bdDataPtr->nbPz(), M_bdDataPtr->nbPts() ) );
+   
+   this->M_dataSetPtr->setOffset( M_bdDataPtr->leftOffset(), M_bdDataPtr->rightOffset() );
    
    this->M_dataSetPtr->readCSV( M_bdDataPtr->inputFilename() );
    
  }
  
+ // Method for the computation of BDs
  void
  BandDepth::
  computeBDs()

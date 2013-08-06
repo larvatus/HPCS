@@ -1,28 +1,33 @@
 
 
 #include "dataSet.hpp"
+#include <cassert>
 
 namespace HPCS
 {
+    
+////////////////////////
+// DATA SET
+////////////////////////
   
 DataSet::
-DataSet( const UInt & nbSamples, const UInt & nbPts, const UInt & leftOffset, const UInt & rightOffset )
+DataSet( const UInt & nbSamples, const UInt & nbPts )
 :
 M_nbSamples( nbSamples),
-M_nbPts( nbPts - leftOffset - rightOffset ),
-M_leftOffset( leftOffset ),
-M_rightOffset( rightOffset )
+M_nbPts( nbPts ),
+M_leftOffset( 0 ),
+M_rightOffset( 0 )
 {
   M_data = new Real[ M_nbSamples * M_nbPts ];
 }
 
 DataSet::
-DataSet( Real * data, const UInt & nRows, const UInt & nCols )
+DataSet( Real * data, const UInt & nbSamples, const UInt & nbPts )
 :
 M_leftOffset( 0 ),
 M_rightOffset( 0 )
 {
-  this->setData( data, nRows, nCols ) ;
+  this->setData( data, nbSamples, nbPts ) ;
 }
 
 void
@@ -99,19 +104,108 @@ showMe( std::ostream & output  ) const
 
 void
 DataSet::
-setData( Real * data, const UInt & nRows, const UInt & nCols )
+setData( Real * data, const UInt & nbSamples, const UInt & nbPts )
 {
-    this->M_nbSamples = nRows;
+    this->M_nbSamples = nbSamples;
     
-    this->M_nbPts = nCols;
+    this->M_nbPts = nbPts;
   
     this->M_data = data;
     
-    this->M_leftOffset = 0;
-    
-    this->M_rightOffset = 0;
+    this->setOffset( 0, 0 );
     
     return;
 }
+
+void
+DataSet::
+setOffset( const UInt & leftOffset, const UInt & rightOffset )
+{
+    this->setOffset( leftOffset, rightOffset );
+       
+    this->M_nbPts = this->M_nbPts - leftOffset - rightOffset;
+    
+    return;
+}
+
+
+////////////////////////
+// DATA SET LEVELLED
+////////////////////////
+
+DataSetLevelled::
+DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
+:
+M_nbLevels( nbLevels )
+{
+  this->M_nbSamples = nbSamples;
+  
+  this->M_nbPts = nbPts;
+  
+  this->setOffset( 0, 0 );
+  
+}
+
+DataSetLevelled::
+DataSetLevelled( Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
+:
+M_nbLevels( nbLevels ),
+M_data( data )
+{
+  this->M_nbSamples = nbSamples;
+  
+  this->M_nbPts = nbPts;
+  
+  this->setOffset( 0, 0 );
+  
+}
+
+const
+DataSetLevelled::IDContainer_Type & 
+DataSetLevelled::
+level( const UInt lev )
+{
+  assert( lev <= M_nbLevels );
+  
+  return (*M_levelsPtr)[ lev ];
+  
+}
+
+void
+DataSetLevelled::
+setLevels( const levelsContainerPtr_Type & levelsPtr )
+{
+    this->M_levelsPtr = levelsPtr;
+  
+    return;
+}
+
+void
+DataSetLevelled::
+setLevels( const std::vector< UInt > & linearExtrema )
+{
+    assert( linearExtrema.size() == this->M_nbLevels + 1 );
+    
+    this->M_levelsPtr.reset( new levelsContainerPtr_Type() );
+    
+    UInt iLevel(0);
+    
+    for ( UInt iExtrema(0); iExtrema < this->M_nbLevels + 1; ++iExtrema )
+    {      
+      for ( ID( linearExtrema[ iExtrema ] ); ID < linearExtrema[ iExtrema + 1 ]; ++ID )
+      {
+	std::pair< UInt, UInt > idCurrent( ID, ID );
+	
+	*(this->M_levelsPtr)[ iLevel ].insert( idCurrent );
+	  
+      }
+      
+      ++iLevel;      
+    }
+  
+    return;
+}
+
+
 
 }

@@ -11,6 +11,9 @@
 namespace HPCS
 {
 
+typedef unsigned int UInt;
+typedef double Real;
+  
 class DataSet
 {
 public:
@@ -19,9 +22,9 @@ public:
 
     typedef double Real;
   
-    DataSet( const UInt & nbSamples, const UInt & nbPts, const UInt & leftOffset = 0, const UInt & rightOffset = 0 );
+    DataSet( const UInt & nbSamples, const UInt & nbPts );
     
-    DataSet( Real * data, const UInt & nRows, const UInt & nCols );
+    DataSet( Real * data, const UInt & nbSamples, const UInt & nPts );
     
     ~DataSet()
     {
@@ -39,14 +42,16 @@ public:
     Real * getData(){ return M_data; };
     
     void setData( Real * data, const UInt & nRows, const UInt & nCols);
+    
+    void setOffset( const UInt & leftOffset, const UInt & rightOffset );
    
-    Real operator()( const UInt & row, const UInt & col ) const;
+    Real operator()( const UInt & sample, const UInt & pt ) const;
     
     UInt nbSamples() const { return this->M_nbSamples; }
     
     UInt nbPts() const { return this->M_nbPts; }
     
-private:
+protected:
 
   Real * M_data;
 
@@ -59,6 +64,52 @@ private:
   UInt M_rightOffset;
   
 };
+
+
+class DataSetLevelled : public DataSet 
+{
+  
+public:
+  
+  typedef unsigned int UInt;
+  
+  typedef double Real;
+  
+  typedef std::map< UInt, UInt > IDContainer_Type;
+  
+  typedef std::vector< IDContainer_Type > levelsContainer_Type;
+  
+  typedef boost::shared_ptr< levelsContainer_Type > levelsContainerPtr_Type;
+  
+  
+  
+  DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
+  
+  DataSetLevelled( Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
+  
+  ~DataSetLevelled();
+  
+
+  
+  
+  void setLevels( const levelsContainerPtr_Type & levelsPtr );
+  
+  void setLevels( const std::vector< UInt > & linearExtrema );
+
+  
+  IDContainer_Type const & level( const UInt lev );
+  
+  
+private:
+  
+  levelsContainerPtr_Type M_levelsPtr;
+  
+  UInt M_nbLevels;
+  
+};
+
+
+
 
 }
 
