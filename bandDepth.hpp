@@ -49,7 +49,7 @@ public:
    * \param J Parameter specifying the tuple size for the computation of band depths
    * \param verbosity Variable specifying the level of verbosity
    */
-  BandDepthData( const UInt & nbPz, const UInt & nbPts, const UInt & leftOffset, const UInt & rightOffset, const UInt & J, const UInt & verbosity );
+  BandDepthData( const UInt & nbPz, const UInt & nbPts, const UInt & leftOffset, const UInt & rightOffset, const UInt & J, const UInt & verbosity, const bool & readDataFromFile = false );
   
   //! Constructor from a Get Pot variable
   /*!
@@ -85,6 +85,8 @@ public:
   
   UInt verbosity() const { return this->M_verbosity; }
   
+  bool readDataFromFile() const { return this->M_readDataFromFile; }
+  
   std::string outputFilename() const { return this->M_outputFilename; }
   
   std::string inputFilename() const { return this->M_inputFilename; }
@@ -104,6 +106,8 @@ private:
   UInt M_J;
   
   UInt M_verbosity;
+  
+  bool M_readDataFromFile;
   
   std::string M_outputFilename;
   
@@ -176,7 +180,9 @@ public:
    * 
    * \param bdData New BandDepthData object that will replace the old one.
    */
-  void resetBandDepthData( const bdData_Type & bdData );
+  void setBandDepthData( const bdData_Type & bdData );
+  
+  void setDataSet( const dataSetPtr_Type & dataPtr );  
   
   //@}
   

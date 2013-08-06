@@ -39,8 +39,12 @@ public:
     Real * getData(){ return M_data; };
     
     void setData( Real * data, const UInt & nRows, const UInt & nCols);
-    
+   
     Real operator()( const UInt & row, const UInt & col ) const;
+    
+    UInt nbSamples() const { return this->M_nbSamples; }
+    
+    UInt nbPts() const { return this->M_nbPts; }
     
 private:
 

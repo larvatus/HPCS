@@ -3,6 +3,7 @@
 
 #include "bandDepth.hpp"
 #include "dataSet.hpp"
+#include <cassert>
 #include <fstream>
 
 namespace HPCS
@@ -15,14 +16,16 @@ namespace HPCS
  // Constructor from single variables.
  BandDepthData::
  BandDepthData( const UInt & nbPz, const UInt & nbPts, const UInt & leftOffset, 
-	 const UInt & rightOffset, const UInt & J, const UInt & verbosity )
+	 const UInt & rightOffset, const UInt & J, const UInt & verbosity,
+	 const bool & readDataFromFile )
  :
  M_nbPz( nbPz ),
  M_nbPts( nbPts ),
  M_leftOffset( leftOffset ),
  M_rightOffset( rightOffset ),
  M_J( J ),
- M_verbosity( verbosity )
+ M_verbosity( verbosity ),
+ M_readDataFromFile( readDataFromFile )
  {}
   
  // Constructor from Get Pot type object
@@ -46,7 +49,9 @@ namespace HPCS
     this->M_verbosity = dataFile( ( baseName + "/verbosity" ).data(), false );
       
     this->M_inputFilename = dataFile( ( baseName + "/inputFilename" ).data(), "data.dat");
-      
+    
+    this->M_readDataFromFile = true;
+    
     this->M_outputFilename = dataFile( ( baseName + "/outputFilename" ).data(), "bd.dat" );
       
  }
@@ -70,6 +75,8 @@ namespace HPCS
     this->M_inputFilename = bdData.inputFilename();
     
     this->M_outputFilename = bdData.outputFilename();
+    
+    this->M_readDataFromFile = bdData.readDataFromFile();
  }
  
  // Setter for the output filename
@@ -78,6 +85,8 @@ namespace HPCS
  setInputFilename( const std::string & inputFilename )
  {
     this->M_inputFilename = inputFilename;
+    
+    this->M_readDataFromFile = false;
     
     return;
  }
@@ -104,20 +113,37 @@ namespace HPCS
    
    this->M_mpiUtilPtr.reset( new mpiUtility_Type() );
    
-   this->readData();
+   if( bdData.readDataFromFile() ) this->readData();
 
  } 
   
  // Reset BandDepthData type object contained 
  void 
  BandDepth::
- resetBandDepthData( const bdData_Type & bdData )
+ setBandDepthData( const bdData_Type & bdData )
  {
     this->M_bdDataPtr.reset( new bdData_Type( bdData ) );
     
-    this->readData();
+    if ( bdData.readDataFromFile() ) this->readData();
  }
+ 
+ // Reset dataSet pointer. This allow using the class without a file from which to read the dataset.
+ void
+ BandDepth::
+ setDataSet( const dataSetPtr_Type & dataPtr )
+ {
+   assert( 
+	  dataPtr->nbSamples() == this->M_bdDataPtr->nbPz() 
+	  && 
+	  dataPtr->nbPts() == this->M_bdDataPtr->nbPts() 
+	 );
    
+   this->M_dataSetPtr = dataPtr;
+   
+   return;
+    
+ }
+ 
  // Each proces reads data from data files.
  void 
  BandDepth::
