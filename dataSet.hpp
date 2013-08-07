@@ -99,6 +99,8 @@ public:
   void setLevels( const std::vector< UInt > & linearExtrema );
   
 
+  void showMe( std::ostream & output = std::cout ) const;  
+  
   IDContainer_Type & level( const UInt lev ) const;
   
   UInt cardinality( const UInt & levelID );

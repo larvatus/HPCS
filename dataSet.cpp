@@ -121,7 +121,9 @@ void
 DataSet::
 setOffset( const UInt & leftOffset, const UInt & rightOffset )
 {
-    this->setOffset( leftOffset, rightOffset );
+    this->M_leftOffset = leftOffset;
+    
+    this->M_rightOffset = rightOffset;
        
     this->M_nbPts = this->M_nbPts - leftOffset - rightOffset;
     
@@ -143,7 +145,7 @@ DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLeve
 :
 DataSet( nbSamples, nbPts ),
 M_nbLevels( nbLevels )
-{  
+{ 
   this->setOffset( 0, 0 );
 }
 
@@ -184,18 +186,19 @@ setLevels( const std::vector< UInt > & linearExtrema )
     
     this->M_levelsPtr.reset( new levelsContainer_Type() );
     
-    UInt iLevel(0);
+    this->M_levelsPtr->resize( this->M_nbLevels );
     
-    for ( UInt iExtrema(0); iExtrema < this->M_nbLevels + 1; ++iExtrema )
-    {      
+    UInt iLevel(0);    
+    
+    for ( UInt iExtrema(0); iExtrema < this->M_nbLevels; ++iExtrema )
+    {
       for ( UInt ID( linearExtrema[ iExtrema ] ); ID < linearExtrema[ iExtrema + 1 ]; ++ID )
       {
-	std::pair< UInt, UInt > idCurrent( ID, ID );
+ 	std::pair< UInt, UInt > idCurrent( ID, ID );
 	
-	(*this->M_levelsPtr)[ iLevel ].insert( idCurrent );
+ 	(*this->M_levelsPtr)[ iLevel ].insert( idCurrent );
 	  
-      }
-      
+      }      
       ++iLevel;      
     }
   
@@ -219,6 +222,29 @@ cardinality( const UInt & levelID )
   
     return this->M_cardinality[ levelID ];
 }
+
+void
+DataSetLevelled::
+showMe( std::ostream & output ) const
+{
+    for( UInt iLevel(0); iLevel < this->M_nbLevels; ++iLevel )
+    {
+	output << " *** LEVEL # " << iLevel << std::endl;
+	
+	typedef IDContainer_Type::iterator iterator_Type;
+	
+	for ( iterator_Type it = (*this->M_levelsPtr)[ iLevel ].begin(); it != (*this->M_levelsPtr)[ iLevel ].end(); ++it  )
+	{
+	  output << it->first << " ";
+	}
+	
+	output << std::endl;
+      
+    }
+  
+    return;
+}
+
 
 
 }
