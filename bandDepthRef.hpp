@@ -30,7 +30,7 @@ namespace HPCS
     
     typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
     
-    typedef DataSet dataSet_Type;
+    typedef DataSetLevelled dataSet_Type;
     
     typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
     
@@ -38,7 +38,7 @@ namespace HPCS
     
     typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
     
-    typedef bandDepth bandDepth_Type;
+    typedef BandDepth bandDepth_Type;
     
     typedef boost::shared_ptr< bandDepth_Type > bandDepthPtr_Type;
     
@@ -65,7 +65,6 @@ namespace HPCS
     void writeBDs();
 	  
     //@}
-     
      
   private:
     
@@ -105,15 +104,18 @@ namespace HPCS
     UInt M_seed;
     
     //! Vector containing the IDs of the test set
-    IDContainer_Type testSetIDs;
+    IDContainer_Type M_testSetIDs;
     
     //! Vector containing the IDs of the reference set
-    IDContainer_Type referenceSetIDs;
+    IDContainer_Type M_referenceSetIDs;
+    
+    //! Number of levels
+    static const UInt S_nbLevels = 2 ;
     
     //@}
     
     
-  }
+  };
   
   
 }

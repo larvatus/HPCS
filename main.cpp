@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <mpi.h>
 #include "bandDepth.hpp"
+#include "bandDepthRef.hpp"
 #include "GetPot"
 
 
@@ -31,9 +32,15 @@ int main( int argc, char * argv[] )
   
   bandDepth_Type bd( bdData );
   
-  bd.computeBDs();
+//   bd.computeBDs();
   
-  bd.writeBDs();
+//   bd.writeBDs();
+  
+  
+  
+  
+  
+  
   
   MPI_Finalize();
 

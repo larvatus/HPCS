@@ -10,8 +10,7 @@ namespace HPCS
   
  // Constructor from single variables.
  BandDepthRef::
- BandDepthRefs( const bdData_Type & bdData )
- :
+ BandDepthRef( const bdData_Type & bdData )
  {
     this->M_bdDataPtr.reset( new bdData_Type( bdData ) );
    
@@ -28,7 +27,9 @@ namespace HPCS
  BandDepthRef::
  readData()
  {
-    this->M_dataSetPtr.reset( new dataSet_Type( M_bdDataPtr->nbPz(), M_bdDataPtr->nbPts() ) );
+    const UInt nbLevels = BandDepthRef::S_nbLevels;
+   
+    this->M_dataSetPtr.reset( new dataSet_Type( M_bdDataPtr->nbPz(), M_bdDataPtr->nbPts(), nbLevels ) );
 
     this->M_dataSetPtr->setOffset(  M_bdDataPtr->leftOffset(), M_bdDataPtr->rightOffset() );
     
@@ -56,13 +57,11 @@ namespace HPCS
       
     while( this->M_referenceSetIDs.size() != this->M_bdDataPtr->nbPz() )
     {
-      UInt temp( static_cast< UInt >( this->M_dataPtr->cardinality[0] * drand48() ) );
+      const UInt temp( static_cast< UInt >( this->M_dataSetPtr->cardinality( 0 ) * drand48() ) );
       
-      std::pair< UInt, UInt > tempPair( temp, temp );
-      
-      if ( this->M_dataPtr->level[0].find( tempPair ) != this->M_dataPtr->level[0].end() )
+      if ( this->M_dataSetPtr->level( 0 ).find( temp ) != this->M_dataSetPtr->level( 0 ).end() )
       {
-	referenceSetIDs.insert( std::pair< UInt, UInt >( temp, temp ) );	
+	this->M_referenceSetIDs.insert( std::pair< UInt, UInt >( temp, temp ) );	
       }
     }
    

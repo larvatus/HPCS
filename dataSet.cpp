@@ -134,42 +134,38 @@ setOffset( const UInt & leftOffset, const UInt & rightOffset )
 ////////////////////////
 
 DataSetLevelled::
-DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
-:
-M_nbLevels( nbLevels )
+~DataSetLevelled()
 {
-  this->M_nbSamples = nbSamples;
-  
-  this->M_nbPts = nbPts;
-  
+}
+
+DataSetLevelled::
+DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
+:
+DataSet( nbSamples, nbPts ),
+M_nbLevels( nbLevels )
+{  
   this->setOffset( 0, 0 );
-  
 }
 
 DataSetLevelled::
 DataSetLevelled( Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
 :
-M_nbLevels( nbLevels ),
-M_data( data )
-{
-  this->M_nbSamples = nbSamples;
-  
-  this->M_nbPts = nbPts;
-  
-  this->setOffset( 0, 0 );
-  
+DataSet( data, nbSamples, nbPts ),
+M_nbLevels( nbLevels )
+{  
+  this->setOffset( 0, 0 ); 
 }
 
-const
 DataSetLevelled::IDContainer_Type & 
 DataSetLevelled::
-level( const UInt lev )
+level( const UInt lev ) const
 {
   assert( lev <= M_nbLevels );
   
   return (*M_levelsPtr)[ lev ];
   
 }
+
 
 void
 DataSetLevelled::
@@ -186,17 +182,17 @@ setLevels( const std::vector< UInt > & linearExtrema )
 {
     assert( linearExtrema.size() == this->M_nbLevels + 1 );
     
-    this->M_levelsPtr.reset( new levelsContainerPtr_Type() );
+    this->M_levelsPtr.reset( new levelsContainer_Type() );
     
     UInt iLevel(0);
     
     for ( UInt iExtrema(0); iExtrema < this->M_nbLevels + 1; ++iExtrema )
     {      
-      for ( ID( linearExtrema[ iExtrema ] ); ID < linearExtrema[ iExtrema + 1 ]; ++ID )
+      for ( UInt ID( linearExtrema[ iExtrema ] ); ID < linearExtrema[ iExtrema + 1 ]; ++ID )
       {
 	std::pair< UInt, UInt > idCurrent( ID, ID );
 	
-	*(this->M_levelsPtr)[ iLevel ].insert( idCurrent );
+	(*this->M_levelsPtr)[ iLevel ].insert( idCurrent );
 	  
       }
       
@@ -206,6 +202,23 @@ setLevels( const std::vector< UInt > & linearExtrema )
     return;
 }
 
+
+DataSetLevelled::UInt
+DataSetLevelled::
+cardinality( const UInt & levelID )
+{
+    assert( levelID < this->M_nbLevels );
+    
+    if ( this->M_cardinality.size() != this->M_nbLevels )
+    {
+	for ( UInt iLevel(0); iLevel < this->M_nbLevels; ++iLevel )
+	{
+	    this->M_cardinality[ iLevel ] = (*M_levelsPtr)[ iLevel ].size();
+	}
+    }
+  
+    return this->M_cardinality[ levelID ];
+}
 
 
 }

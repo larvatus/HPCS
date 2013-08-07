@@ -7,6 +7,8 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <boost/shared_ptr.hpp>
+#include <map>
 
 namespace HPCS
 {
@@ -95,9 +97,11 @@ public:
   void setLevels( const levelsContainerPtr_Type & levelsPtr );
   
   void setLevels( const std::vector< UInt > & linearExtrema );
-
   
-  IDContainer_Type const & level( const UInt lev );
+
+  IDContainer_Type & level( const UInt lev ) const;
+  
+  UInt cardinality( const UInt & levelID );
   
   
 private:
@@ -105,6 +109,9 @@ private:
   levelsContainerPtr_Type M_levelsPtr;
   
   UInt M_nbLevels;
+  
+  std::vector< UInt > M_cardinality;
+  
   
 };
 
