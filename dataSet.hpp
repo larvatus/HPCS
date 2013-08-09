@@ -39,11 +39,11 @@ public:
     
     void writeCSV( std::ostream & output = std::cout ) const;
     
-    void showMe( std::ostream & ) const;
+    void showMe( std::ostream & output = std::cout ) const;
     
     Real * getData(){ return M_data; };
     
-    void setData( Real * data, const UInt & nRows, const UInt & nCols);
+    void setData( Real * data, const UInt & nbSamples, const UInt & nPts);
     
     void setOffset( const UInt & leftOffset, const UInt & rightOffset );
    

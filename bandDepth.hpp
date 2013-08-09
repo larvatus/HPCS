@@ -182,6 +182,18 @@ public:
    */
   void setBandDepthData( const bdData_Type & bdData );
   
+  
+  //! Method for the setting up or the resetting of the dataSet.
+  /*!
+   * The purpose of this method is to break the dependency of the object on
+   * a specific data file containing data. With can set up (or reset) the data
+   * constituting the data set, if the "dimensions" agree with those expressed by
+   * band depth data object.
+   * This use is meant to pair with a constructor taking a Band Depth Data with no
+   * input filename, and thus M_readDataFromFile flag equal to false.
+   * 
+   * \param dataPtr Pointer to the new dataSet
+   */
   void setDataSet( const dataSetPtr_Type & dataPtr );  
   
   //@}

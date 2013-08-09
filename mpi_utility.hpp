@@ -32,7 +32,9 @@ public:
    
    bool isMaster() const;
    
-   void leaderPrint( std::ostream & output, const std::string & string ) const;   
+   void leaderPrint( const std::string & string, std::ostream & output = std::cout ) const;
+
+   void leaderPrint( const char * string, std::ostream & output = std::cout ) const;
    
 private:
    

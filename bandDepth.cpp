@@ -86,7 +86,7 @@ namespace HPCS
  {
     this->M_inputFilename = inputFilename;
     
-    this->M_readDataFromFile = false;
+    this->M_readDataFromFile = true;
     
     return;
  }
@@ -127,7 +127,7 @@ namespace HPCS
     if ( bdData.readDataFromFile() ) this->readData();
  }
  
- // Reset dataSet pointer. This allow using the class without a file from which to read the dataset.
+ // Reset dataSet pointer. This allow using the object without a file from which to read.
  void
  BandDepth::
  setDataSet( const dataSetPtr_Type & dataPtr )
@@ -137,6 +137,8 @@ namespace HPCS
 	  && 
 	  dataPtr->nbPts() == this->M_bdDataPtr->nbPts() 
 	 );
+   
+   assert( not( this->M_bdDataPtr->readDataFromFile() ) );
    
    this->M_dataSetPtr = dataPtr;
    

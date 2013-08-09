@@ -52,7 +52,7 @@ namespace HPCS
   
   void
   mpiUtility::
-  leaderPrint( std::ostream & output, const std::string & string ) const
+  leaderPrint( const std::string & string, std::ostream & output ) const
   {
     if ( this->M_myRank == mpiUtility::S_MASTER )
     {
@@ -62,4 +62,16 @@ namespace HPCS
     return;
   }
   
+  void
+  mpiUtility::
+  leaderPrint( const char * string, std::ostream & output ) const
+  {
+    if ( this->M_myRank == mpiUtility::S_MASTER )
+    {
+	output << string << std::endl;
+    }
+    
+    return;
+  }
+    
 }
