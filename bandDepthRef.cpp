@@ -100,7 +100,7 @@ namespace HPCS
       
       if ( this->M_dataSetPtr->level( 0 ).find( temp ) != this->M_dataSetPtr->level( 0 ).end() )
       {
-	this->M_referenceSetIDs.insert( std::pair< UInt, UInt >( temp, temp ) );	
+	this->M_referenceSetIDs.insert( temp );	
       }
     }
    
@@ -116,7 +116,7 @@ namespace HPCS
     {
       if ( this->M_referenceSetIDs.find( iPz ) == this->M_referenceSetIDs.end() )
       {
-	this->M_testSetIDs.insert( std::pair< UInt, UInt >( iPz, iPz ) );	
+	this->M_testSetIDs.insert( iPz );	
       }
     }
 

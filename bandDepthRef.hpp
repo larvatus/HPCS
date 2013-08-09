@@ -9,7 +9,7 @@
 #include "GetPot"
 #include <string>
 #include <vector>
-#include <map>
+#include <set>
 
 namespace HPCS
 {
@@ -42,7 +42,7 @@ namespace HPCS
     
     typedef boost::shared_ptr< bandDepth_Type > bandDepthPtr_Type;
     
-    typedef std::set< UInt, UInt > IDContainer_Type;
+    typedef std::set< UInt > IDContainer_Type;
     
     typedef boost::shared_ptr< IDContainer_Type > IDContainerPtr_Type;
     
