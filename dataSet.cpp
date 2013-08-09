@@ -193,10 +193,8 @@ setLevels( const std::vector< UInt > & linearExtrema )
     for ( UInt iExtrema(0); iExtrema < this->M_nbLevels; ++iExtrema )
     {
       for ( UInt ID( linearExtrema[ iExtrema ] ); ID < linearExtrema[ iExtrema + 1 ]; ++ID )
-      {
- 	std::pair< UInt, UInt > idCurrent( ID, ID );
-	
- 	(*this->M_levelsPtr)[ iLevel ].insert( idCurrent );
+      {	
+ 	(*this->M_levelsPtr)[ iLevel ].insert( ID );
 	  
       }      
       ++iLevel;      
@@ -235,7 +233,7 @@ showMe( std::ostream & output ) const
 	
 	for ( iterator_Type it = (*this->M_levelsPtr)[ iLevel ].begin(); it != (*this->M_levelsPtr)[ iLevel ].end(); ++it  )
 	{
-	  output << it->first << " ";
+	  output << *it << " ";
 	}
 	
 	output << std::endl;

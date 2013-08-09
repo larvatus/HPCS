@@ -8,7 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <boost/shared_ptr.hpp>
-#include <map>
+#include <set>
 
 namespace HPCS
 {
@@ -77,12 +77,11 @@ public:
   
   typedef double Real;
   
-  typedef std::map< UInt, UInt > IDContainer_Type;
+  typedef std::set< UInt > IDContainer_Type;
   
   typedef std::vector< IDContainer_Type > levelsContainer_Type;
   
   typedef boost::shared_ptr< levelsContainer_Type > levelsContainerPtr_Type;
-  
   
   
   DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
@@ -90,8 +89,6 @@ public:
   DataSetLevelled( Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
   
   ~DataSetLevelled();
-  
-
   
   
   void setLevels( const levelsContainerPtr_Type & levelsPtr );
