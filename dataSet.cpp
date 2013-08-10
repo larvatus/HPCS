@@ -9,7 +9,11 @@ namespace HPCS
 ////////////////////////
 // DATA SET
 ////////////////////////
-  
+
+DataSet::
+~DataSet()
+{}
+
 DataSet::
 DataSet( const UInt & nbSamples, const UInt & nbPts )
 :
@@ -17,9 +21,7 @@ M_nbSamples( nbSamples),
 M_nbPts( nbPts ),
 M_leftOffset( 0 ),
 M_rightOffset( 0 )
-{
-  M_data = new Real[ M_nbSamples * M_nbPts ];
-}
+{}
 
 DataSet::
 DataSet( Real * data, const UInt & nbSamples, const UInt & nbPts )
@@ -30,6 +32,35 @@ M_rightOffset( 0 )
   this->setData( data, nbSamples, nbPts ) ;
 }
 
+DataSet::
+DataSet( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts )
+:
+M_leftOffset( 0 ),
+M_rightOffset( 0 )
+{
+  this->setData( data, nbSamples, nbPts ) ;
+}
+
+DataSet::
+DataSet( const data_Type & data )
+:
+M_leftOffset( 0 ),
+M_rightOffset( 0 ),
+M_data( new data_Type( data ) ),
+M_nbSamples( data.size1() ),
+M_nbPts( data.size2() )
+{}
+
+DataSet::
+DataSet( const dataPtr_Type & dataPtr )
+:
+M_leftOffset( 0 ),
+M_rightOffset( 0 ),
+M_data( dataPtr ),
+M_nbSamples( dataPtr->size1() ),
+M_nbPts( dataPtr->size2() )
+{}
+
 void
 DataSet::
 readCSV( const std::string & filename)
@@ -38,18 +69,18 @@ readCSV( const std::string & filename)
 
    Real trash;
    
-   for ( UInt iSample(0); iSample < M_nbSamples; ++iSample )
+   for ( UInt iSample(0); iSample < this->M_nbSamples; ++iSample )
    {    
-	for ( UInt jPt(0); jPt < M_leftOffset; ++jPt )
+	for ( UInt jPt(0); jPt < this->M_leftOffset; ++jPt )
 	  
 	  input >> trash;
      
-	for ( UInt jPt(0); jPt < M_nbPts; ++jPt )
+	for ( UInt jPt(0); jPt < this->M_nbPts; ++jPt )
 	{
-	  input >> M_data[ iSample * M_nbPts + jPt ]; 
+	  input >> (*this->M_data)( iSample, jPt ); 
 	}
 	
-	for ( UInt jPt(0); jPt < M_rightOffset; ++jPt )
+	for ( UInt jPt(0); jPt < this->M_rightOffset; ++jPt )
 	  
 	  input >> trash;
     }
@@ -63,16 +94,8 @@ void
 DataSet::
 writeCSV( std::ostream & output ) const
 {
-  for ( UInt iSample(0); iSample < this->M_nbSamples; ++iSample )
-  {
-    for ( UInt iPt(0); iPt < this->M_nbPts - 1; ++iPt )
-    {
-	 output << M_data[ ( M_nbSamples + iSample ) * M_nbPts + iPt ] << " "; 
-    }
-     
-    output << M_data[ ( M_nbSamples + iSample ) * M_nbPts + M_nbPts - 1 ] << std::endl; 
-    
-  }
+
+   output << *this->M_data << std::endl;
 
   return;
 }
@@ -83,20 +106,25 @@ operator()( const UInt & row, const UInt & col ) const
 {  
   assert( row <= this->M_nbSamples && col <= this->M_nbPts );
       
-  return this->M_data[ row * this->M_nbPts + col ];
+  return (*this->M_data)( row, col );
 }
 
 void
 DataSet::
 showMe( std::ostream & output  ) const
 {
-  // TODO FINISH ME!!
   output << " ****** DataSet content ****** " << std::endl;
 
   output << " # Samples  \t = " << M_nbSamples << std::endl;
+  
   output << " # Points \t = " << M_nbPts << std::endl;
+  
   output << " Left offset in input \t = " << M_leftOffset << std::endl;
+  
   output << " Right offset in input \t = " << M_rightOffset << std::endl;
+  
+  this->writeCSV( output );
+  
   output << " ************************* " << std::endl;
 
   return;
@@ -110,11 +138,87 @@ setData( Real * data, const UInt & nbSamples, const UInt & nbPts )
     
     this->M_nbPts = nbPts;
   
-    this->M_data = data;
+    this->M_data.reset( new data_Type( nbSamples, nbPts ) );
+    
+    for ( UInt iSample(0); iSample < nbSamples; ++iSample )
+    {
+	for ( UInt iPt(0); iPt < nbPts; ++iPt )
+	{
+	    (*this->M_data)( iSample, iPt ) = data[ iSample * nbPts + iPt ];
+	}
+    }
     
     this->setOffset( 0, 0 );
     
     return;
+}
+
+void
+DataSet::
+setData( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts )
+{
+    this->M_nbSamples = nbSamples;
+    
+    this->M_nbPts = nbPts;
+  
+    this->M_data.reset( new data_Type( nbSamples, nbPts ) );
+    
+    for ( UInt iSample(0); iSample < nbSamples; ++iSample )
+    {
+	for ( UInt iPt(0); iPt < nbPts; ++iPt )
+	{
+	    (*this->M_data)( iSample, iPt ) = data[ iSample * nbPts + iPt ];
+	}
+    }
+    
+    this->setOffset( 0, 0 );
+    
+    return;
+    
+}
+
+void
+DataSet::
+setData( const data_Type & data )
+{
+ this->M_nbSamples = data.size1();
+ 
+ this->M_nbPts = data.size2();
+ 
+ this->M_data.reset( new data_Type( data ) );
+ 
+ this->setOffset( 0, 0 );
+ 
+ return;
+ 
+}
+
+void
+DataSet::
+setData( const dataPtr_Type & dataPtr )
+{
+  this->M_nbSamples = dataPtr->size1();
+ 
+ this->M_nbPts = dataPtr->size2();
+ 
+ this->M_data = dataPtr;
+ 
+ this->setOffset( 0, 0 );
+ 
+ return;
+}
+
+DataSet::dataPtr_Type
+DataSet::
+getSubSet( const slice_Type & sampleSlice ) const
+{
+  using namespace boost::numeric::ublas;
+  
+  typedef matrix_slice< data_Type > dataSlice_Type;
+  
+  dataSlice_Type temp( *this->M_data, sampleSlice, slice( 0, 1, this->M_nbPts ) );
+  
+  return dataPtr_Type( new data_Type()  );
 }
 
 void

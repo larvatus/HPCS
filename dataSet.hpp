@@ -8,6 +8,10 @@
 #include <fstream>
 #include <iostream>
 #include <boost/shared_ptr.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
+#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/numeric/ublas/storage.hpp>
 #include <set>
 
 namespace HPCS
@@ -23,39 +27,59 @@ public:
     typedef unsigned int UInt;
 
     typedef double Real;
-  
+    
+    typedef boost::numeric::ublas::matrix< Real > data_Type;
+    
+    typedef boost::shared_ptr< data_Type > dataPtr_Type;
+    
+    typedef boost::numeric::ublas::matrix_slice< data_Type > dataSubSet_Type;
+    
+    typedef boost::numeric::ublas::slice slice_Type;
+    
+    
     DataSet( const UInt & nbSamples, const UInt & nbPts );
     
     DataSet( Real * data, const UInt & nbSamples, const UInt & nPts );
     
-    ~DataSet()
-    {
-      
-      delete[] M_data; 
-
-    };
+    DataSet( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts );
+ 
+    DataSet( const data_Type & data );
+ 
+    DataSet( const dataPtr_Type & dataPtr );
+    
+    ~DataSet();
 
     void readCSV( const std::string & filename );
+
     
     void writeCSV( std::ostream & output = std::cout ) const;
     
     void showMe( std::ostream & output = std::cout ) const;
     
-    Real * getData(){ return M_data; };
     
     void setData( Real * data, const UInt & nbSamples, const UInt & nPts);
     
+    void setData( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nPts);
+
+    void setData( const data_Type & data);
+    
+    void setData( const dataPtr_Type & dataPtr );
+
     void setOffset( const UInt & leftOffset, const UInt & rightOffset );
-   
+    
     Real operator()( const UInt & sample, const UInt & pt ) const;
     
+    dataPtr_Type getData(){ return this->M_data; };
+
+    dataPtr_Type getSubSet( const slice_Type & sampleSlice ) const; 
+     
     UInt nbSamples() const { return this->M_nbSamples; }
     
     UInt nbPts() const { return this->M_nbPts; }
     
 protected:
 
-  Real * M_data;
+  dataPtr_Type M_data;
 
   UInt M_nbSamples;
 

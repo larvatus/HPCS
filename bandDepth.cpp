@@ -174,7 +174,9 @@ namespace HPCS
    const UInt J	   	= this->M_bdDataPtr->J();
    const UInt verbosity = this->M_bdDataPtr->verbosity();
    
-   const Real * data = this->M_dataSetPtr->getData();  
+   typedef dataSet_Type::dataPtr_Type dataSetPtr_Type;
+   
+   const dataSetPtr_Type dataPtr( this->M_dataSetPtr->getData() );  
             
    const UInt slaveProcNbPz = static_cast< UInt >( nbPz / nbThreads );
    const UInt masterProcNbPz = static_cast< UInt >( nbPz / nbThreads ) + static_cast< UInt >( nbPz % nbThreads );
@@ -234,27 +236,27 @@ namespace HPCS
 			      
 	for ( UInt iJ(0); iJ < J; ++iJ )
 	{		
-	  currentValues[ iJ ] = data[ pzTupleIDs[ iJ ] * nbPts + 0 ];
+	  currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], nbPts );
 	} 
 
 	envMaxPrev =  *( std::max_element( currentValues.begin(), currentValues.end() ) );
 	envMinPrev =  *( std::min_element( currentValues.begin(), currentValues.end() ) );
 	
-	flagMaxPrev = data[ globalPzID * nbPts + 0 ] <= envMaxPrev;
-	flagMinPrev = data[ globalPzID * nbPts + 0 ] >= envMinPrev;
+	flagMaxPrev = (*dataPtr)( globalPzID, 0 ) <= envMaxPrev;
+	flagMinPrev = (*dataPtr)( globalPzID, 0 ) >= envMinPrev;
 	
 	    for ( UInt iPt(1); iPt < nbPts; ++iPt )
 	    {  
 	      for ( UInt iJ(0); iJ < J; ++iJ )
 	      {		
-		  currentValues[ iJ ] = data[ pzTupleIDs[ iJ ] * nbPts + iPt ];
+		  currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], iPt );
 	      } 
 	      
 	      envMaxCurr = *( std::max_element( currentValues.begin(), currentValues.end() ) );
 	      envMinCurr = *( std::min_element( currentValues.begin(), currentValues.end() ) );
 	      
-      	      flagMaxCurr = data[ globalPzID * nbPts + iPt ] <= envMaxCurr;
-	      flagMinCurr = data[ globalPzID * nbPts + iPt ] >= envMinCurr;
+      	      flagMaxCurr = (*dataPtr)( globalPzID, iPt ) <= envMaxCurr;
+	      flagMinCurr = (*dataPtr)( globalPzID, iPt ) >= envMinCurr;
 
 	      if ( flagMaxCurr && flagMinCurr && flagMaxPrev && flagMinPrev )
 	      {
@@ -262,8 +264,8 @@ namespace HPCS
 	      }
 	      else
 	      {
-		  Real valueCurr = data[ globalPzID * nbPts + iPt ];
-		  Real valuePrev = data[ globalPzID * nbPts + iPt - 1];
+		  Real valueCurr = (*dataPtr)( globalPzID, iPt );
+		  Real valuePrev = (*dataPtr)( globalPzID, iPt - 1);
 
 		  if ( not( flagMaxCurr ) )
 		  {
