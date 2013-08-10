@@ -108,14 +108,21 @@ namespace HPCS
  // Constructor from BandDepthData type object
  BandDepth::
  BandDepth( const bdData_Type & bdData )
- {
-   this->M_bdDataPtr.reset( new bdData_Type( bdData ) );
-   
-   this->M_mpiUtilPtr.reset( new mpiUtility_Type() );
-   
+ :
+ M_bdDataPtr( new bdData_Type( bdData ) ),
+ M_mpiUtilPtr( new mpiUtility_Type() )
+ {   
    if( bdData.readDataFromFile() ) this->readData();
-
- } 
+ }
+ 
+ BandDepth::
+ BandDepth( const bdDataPtr_Type & bdDataPtr )
+ :
+ M_bdDataPtr( bdDataPtr ),
+ M_mpiUtilPtr( new mpiUtility_Type() )
+ {      
+   if( this->M_bdDataPtr->readDataFromFile() ) this->readData();
+ }
   
  // Reset BandDepthData type object contained 
  void 
@@ -157,6 +164,7 @@ namespace HPCS
    
    this->M_dataSetPtr->readData( M_bdDataPtr->inputFilename() );
    
+   return;
  }
  
  // Method for the computation of BDs
@@ -236,74 +244,74 @@ namespace HPCS
 			      
 	for ( UInt iJ(0); iJ < J; ++iJ )
 	{		
-	  currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], nbPts );
+	  // TODO CHECK THIS: THERE WAS A nbPts INSTEAD OF 0
+ 	  currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], 0 );
 	} 
 
-	envMaxPrev =  *( std::max_element( currentValues.begin(), currentValues.end() ) );
-	envMinPrev =  *( std::min_element( currentValues.begin(), currentValues.end() ) );
-	
-	flagMaxPrev = (*dataPtr)( globalPzID, 0 ) <= envMaxPrev;
-	flagMinPrev = (*dataPtr)( globalPzID, 0 ) >= envMinPrev;
-	
-	    for ( UInt iPt(1); iPt < nbPts; ++iPt )
-	    {  
-	      for ( UInt iJ(0); iJ < J; ++iJ )
-	      {		
-		  currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], iPt );
-	      } 
-	      
-	      envMaxCurr = *( std::max_element( currentValues.begin(), currentValues.end() ) );
-	      envMinCurr = *( std::min_element( currentValues.begin(), currentValues.end() ) );
-	      
-      	      flagMaxCurr = (*dataPtr)( globalPzID, iPt ) <= envMaxCurr;
-	      flagMinCurr = (*dataPtr)( globalPzID, iPt ) >= envMinCurr;
-
-	      if ( flagMaxCurr && flagMinCurr && flagMaxPrev && flagMinPrev )
-	      {
-		  comprisedLength += 1;
-	      }
-	      else
-	      {
-		  Real valueCurr = (*dataPtr)( globalPzID, iPt );
-		  Real valuePrev = (*dataPtr)( globalPzID, iPt - 1);
-
-		  if ( not( flagMaxCurr ) )
-		  {
-		    if ( flagMaxPrev )
-		    {
-			comprisedLength += ( valuePrev - envMaxPrev ) / ( (envMaxCurr - envMaxPrev) - ( valueCurr - valuePrev ) );
-		    } 
+ 	envMaxPrev =  *( std::max_element( currentValues.begin(), currentValues.end() ) );
+ 	envMinPrev =  *( std::min_element( currentValues.begin(), currentValues.end() ) );
+ 	
+  	flagMaxPrev = (*dataPtr)( globalPzID, 0 ) <= envMaxPrev;
+  	flagMinPrev = (*dataPtr)( globalPzID, 0 ) >= envMinPrev;
+ 	
+ 	    for ( UInt iPt(1); iPt < nbPts; ++iPt )
+ 	    {  
+ 	      for ( UInt iJ(0); iJ < J; ++iJ )
+ 	      {		
+  		  currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], iPt );
+ 	      } 
+ 	      
+  	      envMaxCurr = *( std::max_element( currentValues.begin(), currentValues.end() ) );
+  	      envMinCurr = *( std::min_element( currentValues.begin(), currentValues.end() ) );
+ 	      
+       	      flagMaxCurr = (*dataPtr)( globalPzID, iPt ) <= envMaxCurr;
+   	      flagMinCurr = (*dataPtr)( globalPzID, iPt ) >= envMinCurr;
+ 
+  	      if ( flagMaxCurr && flagMinCurr && flagMaxPrev && flagMinPrev )
+ 	      {
+ 		  comprisedLength += 1;
+ 	      }
+ 	      else
+ 	      {
+ 		  Real valueCurr = (*dataPtr)( globalPzID, iPt );
+ 		  Real valuePrev = (*dataPtr)( globalPzID, iPt - 1);
+ 
+ 		  if ( not( flagMaxCurr ) )
+ 		  {
+ 		    if ( flagMaxPrev )
+ 		    {
+ 			comprisedLength += ( valuePrev - envMaxPrev ) / ( (envMaxCurr - envMaxPrev) - ( valueCurr - valuePrev ) );
+ 		    } 
+ 		  }
+ 		  else if ( not( flagMaxPrev ) )
+ 		  {
+ 		      if ( flagMaxCurr )
+ 		      {
+ 			  comprisedLength += 1. - ( valuePrev - envMaxPrev ) / ( (envMaxCurr - envMaxPrev) - ( valueCurr - valuePrev ) );
+ 		      }
+ 		  }
+ 		  
+ 		  if( not( flagMinCurr ) )
+ 		  {
+ 		    if ( flagMinPrev )
+ 		    {
+ 			comprisedLength += ( valuePrev - envMinPrev ) / ( (envMinCurr - envMinPrev) - ( valueCurr - valuePrev ) );
+ 		    }
 		  }
-		  else if ( not( flagMaxPrev ) )
-		  {
-		      if ( flagMaxCurr )
-		      {
-			  comprisedLength += 1. - ( valuePrev - envMaxPrev ) / ( (envMaxCurr - envMaxPrev) - ( valueCurr - valuePrev ) );
-		      }
-		  }
-		  
-		  if( not( flagMinCurr ) )
-		  {
-		    if ( flagMinPrev )
-		    {
-			comprisedLength += ( valuePrev - envMinPrev ) / ( (envMinCurr - envMinPrev) - ( valueCurr - valuePrev ) );
-		    }
-		  }
-		  else if ( not( flagMinPrev ) )
-		  {
-		      if ( flagMinCurr )
-		      {
-			comprisedLength += 1. - ( valuePrev - envMinPrev ) / ( (envMinCurr - envMinPrev) - ( valueCurr - valuePrev ) );
-		      }
-		  }
-	      }
-	      
-	      flagMaxPrev = flagMaxCurr;
-	      flagMinPrev = flagMinCurr;
-
-	      envMaxPrev = envMaxCurr;
-	      envMinPrev = envMinCurr;
-
+ 		  else if ( not( flagMinPrev ) )
+ 		  {
+ 		      if ( flagMinCurr )
+ 		      {
+ 			comprisedLength += 1. - ( valuePrev - envMinPrev ) / ( (envMinCurr - envMinPrev) - ( valueCurr - valuePrev ) );
+ 		      }
+ 		  }
+ 	      }
+ 	      
+ 	      flagMaxPrev = flagMaxCurr;
+ 	      flagMinPrev = flagMinCurr;
+ 
+ 	      envMaxPrev = envMaxCurr;
+ 	      envMinPrev = envMinCurr;
 	    }
 	}
 

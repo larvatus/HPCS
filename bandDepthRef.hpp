@@ -61,7 +61,7 @@ namespace HPCS
     //@{
       
     //! The method for the computation of Band Depths, executing the computation in parallel.
-    void compute();
+    void computeBDs();
     
     //@}
 

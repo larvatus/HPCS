@@ -39,11 +39,11 @@ int main( int argc, char * argv[] )
    
 //    bdRef.compute();
    
-//     bandDepth_Type bd( bdData );
+     bandDepth_Type bd( bdData );
     
-//     bd.computeBDs();
+     bd.computeBDs();
   
-//    bd.writeBDs();
+     bd.writeBDs();
     
 //   const UInt nbSamples( 10 );
 //   

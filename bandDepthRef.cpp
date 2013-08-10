@@ -154,7 +154,7 @@ namespace HPCS
 //! TODO FINISH ME!! 
 void
 BandDepthRef::
-compute()
+computeBDs()
 {
    this->setTestSet();
    

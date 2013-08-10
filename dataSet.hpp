@@ -56,7 +56,6 @@ public:
     
     void showMe( std::ostream & output = std::cout ) const;
     
-    
     void setData( const Real * data, const UInt & nbSamples, const UInt & nPts);
     
     void setData( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nPts);
