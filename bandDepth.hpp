@@ -154,6 +154,9 @@ public:
   //! Constructor from a BandDepthData object
   BandDepth( const bdData_Type & bdData );
   
+  //! Constructor from a shared pointer to BandDepthData object
+  BandDepth( const bdDataPtr_Type & bdDataPtr );
+  
   ~BandDepth(){};
 
   //@}
