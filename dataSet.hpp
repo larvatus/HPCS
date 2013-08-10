@@ -39,7 +39,7 @@ public:
     
     DataSet( const UInt & nbSamples, const UInt & nbPts );
     
-    DataSet( Real * data, const UInt & nbSamples, const UInt & nPts );
+    DataSet( const Real * data, const UInt & nbSamples, const UInt & nPts );
     
     DataSet( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts );
  
@@ -49,15 +49,15 @@ public:
     
     ~DataSet();
 
-    void readCSV( const std::string & filename );
+    void readData( const std::string & filename );
 
     
-    void writeCSV( std::ostream & output = std::cout ) const;
+    void writeData( std::ostream & output = std::cout ) const;
     
     void showMe( std::ostream & output = std::cout ) const;
     
     
-    void setData( Real * data, const UInt & nbSamples, const UInt & nPts);
+    void setData( const Real * data, const UInt & nbSamples, const UInt & nPts);
     
     void setData( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nPts);
 
@@ -101,6 +101,10 @@ public:
   
   typedef double Real;
   
+  typedef DataSet::data_Type data_Type;
+    
+  typedef DataSet::dataPtr_Type dataPtr_Type;
+  
   typedef std::set< UInt > IDContainer_Type;
   
   typedef std::vector< IDContainer_Type > levelsContainer_Type;
@@ -109,8 +113,14 @@ public:
   
   
   DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
+ 
+  DataSetLevelled( const Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
   
-  DataSetLevelled( Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
+  DataSetLevelled( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
+  
+  DataSetLevelled( const data_Type & data, const UInt & nbLevels );
+  
+  DataSetLevelled( const dataPtr_Type & dataPtr, const UInt & nbLevels );
   
   ~DataSetLevelled();
   

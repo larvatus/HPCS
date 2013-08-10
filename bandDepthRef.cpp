@@ -39,7 +39,7 @@ namespace HPCS
 
     this->M_dataSetPtr->setOffset(  M_bdDataPtr->leftOffset(), M_bdDataPtr->rightOffset() );
     
-    this->M_dataSetPtr->readCSV( M_bdDataPtr->inputFilename() );
+    this->M_dataSetPtr->readData( M_bdDataPtr->inputFilename() );
    
     return;
  }

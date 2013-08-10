@@ -20,11 +20,14 @@ DataSet( const UInt & nbSamples, const UInt & nbPts )
 M_nbSamples( nbSamples),
 M_nbPts( nbPts ),
 M_leftOffset( 0 ),
-M_rightOffset( 0 )
-{}
+M_rightOffset( 0 ),
+M_data( new data_Type( nbSamples, nbPts ) )
+{
+  
+}
 
 DataSet::
-DataSet( Real * data, const UInt & nbSamples, const UInt & nbPts )
+DataSet( const Real * data, const UInt & nbSamples, const UInt & nbPts )
 :
 M_leftOffset( 0 ),
 M_rightOffset( 0 )
@@ -63,7 +66,7 @@ M_nbPts( dataPtr->size2() )
 
 void
 DataSet::
-readCSV( const std::string & filename)
+readData( const std::string & filename)
 {   
    std::ifstream input( filename.data(), std::ios_base::in );
 
@@ -92,10 +95,18 @@ readCSV( const std::string & filename)
 
 void
 DataSet::
-writeCSV( std::ostream & output ) const
+writeData( std::ostream & output ) const
 {
-
-   output << *this->M_data << std::endl;
+   for ( UInt iSample(0); iSample < this->M_nbSamples; ++iSample )
+   {
+      for ( UInt iPt(0); iPt < this->M_nbPts - 1 ; ++iPt )
+      {
+	  output << (*this->M_data)( iSample, iPt )  << " ";
+      }
+      
+      output << (*this->M_data)( iSample, this->M_nbPts - 1) << std::endl;
+      
+   }
 
   return;
 }
@@ -123,7 +134,9 @@ showMe( std::ostream & output  ) const
   
   output << " Right offset in input \t = " << M_rightOffset << std::endl;
   
-  this->writeCSV( output );
+  output << " Data : " << std::endl;
+  
+  this->writeData( output );
   
   output << " ************************* " << std::endl;
 
@@ -132,7 +145,7 @@ showMe( std::ostream & output  ) const
 
 void
 DataSet::
-setData( Real * data, const UInt & nbSamples, const UInt & nbPts )
+setData( const Real * data, const UInt & nbSamples, const UInt & nbPts )
 {
     this->M_nbSamples = nbSamples;
     
@@ -241,26 +254,42 @@ setOffset( const UInt & leftOffset, const UInt & rightOffset )
 
 DataSetLevelled::
 ~DataSetLevelled()
-{
-}
+{}
 
 DataSetLevelled::
 DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
 :
 DataSet( nbSamples, nbPts ),
 M_nbLevels( nbLevels )
-{ 
-  this->setOffset( 0, 0 );
-}
+{}
 
 DataSetLevelled::
-DataSetLevelled( Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
+DataSetLevelled( const Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
 :
 DataSet( data, nbSamples, nbPts ),
 M_nbLevels( nbLevels )
-{  
-  this->setOffset( 0, 0 ); 
-}
+{}
+
+DataSetLevelled::
+DataSetLevelled( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
+:
+DataSet( data, nbSamples, nbPts ),
+M_nbLevels( nbLevels )
+{}
+
+DataSetLevelled::
+DataSetLevelled( const data_Type & data, const UInt & nbLevels )
+:
+DataSet( data ),
+M_nbLevels( nbLevels )
+{}
+
+DataSetLevelled::
+DataSetLevelled( const dataPtr_Type & dataPtr, const UInt & nbLevels )
+:
+DataSet( dataPtr ),
+M_nbLevels( nbLevels )
+{}
 
 DataSetLevelled::IDContainer_Type & 
 DataSetLevelled::
