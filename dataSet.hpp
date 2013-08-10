@@ -98,7 +98,7 @@ public:
 
   void showMe( std::ostream & output = std::cout ) const;  
   
-  IDContainer_Type & level( const UInt lev ) const;
+  IDContainer_Type & levelIDs( const UInt lev ) const;
   
   UInt cardinality( const UInt & levelID );
   

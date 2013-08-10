@@ -160,7 +160,7 @@ M_nbLevels( nbLevels )
 
 DataSetLevelled::IDContainer_Type & 
 DataSetLevelled::
-level( const UInt lev ) const
+levelIDs( const UInt lev ) const
 {
   assert( lev <= M_nbLevels );
   

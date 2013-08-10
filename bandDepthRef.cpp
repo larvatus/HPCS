@@ -98,7 +98,7 @@ namespace HPCS
     {
       const UInt temp( static_cast< UInt >( this->M_dataSetPtr->cardinality( 0 ) * drand48() ) );
       
-      if ( this->M_dataSetPtr->level( 0 ).find( temp ) != this->M_dataSetPtr->level( 0 ).end() )
+      if ( this->M_dataSetPtr->levelIDs( 0 ).find( temp ) != this->M_dataSetPtr->levelIDs( 0 ).end() )
       {
 	this->M_referenceSetIDs.insert( temp );	
       }
@@ -107,7 +107,7 @@ namespace HPCS
     return;
  }
  
- //! TODO FINISH ME!!
+ 
  void
  BandDepthRef::
  setTestSet()
@@ -178,14 +178,30 @@ compute()
    
    UInt nbMyPz;
    
-   this->M_mpiUtilPtr->isMaster() ? nbMyPz = masterProcNbTestPz : nbMyPz = slaveProcNbTestPz;
-   /*
+   this->M_mpiUtilPtr->isMaster() ? nbMyPz = masterProcNbTestPz : nbMyPz = slaveProcNbTestPz;   
    
+   IDContainer_Type::const_iterator it = this->M_testSetIDs.begin();
    
-   for (  )
+   if ( not( this->M_mpiUtilPtr->isMaster() ) )
    {
-     
-   }*/
+     for( UInt iCount(0); iCount < masterProcNbTestPz + ( myRank - 1 ) * slaveProcNbTestPz; ++iCount )
+     {
+	++it;
+     }
+   }
+   
+   for ( UInt iPz(0); iPz < nbMyPz; ++iPz )
+   {
+//       const IDCurrent( *it );
+   }
+   
+   
+   
+   
+   
+   
+   
+   
 
    
    // COMMUNICATING BAND DEPTHS
