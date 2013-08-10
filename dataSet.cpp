@@ -358,9 +358,11 @@ void
 DataSetLevelled::
 showMe( std::ostream & output ) const
 {
+    this->DataSet::showMe( output );
+  
     for( UInt iLevel(0); iLevel < this->M_nbLevels; ++iLevel )
     {
-	output << " *** LEVEL # " << iLevel << std::endl;
+	output << " *** IDs LEVEL # " << iLevel << std::endl;
 	
 	typedef IDContainer_Type::iterator iterator_Type;
 	

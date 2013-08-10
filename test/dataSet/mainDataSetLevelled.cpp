@@ -13,11 +13,9 @@ using namespace HPCS;
 
 typedef double Real;
 typedef unsigned int UInt;
-typedef DataSet dataSet_Type;
+typedef DataSetLevelled dataSetLevelled_Type;
 typedef DataSet::data_Type data_Type;
 typedef boost::shared_ptr< data_Type > dataPtr_Type;
-
-// typedef DataSetLevelled dataSetLevelled_Type;
 
 int main( int argc, char * argv[] )
 {
@@ -33,7 +31,7 @@ int main( int argc, char * argv[] )
     
     const UInt nbPts = 9;
     
-    dataSet_Type dataSet1( nbSamples, nbPts );
+    dataSetLevelled_Type dataSet1( nbSamples, nbPts, 2 );
     
     dataPtr_Type dataPtr( new data_Type( nbSamples, nbPts) );
     
@@ -47,14 +45,23 @@ int main( int argc, char * argv[] )
     
     dataSet1.setData( dataPtr );
     
+    std::vector< UInt > linearExtrema( 3 );
+    
+    linearExtrema[ 0 ] = 0;
+    linearExtrema[ 1 ] = 3;
+    linearExtrema[ 2 ] = 9;
+    
+    dataSet1.setLevels( linearExtrema );
+    
     if ( myRank == MASTER ) dataSet1.showMe();
-  
     
     if ( myRank == MASTER ) std::cout << std::endl << std::endl;
     
-    dataSet_Type dataSet2( nbSamples, nbPts );
+    dataSetLevelled_Type dataSet2( nbSamples, nbPts, 2 );
     
     dataSet2.readData( "dataSet.dat" );
+    
+    dataSet2.setLevels( linearExtrema );
     
     if ( myRank == MASTER )  dataSet2.showMe();    
     
@@ -62,5 +69,3 @@ int main( int argc, char * argv[] )
     
     return EXIT_SUCCESS;
 }
-
-
