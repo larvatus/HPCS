@@ -114,9 +114,9 @@ writeData( std::ostream & output ) const
 DataSet::Real
 DataSet::
 operator()( const UInt & row, const UInt & col ) const
-{  
+{    
   assert( row <= this->M_nbSamples && col <= this->M_nbPts );
-      
+  
   return (*this->M_data)( row, col );
 }
 
@@ -336,7 +336,7 @@ DataSetLevelled::
 setLevels( const std::vector< UInt > & linearExtrema )
 {
     assert( linearExtrema.size() == this->M_nbLevels + 1 );
-    
+
     this->M_levelsPtr.reset( new levelsContainer_Type() );
     
     this->M_levelsPtr->resize( this->M_nbLevels );

@@ -15,6 +15,19 @@
 
 namespace HPCS
 {
+  
+  /*!
+   * This class allow to compute the Band Depth of a functional data set with respect to a
+   * subset of the data set itself.
+   * 
+   * The data set used to build a BandDepthRef object is arranged into levels, 
+   * identifying the different groups among functional data.
+   * 
+   * Before computing, it is possible to specify both the size and the level from which building 
+   * the reference subset, that is used in the next to compute the Band Depth of the test set 
+   * (i.e. each of the remaining functional data).
+   * 
+   */
   class BandDepthRef
   {
   public:

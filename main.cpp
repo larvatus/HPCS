@@ -35,21 +35,21 @@ int main( int argc, char * argv[] )
      
    GetPot dataFile( data_file_name.data() );
 
-    bandDepthData_Type bdData( dataFile, "BDALL" );
-/*   
-   bandDepthRefData_Type bdRefData( dataFile, "BDREF" );
-     
-   bandDepthRef_Type bdRef( bdRefData );
-    
-   bdRef.setReferenceSet( 50 );
-    
-   bdRef.setSeed( 0 );
-   
-   bdRef.computeBDs();
 
-   bdRef.writeBDs();
-*/
    
+//    bandDepthRefData_Type bdRefData( dataFile, "BDREF" );
+     
+//    bandDepthRef_Type bdRef( bdRefData );
+    
+//    bdRef.setReferenceSet( 50 );
+    
+//    bdRef.setSeed( 0 );
+   
+//    bdRef.computeBDs();
+
+//    bdRef.writeBDs();
+
+      bandDepthData_Type bdData( dataFile, "BDALL" );
    
       bandDepth_Type bd( bdData );
     
