@@ -1,6 +1,7 @@
 
 #include "bandDepthRef.hpp"
 #include <utility>
+#include <algorithm>
 
 namespace HPCS
 {
@@ -16,42 +17,56 @@ namespace HPCS
   
  // Constructor from single variables.
  BandDepthRef::
- BandDepthRef( const bdData_Type & bdData )
+ BandDepthRef( const bdRefData_Type & bdRefData )
  {
-    this->M_bdDataPtr.reset( new bdData_Type( bdData ) );
+    this->M_bdRefDataPtr.reset( new bdRefData_Type( bdRefData ) );
    
     this->M_mpiUtilPtr.reset( new mpiUtility_Type() );
    
     this->M_seed = 0;
 
-    if ( bdData.readDataFromFile() ) this->readData();
+    if ( bdRefData.readDataFromFile() ) this->readData();
+    
+    if ( bdRefData.readLevelsFromFile() ) this->readLevels();
    
  }
 
- // Method for reading data from input file and 
+ // Method for reading data from input file
  void
  BandDepthRef::
  readData()
  {
     const UInt nbLevels = BandDepthRef::S_nbLevels;
    
-    this->M_dataSetPtr.reset( new dataSet_Type( M_bdDataPtr->nbPz(), M_bdDataPtr->nbPts(), nbLevels ) );
+    this->M_dataSetPtr.reset( new dataSet_Type( M_bdRefDataPtr->nbPz(), M_bdRefDataPtr->nbPts(), nbLevels ) );
 
-    this->M_dataSetPtr->setOffset(  M_bdDataPtr->leftOffset(), M_bdDataPtr->rightOffset() );
+    this->M_dataSetPtr->setOffset(  M_bdRefDataPtr->leftOffset(), M_bdRefDataPtr->rightOffset() );
     
-    this->M_dataSetPtr->readData( M_bdDataPtr->inputFilename() );
+    this->M_dataSetPtr->readData( M_bdRefDataPtr->inputFilename() );
    
+    return;
+ }
+ 
+ // Method for reading levels from input file 
+ void
+ BandDepthRef::
+ readLevels()
+ {   
+    this->M_dataSetPtr->readLevelsExtrema( M_bdRefDataPtr->levelsFilename() );    
+    
     return;
  }
  
  // Method for resetting the Band Depth Data object
  void
  BandDepthRef::
- setBandDepthData( const bdData_Type & bdData )
+ setBandDepthData( const bdRefData_Type & bdRefData )
  {
-    this->M_bdDataPtr.reset( new bdData_Type( bdData ) );
+    this->M_bdRefDataPtr.reset( new bdRefData_Type( bdRefData ) );
     
-    if ( bdData.readDataFromFile() ) this->readData();
+    if ( bdRefData.readDataFromFile() ) this->readData();
+    
+    if ( bdRefData.readLevelsFromFile() ) this->readLevels();
    
     return;   
  }
@@ -62,12 +77,14 @@ namespace HPCS
  setDataSet( const dataSetPtr_Type & dataPtr )
  {
    assert( 
-	  dataPtr->nbSamples() == this->M_bdDataPtr->nbPz() 
+	  dataPtr->nbSamples() == this->M_bdRefDataPtr->nbPz() 
 	  && 
-	  dataPtr->nbPts() == this->M_bdDataPtr->nbPts() 
+	  dataPtr->nbPts() == this->M_bdRefDataPtr->nbPts() 
 	 );
    
-   assert( not( this->M_bdDataPtr->readDataFromFile() ) );
+   assert( not( this->M_bdRefDataPtr->readDataFromFile() ) );
+   
+   assert( not( this->M_bdRefDataPtr->readLevelsFromFile() ) );
    
    this->M_dataSetPtr = dataPtr;
    
@@ -88,17 +105,19 @@ namespace HPCS
  //
  void
  BandDepthRef::
- setReferenceSet( const UInt & size )
+ setReferenceSet( const UInt & size, const UInt & referenceLevel )
  {
-    assert( this->M_bdDataPtr->nbPz() > size );
+    assert( this->M_dataSetPtr->cardinality( referenceLevel ) >= size );
    
+    this->M_referenceLevel = referenceLevel;
+    
     srand48( this->M_seed );
       
     while( this->M_referenceSetIDs.size() != size )
     {
-      const UInt temp( static_cast< UInt >( this->M_dataSetPtr->cardinality( 0 ) * drand48() ) );
+      const UInt temp( static_cast< UInt >( this->M_dataSetPtr->cardinality( this->M_referenceLevel ) * drand48() ) );
       
-      if ( this->M_dataSetPtr->levelIDs( 0 ).find( temp ) != this->M_dataSetPtr->levelIDs( 0 ).end() )
+      if ( this->M_dataSetPtr->levelIDs( this->M_referenceLevel ).find( temp ) != this->M_dataSetPtr->levelIDs( this->M_referenceLevel ).end() )
       {
 	this->M_referenceSetIDs.insert( temp );	
       }
@@ -112,7 +131,7 @@ namespace HPCS
  BandDepthRef::
  setTestSet()
  {
-    for( UInt iPz(0); iPz < this->M_bdDataPtr->nbPz(); ++iPz )
+    for( UInt iPz(0); iPz < this->M_bdRefDataPtr->nbPz(); ++iPz )
     {
       if ( this->M_referenceSetIDs.find( iPz ) == this->M_referenceSetIDs.end() )
       {
@@ -123,7 +142,7 @@ namespace HPCS
     return;
  }
  
- //! Getter of the reference set IDs.
+ // Getter of the reference set IDs.
  const
  BandDepthRef::IDContainer_Type &
  BandDepthRef::
@@ -132,7 +151,7 @@ namespace HPCS
     return this->M_referenceSetIDs;
  }
  
- //! Getter of the test set IDs.
+ // Getter of the test set IDs.
  const
  BandDepthRef::IDContainer_Type &
  BandDepthRef::
@@ -141,7 +160,7 @@ namespace HPCS
     return this->M_testSetIDs;
  }
  
- //! Getter of the BDs
+ // Getter of the BDs
  const
  std::vector< Real > &
  BandDepthRef::
@@ -151,37 +170,37 @@ namespace HPCS
  }
  
  
-//! TODO FINISH ME!! 
+// TODO FINISH ME!! 
 void
 BandDepthRef::
 computeBDs()
 {
    this->setTestSet();
    
-   const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
+   const UInt nbThreads( this->M_mpiUtilPtr->nbThreads() );
    
-   const UInt myRank = this->M_mpiUtilPtr->myRank();
+   const UInt myRank( this->M_mpiUtilPtr->myRank() );
    
-   const UInt MASTER = this->M_mpiUtilPtr->master();
+   const UInt MASTER( this->M_mpiUtilPtr->master() );
    
            
-   const UInt nbTestPz = static_cast< UInt >( this->M_testSetIDs.size() );
+   const UInt nbTestPz( static_cast< UInt >( this->M_testSetIDs.size() ) );
       
-   const UInt slaveProcNbTestPz = static_cast< UInt >( nbTestPz / nbThreads );
+   const UInt slaveProcNbTestPz( static_cast< UInt >( nbTestPz / nbThreads ) );
    
-   const UInt masterProcNbTestPz = static_cast< UInt >( nbTestPz / nbThreads ) + static_cast< UInt >( nbTestPz % nbThreads );
+   const UInt masterProcNbTestPz( static_cast< UInt >( nbTestPz / nbThreads ) + static_cast< UInt >( nbTestPz % nbThreads ) );
+   
+   const UInt verbosity( this->M_bdRefDataPtr->verbosity() );
 
    this->M_BDs.resize( nbTestPz );
-   
-   
-   const UInt verbosity = this->M_bdDataPtr->verbosity();
    
    UInt nbMyPz;
    
    this->M_mpiUtilPtr->isMaster() ? nbMyPz = masterProcNbTestPz : nbMyPz = slaveProcNbTestPz;   
    
    IDContainer_Type::const_iterator it = this->M_testSetIDs.begin();
-   
+
+   // Advancing to my part of dataSet to process
    if ( not( this->M_mpiUtilPtr->isMaster() ) )
    {
      for( UInt iCount(0); iCount < masterProcNbTestPz + ( myRank - 1 ) * slaveProcNbTestPz; ++iCount )
@@ -190,10 +209,24 @@ computeBDs()
      }
    }
    
+   std::vector< UInt > subSetIDs( this->M_referenceSetIDs.size() + 1 );
+   
+   std::copy( this->M_referenceSetIDs.begin(), this->M_referenceSetIDs.end(), subSetIDs.begin() );
+   
+   typedef dataSet_Type::dataPtr_Type dataRawPtr_Type;
+   
    for ( UInt iPz(0); iPz < nbMyPz; ++iPz )
    {
-//       const IDCurrent( *it );
+      if( verbosity > 2 )  printf( "Proc %d is at %d / %d patients\n", myRank, iPz + 1, nbMyPz );  
+
+      this->M_BDs[ iPz ] = 0;
+      
+      dataRawPtr_Type dataRawPtr( this->M_dataSetPtr->getRowSubSet( subSetIDs ) );    
+   
+      std::cout << dataRawPtr->size1() << " " << dataRawPtr->size2() << std::endl;
+      
    }
+   
    
    
    
@@ -236,9 +269,9 @@ writeBDs() const
 {
     if ( this->M_mpiUtilPtr->isMaster() );
     {
-      std::ofstream output( this->M_bdDataPtr->outputFilename().data(), std::ios_base::out );
+      std::ofstream output( this->M_bdRefDataPtr->outputFilename().data(), std::ios_base::out );
       
-      for ( UInt iBD(0); iBD != this->M_bdDataPtr->nbPz(); ++iBD )
+      for ( UInt iBD(0); iBD != this->M_bdRefDataPtr->nbPz(); ++iBD )
       {
 	  output << iBD << " " << this->M_BDs[ iBD ] << std::endl;
       }

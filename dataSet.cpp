@@ -221,6 +221,7 @@ setData( const dataPtr_Type & dataPtr )
  return;
 }
 
+/*
 DataSet::dataPtr_Type
 DataSet::
 getSubSet( const slice_Type & sampleSlice ) const
@@ -231,7 +232,26 @@ getSubSet( const slice_Type & sampleSlice ) const
   
   dataSlice_Type temp( *this->M_data, sampleSlice, slice( 0, 1, this->M_nbPts ) );
   
-  return dataPtr_Type( new data_Type()  );
+  //TODO FINISH THIS!
+  return dataPtr_Type( new data_Type( )  );
+}*/
+
+DataSet::dataPtr_Type
+DataSet::
+getRowSubSet( const std::vector< UInt > & IDs ) const
+{
+  using namespace boost::numeric::ublas;
+  
+  typedef matrix_row< data_Type > matrixRow_Type;
+  
+  dataPtr_Type dataPtr( new data_Type( IDs.size(), this->M_nbPts ) );
+  
+  for ( UInt iID(0); iID < IDs.size(); ++iID )
+  {
+      row( *dataPtr, iID ) = row( *this->M_data, IDs[ iID ] );
+  }
+
+  return dataPtr;
 }
 
 void
@@ -345,6 +365,8 @@ cardinality( const UInt & levelID )
     
     if ( this->M_cardinality.size() != this->M_nbLevels )
     {
+	this->M_cardinality.resize( this->M_nbLevels );
+      
 	for ( UInt iLevel(0); iLevel < this->M_nbLevels; ++iLevel )
 	{
 	    this->M_cardinality[ iLevel ] = (*M_levelsPtr)[ iLevel ].size();
@@ -376,6 +398,31 @@ showMe( std::ostream & output ) const
     }
   
     return;
+}
+
+void
+DataSetLevelled::
+readLevelsExtrema( const std::string & filename)
+{  
+   std::ifstream input( filename.data(), std::ios_base::in );
+   
+   std::vector< UInt > linearExtrema( this->M_nbLevels + 1);
+   
+   for ( UInt iLevel(0); iLevel < this->M_nbLevels + 1; ++iLevel )
+   {    
+	input >> linearExtrema[ iLevel ];
+   }
+
+   input.close();
+   
+   this->setLevels( linearExtrema );
+   
+    for ( UInt iLevel(0); iLevel < this->M_nbLevels; ++iLevel )
+    {	
+ 	printf( " cardinality( %d ) = %d\n", iLevel, this->cardinality( iLevel ) );
+    }
+   
+   return;
 }
 
 

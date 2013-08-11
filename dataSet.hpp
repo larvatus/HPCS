@@ -70,7 +70,9 @@ public:
     
     dataPtr_Type getData(){ return this->M_data; };
 
-    dataPtr_Type getSubSet( const slice_Type & sampleSlice ) const; 
+//     dataPtr_Type getSubSet( const slice_Type & sampleSlice ) const;
+    
+    dataPtr_Type getRowSubSet( const std::vector< UInt > & IDs ) const;
      
     UInt nbSamples() const { return this->M_nbSamples; }
     
@@ -128,6 +130,7 @@ public:
   
   void setLevels( const std::vector< UInt > & linearExtrema );
   
+  void readLevelsExtrema( const std::string & levelsExtremaFilename );
 
   void showMe( std::ostream & output = std::cout ) const;  
   

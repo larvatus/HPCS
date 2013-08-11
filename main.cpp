@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <mpi.h>
 #include "bandDepth.hpp"
+#include "bandDepthData.hpp"
 #include "bandDepthRef.hpp"
 #include "dataSet.hpp"
 #include "GetPot"
@@ -17,6 +18,7 @@ using namespace HPCS;
 typedef double Real;
 typedef unsigned int UInt;
 typedef BandDepthData bandDepthData_Type;
+typedef BandDepthRefData bandDepthRefData_Type;
 typedef BandDepth bandDepth_Type;
 typedef BandDepthRef bandDepthRef_Type;
 typedef DataSet dataSet_Type;
@@ -33,37 +35,33 @@ int main( int argc, char * argv[] )
      
    GetPot dataFile( data_file_name.data() );
 
-   bandDepthData_Type bdData( dataFile, "BDALL" );
+//    bandDepthData_Type bdData( dataFile, "BDALL" );
+   
+   bandDepthRefData_Type bdRefData( dataFile, "BDREF" );
      
-//    bandDepthRef_Type bdRef( bdData );
-   
-//    bdRef.compute();
-   
-     bandDepth_Type bd( bdData );
+   bandDepthRef_Type bdRef( bdRefData );
     
-     bd.computeBDs();
-  
-     bd.writeBDs();
+   bdRef.setReferenceSet( 50 );
     
-//   const UInt nbSamples( 10 );
-//   
-//   const UInt nbPts( 30 );
-//   
-//   const UInt nbLevels( 2 );
-//   
-//   dataSetLevelled_Type dataLevelled( nbSamples, nbPts, nbLevels );
-//   
-//   std::vector< UInt > extrema( nbLevels + 1 );
-//   
-//   extrema[ 0 ] = 0;
-//   extrema[ 1 ] = 10;
-//   extrema[ 2 ] = 20;
-//   
-//   dataLevelled.setLevels( extrema );
-//   
-//   dataLevelled.showMe();
+   bdRef.setSeed( 0 );
+   
+   bdRef.computeBDs();
+
+   bdRef.writeBDs();
+
+   
+   
+   
+/*   
+      bandDepth_Type bd( bdData );
+    
+      bd.computeBDs();
   
-   MPI_Finalize();
+      bd.writeBDs();
+*/
+
+
+MPI_Finalize();
 
   return EXIT_SUCCESS;
   
