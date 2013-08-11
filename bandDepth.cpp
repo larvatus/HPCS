@@ -113,116 +113,46 @@ namespace HPCS
       UInt globalPzID;
      
       this->M_mpiUtilPtr->isMaster() ? globalPzID = iPz : globalPzID = masterProcNbPz  + ( myRank - 1 ) * slaveProcNbPz + iPz;
-      
-      // IMPORTANT: I leave one patient out, so the actual N in the binomial coefficient is nbPz - 1
-      //combinationFactory_Type combinationFactory( nbPz - 1, J );
-	
-      this->M_BDs[ iPz ] = 0;
-      
-      Real comprisedLength(0);
+            
+      Real comprisedCounter(0);
       
       combinationFactory.resetPointerToHeadCombination();      
       
-//    while( not( combinationFactory.hasGeneratedAll() ) )
       while( not( combinationFactory.hasTraversedAll() ) )
       {
-	
 	tuple_Type pzTupleIDs;
 
 	combinationFactory.getNextCombination( pzTupleIDs );
-		
-	// IMPORTANT: mapping the IDs of the tuple to the IDs of the population
-	// The problem is that leaving one patient out will produce a tuple in
-	// the range [ 0, 1, ..., nbPz - 1], while the IDs out of the combinationFactory
-	// are in the range [ 0, 1, ..., nbPz ] except for globalPzID.
+
 	for ( UInt iJ(0); iJ < J; ++iJ )
 	{	  
 	   if ( pzTupleIDs[ iJ ] >= globalPzID ) 
 	   {
 	       ++pzTupleIDs[ iJ ];
-	   }
-	  
+	   }	  
 	}
-	
- 	bool flagMaxCurr, flagMinCurr, flagMaxPrev, flagMinPrev;
- 	Real envMaxPrev, envMinPrev, envMaxCurr, envMinCurr;
 	
 	std::vector< Real > currentValues( J );
-			      
-	for ( UInt iJ(0); iJ < J; ++iJ )
-	{		
-	  // TODO CHECK THIS: THERE WAS A nbPts INSTEAD OF 0
- 	  currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], 0 );
-	} 
-
- 	envMaxPrev =  *( std::max_element( currentValues.begin(), currentValues.end() ) );
- 	envMinPrev =  *( std::min_element( currentValues.begin(), currentValues.end() ) );
- 	
-  	flagMaxPrev = (*dataPtr)( globalPzID, 0 ) <= envMaxPrev;
-  	flagMinPrev = (*dataPtr)( globalPzID, 0 ) >= envMinPrev;
- 	
- 	    for ( UInt iPt(1); iPt < nbPts; ++iPt )
- 	    {  
- 	      for ( UInt iJ(0); iJ < J; ++iJ )
- 	      {		
-  		  currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], iPt );
- 	      } 
- 	      
-  	      envMaxCurr = *( std::max_element( currentValues.begin(), currentValues.end() ) );
-  	      envMinCurr = *( std::min_element( currentValues.begin(), currentValues.end() ) );
- 	      
-       	      flagMaxCurr = (*dataPtr)( globalPzID, iPt ) <= envMaxCurr;
-   	      flagMinCurr = (*dataPtr)( globalPzID, iPt ) >= envMinCurr;
- 
-  	      if ( flagMaxCurr && flagMinCurr && flagMaxPrev && flagMinPrev )
- 	      {
- 		  comprisedLength += 1;
- 	      }
- 	      else
- 	      {
- 		  Real valueCurr = (*dataPtr)( globalPzID, iPt );
- 		  Real valuePrev = (*dataPtr)( globalPzID, iPt - 1);
- 
- 		  if ( not( flagMaxCurr ) )
- 		  {
- 		    if ( flagMaxPrev )
- 		    {
- 			comprisedLength += ( valuePrev - envMaxPrev ) / ( (envMaxCurr - envMaxPrev) - ( valueCurr - valuePrev ) );
- 		    } 
- 		  }
- 		  else if ( not( flagMaxPrev ) )
- 		  {
- 		      if ( flagMaxCurr )
- 		      {
- 			  comprisedLength += 1. - ( valuePrev - envMaxPrev ) / ( (envMaxCurr - envMaxPrev) - ( valueCurr - valuePrev ) );
- 		      }
- 		  }
- 		  
- 		  if( not( flagMinCurr ) )
- 		  {
- 		    if ( flagMinPrev )
- 		    {
- 			comprisedLength += ( valuePrev - envMinPrev ) / ( (envMinCurr - envMinPrev) - ( valueCurr - valuePrev ) );
- 		    }
-		  }
- 		  else if ( not( flagMinPrev ) )
- 		  {
- 		      if ( flagMinCurr )
- 		      {
- 			comprisedLength += 1. - ( valuePrev - envMinPrev ) / ( (envMinCurr - envMinPrev) - ( valueCurr - valuePrev ) );
- 		      }
- 		  }
- 	      }
- 	      
- 	      flagMaxPrev = flagMaxCurr;
- 	      flagMinPrev = flagMinCurr;
- 
- 	      envMaxPrev = envMaxCurr;
- 	      envMinPrev = envMinCurr;
-	    }
+	
+	Real envMax, envMin, pzVal;
+	
+	for ( UInt iPt(0); iPt < nbPts; ++iPt )
+	{
+	  for ( UInt iJ(0); iJ < J; ++iJ )
+	  {		
+	    currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], iPt );
+	  } 
+	  
+	  envMax =  *( std::max_element( currentValues.begin(), currentValues.end() ) );
+	  envMin =  *( std::min_element( currentValues.begin(), currentValues.end() ) );
+	  pzVal = (*dataPtr)( globalPzID, iPt );
+	  
+	  if ( pzVal <= envMax && pzVal >= envMin ) ++comprisedCounter;  
+	  
 	}
+      }
 
- 	this->M_BDs[ iPz ] = comprisedLength / static_cast< Real > ( ( nbPts - 1 ) * binomial( nbPz - 1, J ) );
+	this-> M_BDs[ iPz ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * binomial( nbPz - 1, J ) );
   }	    
  
   // COMMUNICATING BAND DEPTHS
@@ -242,9 +172,8 @@ namespace HPCS
   }
   
   if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
-    printf( " All depths have been gathered\n" );   
- 
-   MPI_Barrier( MPI_COMM_WORLD );
+
+    printf( " All depths have been gathered\n" );
   
    return;
   
