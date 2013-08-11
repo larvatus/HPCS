@@ -4,6 +4,7 @@
 #define __BANDDEPTH_REF_HPP__
 
 #include "bandDepthData.hpp"
+#include "bandDepth.hpp"
 #include "mpi_utility.hpp"
 #include "dataSet.hpp"
 #include <boost/shared_ptr.hpp>
@@ -39,9 +40,9 @@ namespace HPCS
     
     typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
     
-//     typedef BandDepth bandDepth_Type;
+    typedef BandDepth bandDepth_Type;
     
-//     typedef boost::shared_ptr< bandDepth_Type > bandDepthPtr_Type;
+    typedef boost::shared_ptr< bandDepth_Type > bandDepthPtr_Type;
     
     typedef std::set< UInt > IDContainer_Type;
     
@@ -135,7 +136,7 @@ namespace HPCS
         
     //! Method allowing to determine the remaining part of dataSet other than the reference set, i.e. the "test set".
     void setTestSet();
-    
+
     //@}
 
     //! @name Private members
@@ -153,8 +154,8 @@ namespace HPCS
     //! MPI utility pointer object
     mpiUtilityPtr_Type M_mpiUtilPtr;
     
-//     //! Shared pointer to a bandDepth object, used as a tool to compute full bandDepths on reduced parts of data set.
-//     bandDepthPtr_Type M_bandDepthPtr;
+    //! Shared pointer to a bandDepth object, used as a tool to compute full bandDepths on reduced parts of data set.
+    bandDepthPtr_Type M_bandDepthPtr;
     
     //! Seed for the pseudo-random number generator
     UInt M_seed;

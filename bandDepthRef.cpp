@@ -211,31 +211,32 @@ computeBDs()
    
    std::vector< UInt > subSetIDs( this->M_referenceSetIDs.size() + 1 );
    
-   std::copy( this->M_referenceSetIDs.begin(), this->M_referenceSetIDs.end(), subSetIDs.begin() );
+   std::copy( this->M_referenceSetIDs.begin(), this->M_referenceSetIDs.end(), subSetIDs.begin() ); 
    
-   typedef dataSet_Type::dataPtr_Type dataRawPtr_Type;
+   typedef BandDepthData bdData_Type;
+   
+   typedef BandDepth::dataSet_Type dataSetSimple_Type;
+   
+   typedef BandDepth::dataSetPtr_Type dataSetSimplePtr_Type;
+    
+   this->M_bandDepthPtr.reset( new BandDepth( bdData_Type(  this->M_referenceSetIDs.size() + 1, this->M_bdRefDataPtr->nbPts(), 
+						 0, 0, this->M_bdRefDataPtr->J(), 0, false )
+					     )
+			     );
    
    for ( UInt iPz(0); iPz < nbMyPz; ++iPz )
    {
-      if( verbosity > 2 )  printf( "Proc %d is at %d / %d patients\n", myRank, iPz + 1, nbMyPz );  
-
-      this->M_BDs[ iPz ] = 0;
+      if( verbosity > 2 )  printf( "Proc %d is at %d / %d patients\n", myRank, iPz + 1, nbMyPz );   
       
-      dataRawPtr_Type dataRawPtr( this->M_dataSetPtr->getRowSubSet( subSetIDs ) );    
-   
-      std::cout << dataRawPtr->size1() << " " << dataRawPtr->size2() << std::endl;
+      dataSetSimplePtr_Type dataSubSetPtr( new  dataSetSimple_Type( this->M_dataSetPtr->getRowSubSet( subSetIDs ) ) );
       
-   }
-   
-   
-   
-   
-   
-   
-   
-   
-   
-
+      this->M_bandDepthPtr->setDataSet( dataSubSetPtr );
+      
+      this->M_bandDepthPtr->computeBDs();
+      
+      this->M_BDs[ iPz ] = this->M_bandDepthPtr->getBDs()[ this->M_referenceSetIDs.size() ];
+ 
+  }
    
    // COMMUNICATING BAND DEPTHS
     
@@ -261,8 +262,7 @@ computeBDs()
 
     return;
 }
- 
- 
+
 void
 BandDepthRef::
 writeBDs() const

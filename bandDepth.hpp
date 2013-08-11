@@ -86,6 +86,9 @@ public:
    */
   void writeBDs() const;
   
+  //! Getter of the Band Depths
+  const std::vector< Real > & getBDs() const; 
+  
   //! Method for resetting the BandDepthData object.
   /*!
    * It enables the re-use of the BandDepth object in order to compute other bandDepths, e.g. for

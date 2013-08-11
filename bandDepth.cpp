@@ -269,6 +269,14 @@ writeBDs() const
     return;
 }
 
+const
+std::vector< Real > &
+BandDepth::
+getBDs() const
+{
+    return this->M_BDs;
+}
+
 
 UInt binomial( const UInt & N , const UInt & K )
 {    
