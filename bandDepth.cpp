@@ -102,9 +102,9 @@ namespace HPCS
    
    this->M_mpiUtilPtr->isMaster() ? nbMyPz = masterProcNbPz : nbMyPz = slaveProcNbPz;
    
-   combinationFactory_Type combinationFactory( nbPz - 1, J );
+   combinationsID_Type combinationsID( nbPz - 1, J, true );
    
-   combinationFactory.generateCombinations();
+   combinationsID.generateCombinationsID();
    
    for ( UInt iPz(0); iPz < nbMyPz; ++iPz )
    {
@@ -115,25 +115,25 @@ namespace HPCS
       this->M_mpiUtilPtr->isMaster() ? globalPzID = iPz : globalPzID = masterProcNbPz  + ( myRank - 1 ) * slaveProcNbPz + iPz;
       
       // IMPORTANT: I leave one patient out, so the actual N in the binomial coefficient is nbPz - 1
-      //combinationFactory_Type combinationFactory( nbPz - 1, J );
+      //combinationsID_Type combinationsID( nbPz - 1, J );
 	
       this->M_BDs[ iPz ] = 0;
       
       Real comprisedLength(0);
       
-      combinationFactory.resetPointerToHeadCombination();      
+      combinationsID.resetPointerToHeadCombination();      
       
-//    while( not( combinationFactory.hasGeneratedAll() ) )
-      while( not( combinationFactory.hasTraversedAll() ) )
+//    while( not( combinationsID.hasGeneratedAll() ) )
+      while( not( combinationsID.hasTraversedAll() ) )
       {
 	
 	tuple_Type pzTupleIDs;
 
-	combinationFactory.getNextCombination( pzTupleIDs );
+	combinationsID.getNextCombinationID( pzTupleIDs );
 		
 	// IMPORTANT: mapping the IDs of the tuple to the IDs of the population
 	// The problem is that leaving one patient out will produce a tuple in
-	// the range [ 0, 1, ..., nbPz - 1], while the IDs out of the combinationFactory
+	// the range [ 0, 1, ..., nbPz - 1], while the IDs out of the combinationsID
 	// are in the range [ 0, 1, ..., nbPz ] except for globalPzID.
 	for ( UInt iJ(0); iJ < J; ++iJ )
 	{	  
@@ -153,7 +153,7 @@ namespace HPCS
 	{		
 	  // TODO CHECK THIS: THERE WAS A nbPts INSTEAD OF 0
  	  currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], 0 );
-	} 
+	}
 
  	envMaxPrev =  *( std::max_element( currentValues.begin(), currentValues.end() ) );
  	envMinPrev =  *( std::min_element( currentValues.begin(), currentValues.end() ) );

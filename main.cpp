@@ -35,8 +35,8 @@ int main( int argc, char * argv[] )
      
    GetPot dataFile( data_file_name.data() );
 
-//    bandDepthData_Type bdData( dataFile, "BDALL" );
-   
+    bandDepthData_Type bdData( dataFile, "BDALL" );
+/*   
    bandDepthRefData_Type bdRefData( dataFile, "BDREF" );
      
    bandDepthRef_Type bdRef( bdRefData );
@@ -48,17 +48,15 @@ int main( int argc, char * argv[] )
    bdRef.computeBDs();
 
    bdRef.writeBDs();
-
+*/
    
    
-   
-/*   
       bandDepth_Type bd( bdData );
     
       bd.computeBDs();
   
       bd.writeBDs();
-*/
+
 
 
 MPI_Finalize();

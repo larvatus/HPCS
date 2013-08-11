@@ -4,7 +4,7 @@
 
 #include "dataSet.hpp"
 #include "bandDepthData.hpp"
-#include "combinationFactory.hpp"
+#include "combinations.hpp"
 #include "mpi_utility.hpp"
 #include "GetPot"
 #include <boost/shared_ptr.hpp>
@@ -51,8 +51,8 @@ public:
   typedef DataSet dataSet_Type;
   typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
   
-  typedef CombinationFactory combinationFactory_Type;
-  typedef combinationFactory_Type::tuple_Type tuple_Type;
+  typedef CombinationsID combinationsID_Type;
+  typedef CombinationsID::tuple_Type tuple_Type;
   
   typedef mpiUtility mpiUtility_Type;
   typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
