@@ -27,12 +27,33 @@ namespace HPCS
 typedef unsigned int UInt;
 typedef double Real;  
 
+
+class 
+BandDepthBase
+{
+public:
+  
+  typedef double Real;
+  
+  typedef double UInt;
+  
+  BandDepthBase(){};
+  
+  ~BandDepthBase(){};
+  
+  virtual void computeBDs() = 0;
+  
+protected:
+  
+};
+
+
 /*!
  * This class implements an interface for the fast computation of Band Depths for functional data.
  * 
  */  
   
-class BandDepth
+class BandDepth : public BandDepthBase
 {
 public:
   
