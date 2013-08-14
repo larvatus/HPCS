@@ -149,7 +149,7 @@ private:
   void readData();
     
   //! To compute binomial coefficients
-  binomial( const UInt & N , const UInt & K )
+  UInt binomial( const UInt & N , const UInt & K );
   
   //@}
   
@@ -189,7 +189,7 @@ private:
  }
  
  template < UInt _J >
- BandDepth< UInt _J >::
+ BandDepth< _J >::
  BandDepth( const bdDataPtr_Type & bdDataPtr )
  :
  M_bdDataPtr( bdDataPtr ),
@@ -213,7 +213,7 @@ private:
  // Reset dataSet pointer. This allow using the object without a file from which to read.
  template < UInt _J >
  void
- BandDepth< UInt _J >::
+ BandDepth< _J >::
  setDataSet( const dataSetPtr_Type & dataPtr )
  {
    assert( 
@@ -248,7 +248,7 @@ private:
  // Method for the computation of BDs
  template < UInt _J >
  void
- BandDepth< UInt _J >::
+ BandDepth< _J >::
  computeBDs()
  {
    const UInt myRank = this->M_mpiUtilPtr->myRank();
@@ -359,7 +359,7 @@ private:
 // Method to write the computed BDs
 template < UInt _J >
 void
-BandDepth< UInt _J >::
+BandDepth< _J >::
 writeBDs() const
 {    
     if ( this->M_mpiUtilPtr->isMaster() )
@@ -383,7 +383,7 @@ template < UInt _J >
 inline 
 const
 std::vector< Real > &
-BandDepth< UInt _J >::
+BandDepth< _J >::
 getBDs() const
 {
     return this->M_BDs;
@@ -393,7 +393,7 @@ getBDs() const
 // Method for the computation of binomial coefficients
 template < UInt _J >
 UInt
-BandDepth< UInt _J >::
+BandDepth< _J >::
 binomial( const UInt & N , const UInt & K )
 {    
     UInt num( 1 );

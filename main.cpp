@@ -5,7 +5,7 @@
 #include <mpi.h>
 #include "bandDepth.hpp"
 #include "bandDepthData.hpp"
-#include "bandDepthRef.hpp"
+// #include "bandDepthRef.hpp"
 #include "dataSet.hpp"
 #include "GetPot"
 
@@ -18,11 +18,11 @@ using namespace HPCS;
 typedef double Real;
 typedef unsigned int UInt;
 typedef BandDepthData bandDepthData_Type;
-typedef BandDepthRefData bandDepthRefData_Type;
-typedef BandDepth bandDepth_Type;
-typedef BandDepthRef bandDepthRef_Type;
+// typedef BandDepthRefData bandDepthRefData_Type;
+typedef BandDepth< 2 > bandDepth_Type;
+// typedef BandDepthRef bandDepthRef_Type;
 typedef DataSet dataSet_Type;
-typedef BandDepth::dataSetPtr_Type dataSetPtr_Type;
+typedef bandDepth_Type::dataSetPtr_Type dataSetPtr_Type;
 typedef DataSetLevelled dataSetLevelled_Type;
 
 int main( int argc, char * argv[] )
