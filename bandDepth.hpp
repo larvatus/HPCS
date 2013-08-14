@@ -12,6 +12,10 @@
 #include <string>
 #include <cassert>
 #include <fstream>
+#include <map>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+#include <algorithm>
 #include <mpi.h>
 
 /*!
@@ -30,6 +34,21 @@ namespace HPCS
 typedef unsigned int UInt;
 typedef double Real;  
 
+
+template < typename _T >
+class BeforeEqual
+  {
+  public:
+    
+    BeforeEqual( const _T & x ) : M_x( x ) {}
+    
+    bool operator()( const _T & x ) const { return x <= M_x; } 
+    
+  private:
+    
+    _T M_x;
+    
+  };
 
 class 
 BandDepthBase
@@ -258,7 +277,7 @@ private:
    
    const UInt nbPz 	= this->M_bdDataPtr->nbPz();
    const UInt nbPts	= this->M_bdDataPtr->nbPts();
-   const UInt J	   	= this->M_bdDataPtr->J();
+//    const UInt J	   	= this->M_bdDataPtr->J();
    const UInt verbosity = this->M_bdDataPtr->verbosity();
    
    typedef dataSet_Type::dataPtr_Type dataSetPtr_Type;
@@ -274,7 +293,7 @@ private:
    
    this->M_mpiUtilPtr->isMaster() ? nbMyPz = masterProcNbPz : nbMyPz = slaveProcNbPz;
    
-   combinationsID_Type combinationsID( nbPz - 1, J, true );
+   combinationsID_Type combinationsID( nbPz - 1, _J, true );
    
    combinationsID.generateCombinationsID();
    
@@ -301,7 +320,7 @@ private:
 	// The problem is that leaving one patient out will produce a tuple in
 	// the range [ 0, 1, ..., nbPz - 1], while the IDs out of the combinationsID
 	// are in the range [ 0, 1, ..., nbPz ] except for globalPzID.
-	for ( UInt iJ(0); iJ < J; ++iJ )
+	for ( UInt iJ(0); iJ < _J; ++iJ )
 	{	  
 	   if ( pzTupleIDs[ iJ ] >= globalPzID ) 
 	   {
@@ -309,13 +328,13 @@ private:
 	   }	  
 	}
 	
-	std::vector< Real > currentValues( J );
+	std::vector< Real > currentValues( _J );
 	
 	Real envMax, envMin, pzVal;
 	
 	for ( UInt iPt(0); iPt < nbPts; ++iPt )
 	{
-	  for ( UInt iJ(0); iJ < J; ++iJ )
+	  for ( UInt iJ(0); iJ < _J; ++iJ )
 	  {		
 	    currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], iPt );
 	  } 
@@ -329,7 +348,7 @@ private:
 	}
       }
 
-	this-> M_BDs[ iPz ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbPz - 1, J ) );
+	this->M_BDs[ iPz ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbPz - 1, _J ) );
   }	    
  
   // COMMUNICATING BAND DEPTHS
@@ -408,12 +427,168 @@ binomial( const UInt & N , const UInt & K )
    return static_cast< UInt >( num/denom );
 }
 
-// NOW YOU HAVE TO SPECIALIZE THE COMPUTE METHOD FOR THE CLASS WITH J = 2.
 
-/* 
- * 1) Use a view of data set by points
- * 2) Implement Genton idea. 
- */
+// UPGRADE: USE A VIEW OF DATASET
+
+template <>
+void
+BandDepth< 2 >::
+computeBDs()
+{
+    // UPGRADE: USE A VIEW OF DATASET
+    
+   const UInt myRank = this->M_mpiUtilPtr->myRank();
+   const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
+   
+   const UInt MASTER = this->M_mpiUtilPtr->master();
+   
+   const UInt nbPz 	= this->M_bdDataPtr->nbPz();
+   const UInt nbPts	= this->M_bdDataPtr->nbPts();
+   const UInt verbosity = this->M_bdDataPtr->verbosity();
+   
+   typedef dataSet_Type::dataPtr_Type dataSetPtr_Type;
+   
+   const dataSetPtr_Type dataPtr( this->M_dataSetPtr->getData() );  
+            
+   const UInt slaveProcNbPz = static_cast< UInt >( nbPz / nbThreads );
+   const UInt masterProcNbPz = static_cast< UInt >( nbPz / nbThreads ) + static_cast< UInt >( nbPz % nbThreads );
+   
+   const UInt slaveProcNbPts = static_cast< UInt >( nbPts / nbThreads );
+   const UInt masterProcNbPts = static_cast< UInt >( nbPts / nbThreads ) + static_cast< UInt >( nbPts % nbThreads );
+     
+   this->M_BDs.resize( nbPz );
+   
+   // FIRST STAGE: // MOVE THIS INSIDE A NEW CLASS
+  
+   UInt nbMyPz, nbMyPts;
+   
+   this->M_mpiUtilPtr->isMaster() ? nbMyPz = masterProcNbPz : nbMyPz = slaveProcNbPz;
+   this->M_mpiUtilPtr->isMaster() ? nbMyPts = masterProcNbPts : nbMyPts = slaveProcNbPts;
+   
+   std::vector< int > sortedIDsByPoint( nbPts * nbPz );
+   
+    for ( UInt iPt(0); iPt < nbMyPts; ++iPt )
+    {
+       UInt globalPtID;
+     
+       this->M_mpiUtilPtr->isMaster() ? globalPtID = iPt : globalPtID = masterProcNbPts  + ( myRank - 1 ) * slaveProcNbPts + iPt;
+       
+       printf( " proc # %d, global Point # %d\n", myRank, globalPtID );
+       
+       // TODO MODIFY THIS with a view
+       
+       std::multimap< Real, int > map;
+       
+       for ( int iPz(0); iPz < nbPz; ++iPz )
+       
+	  map.insert( std::pair< Real, int >( (*dataPtr)( iPz, globalPtID ), iPz ) );
+        
+       assert( map.size() == nbPz );
+      
+       UInt offset = globalPtID * nbPz;
+       
+       std::vector< int >::iterator vectIt = sortedIDsByPoint.begin() + offset;
+       
+       //IMPROVE THIS
+       for ( std::multimap< Real, int >::iterator mapIt( map.begin() ); mapIt != map.end(); ++mapIt )
+       {
+ 	  (*vectIt) = mapIt->second;
+ 	  
+ 	  vectIt++;
+       }     
+    }
+    
+  // COMMUNICATING SORTED IDs
+   
+   for ( UInt iThread(0); iThread < nbThreads; ++iThread )
+   {
+       int bcastOffset, bcastNbPts;
+       
+       iThread == MASTER ? bcastOffset = 0 : bcastOffset = masterProcNbPts * nbPz + slaveProcNbPts * nbPz * ( iThread - 1 );
+     
+       iThread == MASTER ? bcastNbPts = masterProcNbPts * nbPz : bcastNbPts = slaveProcNbPts * nbPz;
+    
+       MPI_Bcast( & sortedIDsByPoint[0] + bcastOffset, bcastNbPts, MPI_INT, iThread, MPI_COMM_WORLD );
+   }
+ 
+   for ( UInt iPz(0); iPz < nbMyPz; ++iPz )
+   {
+       if( verbosity > 2 ) printf( "Proc %d is at %d / %d patients\n", myRank, iPz+1, nbMyPz );
+     
+       UInt comprisedCounter(0);
+      
+       int globalPzID;
+     
+       this->M_mpiUtilPtr->isMaster() ? globalPzID = iPz : globalPzID = masterProcNbPz  + ( myRank - 1 ) * slaveProcNbPz + iPz;
+      
+       for ( UInt iPt(0); iPt < nbPts; ++iPt )
+       {
+ 	UInt offset = iPt * nbPz;
+ 	
+//  	BeforeEqual< int > isBeforeEqual( globalPzID );
+ 	
+	int howManyBefore(0);
+	
+	std::vector< int >::const_iterator it( sortedIDsByPoint.begin() + offset );
+	
+	while ( *it != globalPzID )
+	{
+	    howManyBefore++;
+	    ++it;
+	}
+	
+//  	int howManyBefore = std::count_if( sortedIDsByPoint.begin() + offset, sortedIDsByPoint.begin() + offset + nbPz, isBeforeEqual ) - 1; 
+ 	int howManyAfter = nbPz - howManyBefore - 1;
+ 	
+ 	comprisedCounter += howManyBefore * howManyAfter;
+ 	
+       }
+       
+       this->M_BDs[ iPz ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbPz - 1, 2 ) );
+   }
+   
+   for ( UInt iThread = 1; iThread < nbThreads; ++iThread )
+   {
+     if ( this->M_mpiUtilPtr->isMaster() )
+     {
+       MPI_Status status;
+ 
+       MPI_Recv( & this->M_BDs[0] + masterProcNbPz + ( iThread - 1 ) * slaveProcNbPz, slaveProcNbPz, MPI_DOUBLE_PRECISION, iThread, iThread, MPI_COMM_WORLD, & status );
+     }
+     else if ( myRank == iThread )
+     {
+       MPI_Send( & this->M_BDs[0], slaveProcNbPz, MPI_DOUBLE_PRECISION, MASTER, myRank, MPI_COMM_WORLD );
+     }
+   }
+   
+   if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
+ 
+     printf( " All depths have been gathered\n" );
+  
+   return;
+  
+  
+//   // CHECK
+//   if ( this->M_mpiUtilPtr->isMaster() )
+//   {
+//    std::vector< int >::iterator vectIt ( sortedIDsByPoint.begin() );
+//     
+//    for ( UInt iPt(0); iPt < nbPts; ++iPt )
+//    {
+//      for( UInt iPz(0); iPz < nbPz; ++iPz )
+//      {
+// 	std::cout << *vectIt << " ";  
+//      
+// 	++vectIt;
+//        
+//     }
+//      std::cout << std::endl;
+//    }
+//   }
+    
+}
+
+
 
 }
 
