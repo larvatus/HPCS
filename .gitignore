@@ -15,6 +15,7 @@
 ##################
 html/
 latex/
+build/
 
 # Packages #
 ############
