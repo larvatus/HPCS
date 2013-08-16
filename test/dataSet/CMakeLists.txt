@@ -1,0 +1,9 @@
+
+
+# A first executable
+
+ADD_EXECUTABLE(mainDataSet.exe mainDataSet )
+TARGET_LINK_LIBRARIES(mainDataSet.exe ${MPI_LIBRARIES} mbd)
+# ENABLE_TESTING()
+# ADD_TEST(mytest  ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${CMAKE_CURRENT_BINARY_DIR}/mainDataSet.exe )
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/dataSet.dat ${CMAKE_CURRENT_BINARY_DIR}/dataSet.dat  )

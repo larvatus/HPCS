@@ -2,8 +2,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 PROJECT(BandDepth)
 
-
-
 # Require MPI for this project:
 FIND_PACKAGE(MPI REQUIRED)
 SET(CMAKE_CXX_COMPILE_FLAGS ${CMAKE_CXX_COMPILE_FLAGS} ${MPI_COMPILE_FLAGS})
@@ -12,8 +10,16 @@ INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
 
 ADD_LIBRARY( mbd bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet )
 
+# A first executable
+
 ADD_EXECUTABLE(main.exe main bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet)
 TARGET_LINK_LIBRARIES(main.exe ${MPI_LIBRARIES} mbd)
-ENABLE_TESTING()
-ADD_TEST(mytest  ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${CMAKE_CURRENT_BINARY_DIR}/main.exe )
+# ENABLE_TESTING()
+# ADD_TEST(mytest  ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${CMAKE_CURRENT_BINARY_DIR}/main.exe )
 EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/data data )
+
+
+
+# Adding test subdirectory
+
+ADD_SUBDIRECTORY(test)
