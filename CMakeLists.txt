@@ -8,11 +8,12 @@ SET(CMAKE_CXX_COMPILE_FLAGS ${CMAKE_CXX_COMPILE_FLAGS} ${MPI_COMPILE_FLAGS})
 SET(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS})
 INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
 
-ADD_LIBRARY( mbd bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet )
-
+# ADD_LIBRARY( mbd bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet )
+ADD_LIBRARY( mbd bandDepth bandDepthData combinations mpi_utility dataSet )
 # A first executable
 
-ADD_EXECUTABLE(main.exe main bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet)
+# ADD_EXECUTABLE(main.exe main bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet)
+ADD_EXECUTABLE(main.exe main bandDepth bandDepthData combinations mpi_utility dataSet)
 TARGET_LINK_LIBRARIES(main.exe ${MPI_LIBRARIES} mbd)
 # ENABLE_TESTING()
 # ADD_TEST(mytest  ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${CMAKE_CURRENT_BINARY_DIR}/main.exe )
