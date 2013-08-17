@@ -473,8 +473,6 @@ computeBDs()
      
        this->M_mpiUtilPtr->isMaster() ? globalPtID = iPt : globalPtID = masterProcNbPts  + ( myRank - 1 ) * slaveProcNbPts + iPt;
        
-       printf( " proc # %d, global Point # %d\n", myRank, globalPtID );
-       
        // TODO MODIFY THIS with a view
        
        std::multimap< Real, int > map;

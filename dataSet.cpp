@@ -23,7 +23,6 @@ M_leftOffset( 0 ),
 M_rightOffset( 0 ),
 M_data( new data_Type( nbSamples, nbPts ) )
 {
-  
 }
 
 DataSet::
@@ -111,6 +110,7 @@ writeData( std::ostream & output ) const
   return;
 }
 
+inline
 DataSet::Real
 DataSet::
 operator()( const UInt & row, const UInt & col ) const
