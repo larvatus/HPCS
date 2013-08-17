@@ -5,6 +5,7 @@
 #include <mpi.h>
 #include "bandDepth.hpp"
 #include "bandDepthData.hpp"
+#include "factory.hpp"
 // #include "bandDepthRef.hpp"
 #include "dataSet.hpp"
 #include "GetPot"
