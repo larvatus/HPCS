@@ -47,7 +47,11 @@ public:
   
   ~BandDepthBase(){};
   
-  virtual void computeBDs() = 0;
+  virtual void computeBDs(){};
+  
+  virtual void setBandDepthData( const BandDepthData & bdData ){};
+  
+  virtual void writeBDs()const {};
   
 protected:
   
@@ -89,6 +93,9 @@ public:
    
   //! @name Constructor & Destructor
   //@{
+    
+  //! Default constructor
+  BandDepth(){};
     
   //! Constructor from a BandDepthData object
   BandDepth( const bdData_Type & bdData );
@@ -209,6 +216,8 @@ private:
  setBandDepthData( const bdData_Type & bdData )
  {
     this->M_bdDataPtr.reset( new bdData_Type( bdData ) );
+
+    this->M_mpiUtilPtr.reset( new mpiUtility_Type() );
     
     if ( bdData.readDataFromFile() ) this->readData();
  }
