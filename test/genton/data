@@ -1,0 +1,34 @@
+[GENTON]
+
+  nbPz = 149
+  nbPts = 700
+  leftOffset = 0
+  rightOffset = 0
+
+  inputFilename = ../../leads/I.txt
+
+  outputFilename = bd.I.genton.dat
+
+  J = 2
+
+  verbosity = 3
+
+[../]
+
+
+[REFERENCE]
+
+  nbPz = 149
+  nbPts = 700
+  leftOffset = 0
+  rightOffset = 0
+
+  inputFilename = ../../leads/I.txt
+
+  outputFilename = bd.I.reference.dat
+
+  J = 2
+
+  verbosity = 3
+
+[../]
