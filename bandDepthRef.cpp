@@ -175,7 +175,7 @@ void
 BandDepthRef::
 computeBDs()
 {
-   this->setTestSet();
+/*   this->setTestSet();
    
    const UInt nbThreads( this->M_mpiUtilPtr->nbThreads() );
    
@@ -261,6 +261,7 @@ computeBDs()
    MPI_Barrier( MPI_COMM_WORLD );
 
     return;
+    */
 }
 
 void

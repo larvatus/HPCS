@@ -1,5 +1,5 @@
 
-#include "../../dataSet.hpp"
+#include "dataSet.hpp"
 #include <iostream>
 #include <cstdlib>
 #include <mpi.h>

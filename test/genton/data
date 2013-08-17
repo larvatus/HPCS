@@ -5,7 +5,7 @@
   leftOffset = 0
   rightOffset = 0
 
-  inputFilename = ../../leads/I.txt
+  inputFilename = ../../../leads/I.txt
 
   outputFilename = bd.I.genton.dat
 
@@ -23,7 +23,7 @@
   leftOffset = 0
   rightOffset = 0
 
-  inputFilename = ../../leads/I.txt
+  inputFilename = ../../../leads/I.txt
 
   outputFilename = bd.I.reference.dat
 
