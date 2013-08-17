@@ -34,22 +34,6 @@ namespace HPCS
 typedef unsigned int UInt;
 typedef double Real;  
 
-
-template < typename _T >
-class BeforeEqual
-  {
-  public:
-    
-    BeforeEqual( const _T & x ) : M_x( x ) {}
-    
-    bool operator()( const _T & x ) const { return x <= M_x; } 
-    
-  private:
-    
-    _T M_x;
-    
-  };
-
 class 
 BandDepthBase
 {
@@ -467,8 +451,8 @@ computeBDs()
    
    std::vector< int > sortedIDsByPoint( nbPts * nbPz );
    
-    for ( UInt iPt(0); iPt < nbMyPts; ++iPt )
-    {
+   for ( UInt iPt(0); iPt < nbMyPts; ++iPt )
+   {
        UInt globalPtID;
      
        this->M_mpiUtilPtr->isMaster() ? globalPtID = iPt : globalPtID = masterProcNbPts  + ( myRank - 1 ) * slaveProcNbPts + iPt;
@@ -494,10 +478,9 @@ computeBDs()
  	  
  	  vectIt++;
        }     
-    }
+   }
     
   // COMMUNICATING SORTED IDs
-   
    for ( UInt iThread(0); iThread < nbThreads; ++iThread )
    {
        int bcastOffset, bcastNbPts;
@@ -523,8 +506,6 @@ computeBDs()
        {
  	UInt offset = iPt * nbPz;
  	
-//  	BeforeEqual< int > isBeforeEqual( globalPzID );
- 	
 	int howManyBefore(0);
 	
 	std::vector< int >::const_iterator it( sortedIDsByPoint.begin() + offset );
@@ -535,28 +516,26 @@ computeBDs()
 	    ++it;
 	}
 	
-//  	int howManyBefore = std::count_if( sortedIDsByPoint.begin() + offset, sortedIDsByPoint.begin() + offset + nbPz, isBeforeEqual ) - 1; 
  	int howManyAfter = nbPz - howManyBefore - 1;
  	
  	comprisedCounter += howManyBefore * howManyAfter;
  	
        }
        
-       this->M_BDs[ iPz ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbPz - 1, 2 ) );
-   }
+       this->M_BDs[ globalPzID ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbPz - 1, 2 ) );
+     
+  }
    
-   for ( UInt iThread = 1; iThread < nbThreads; ++iThread )
+   // COMMUNICATING BAND DEPTHS
+    for ( UInt iThread(0); iThread < nbThreads; ++iThread )
    {
-     if ( this->M_mpiUtilPtr->isMaster() )
-     {
-       MPI_Status status;
- 
-       MPI_Recv( & this->M_BDs[0] + masterProcNbPz + ( iThread - 1 ) * slaveProcNbPz, slaveProcNbPz, MPI_DOUBLE_PRECISION, iThread, iThread, MPI_COMM_WORLD, & status );
-     }
-     else if ( myRank == iThread )
-     {
-       MPI_Send( & this->M_BDs[0], slaveProcNbPz, MPI_DOUBLE_PRECISION, MASTER, myRank, MPI_COMM_WORLD );
-     }
+       int bcastOffset, bcastNbPz;
+       
+       iThread == MASTER ? bcastOffset = 0 : bcastOffset = masterProcNbPz + slaveProcNbPz * ( iThread - 1 );
+     
+       iThread == MASTER ? bcastNbPz = masterProcNbPz : bcastNbPz = slaveProcNbPz;
+    
+       MPI_Bcast( & this->M_BDs[0] + bcastOffset, bcastNbPz, MPI_DOUBLE_PRECISION, iThread, MPI_COMM_WORLD );
    }
    
    if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
@@ -564,26 +543,7 @@ computeBDs()
      printf( " All depths have been gathered\n" );
   
    return;
-  
-  
-//   // CHECK
-//   if ( this->M_mpiUtilPtr->isMaster() )
-//   {
-//    std::vector< int >::iterator vectIt ( sortedIDsByPoint.begin() );
-//     
-//    for ( UInt iPt(0); iPt < nbPts; ++iPt )
-//    {
-//      for( UInt iPz(0); iPz < nbPz; ++iPz )
-//      {
-// 	std::cout << *vectIt << " ";  
-//      
-// 	++vectIt;
-//        
-//     }
-//      std::cout << std::endl;
-//    }
-//   }
-    
+   
 }
 
 
