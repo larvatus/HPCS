@@ -1,5 +1,5 @@
 
-#include "mpi_utility.hpp"
+#include <mpi_utility.hpp>
 
 namespace HPCS
 {

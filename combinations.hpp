@@ -2,11 +2,7 @@
 # ifndef __COMBINATIONS_HPP__
 # define __COMBINATIONS_HPP__
 
-#include <vector>
-#include <list>
-#include <cassert>
-#include <iostream>
-#include <boost/shared_ptr.hpp>
+#include <HPCSDefs.hpp>
 
 namespace HPCS
 {

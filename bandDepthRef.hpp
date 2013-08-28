@@ -3,15 +3,12 @@
 #ifndef __BANDDEPTH_REF_HPP__
 #define __BANDDEPTH_REF_HPP__
 
-#include "bandDepthData.hpp"
-#include "bandDepth.hpp"
-#include "mpi_utility.hpp"
-#include "dataSet.hpp"
-#include <boost/shared_ptr.hpp>
-#include "GetPot"
-#include <string>
-#include <vector>
-#include <set>
+#include <bandDepthData.hpp>
+#include <bandDepth.hpp>
+#include <mpi_utility.hpp>
+#include <dataSet.hpp>
+
+#include <HPCSDefs.hpp>
 
 namespace HPCS
 {

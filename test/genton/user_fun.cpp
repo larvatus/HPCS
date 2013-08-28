@@ -1,8 +1,6 @@
 
 #include "user_fun.hpp"
 
-#define MASTER 0
-
 namespace HPCS
 {
    namespace GentonTest

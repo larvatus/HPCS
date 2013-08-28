@@ -2,10 +2,9 @@
 #ifndef __FACTORY_HPP__
 #define __FACTORY_HPP__
 
-#include <boost/function.hpp>
-#include <map>
-#include <cassert>
-#include "bandDepth.hpp"
+#include <HPCSDefs.hpp>
+
+#include <bandDepth.hpp>
 
 namespace HPCS
 {

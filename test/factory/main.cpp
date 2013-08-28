@@ -1,17 +1,12 @@
 
 
-#include <iostream>
-#include <cstdlib>
-#include <mpi.h>
-#include "bandDepth.hpp"
-#include "bandDepthData.hpp"
-#include "factory.hpp"
-// #include "bandDepthRef.hpp"
-#include "dataSet.hpp"
-#include "GetPot"
+#include <bandDepth.hpp>
+#include <bandDepthData.hpp>
+#include <factory.hpp>
+// #include <bandDepthRef.hpp>
+#include <dataSet.hpp>
 
-
-#define MASTER 0
+#include <HPCSDefs.hpp>
 
 using namespace std;
 using namespace HPCS;

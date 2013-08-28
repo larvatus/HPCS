@@ -1,7 +1,6 @@
 
 
-#include "dataSet.hpp"
-#include <cassert>
+#include <dataSet.hpp>
 
 namespace HPCS
 {

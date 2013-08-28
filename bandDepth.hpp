@@ -2,21 +2,13 @@
 #ifndef __BD_HPP__
 #define __BD_HPP__
 
-#include "dataSet.hpp"
-#include "bandDepthData.hpp"
-#include "combinations.hpp"
-#include "mpi_utility.hpp"
-#include "GetPot"
-#include <boost/shared_ptr.hpp>
-#include <vector>
-#include <string>
-#include <cassert>
-#include <fstream>
-#include <map>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <algorithm>
-#include <mpi.h>
+#include <HPCSDefs.hpp>
+
+#include <dataSet.hpp>
+#include <bandDepthData.hpp>
+#include <combinations.hpp>
+#include <mpi_utility.hpp>
+
 
 /*!
     @file BandDepth.hpp
@@ -30,9 +22,6 @@
 
 namespace HPCS
 {  
-
-typedef unsigned int UInt;
-typedef double Real;  
 
 class 
 BandDepthBase
@@ -266,7 +255,7 @@ private:
    const UInt myRank = this->M_mpiUtilPtr->myRank();
    const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
    
-   const UInt MASTER = this->M_mpiUtilPtr->master();
+//    const UInt MASTER = this->M_mpiUtilPtr->master();
    
    const UInt nbPz 	= this->M_bdDataPtr->nbPz();
    const UInt nbPts	= this->M_bdDataPtr->nbPts();
@@ -433,7 +422,7 @@ computeBDs()
    const UInt myRank = this->M_mpiUtilPtr->myRank();
    const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
    
-   const UInt MASTER = this->M_mpiUtilPtr->master();
+//    const UInt MASTER = this->M_mpiUtilPtr->master();
    
    const UInt nbPz 	= this->M_bdDataPtr->nbPz();
    const UInt nbPts	= this->M_bdDataPtr->nbPts();

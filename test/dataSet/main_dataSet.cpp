@@ -1,11 +1,7 @@
 
-#include "dataSet.hpp"
-#include <iostream>
-#include <cstdlib>
-#include <mpi.h>
-#include <boost/shared_ptr.hpp>
+#include <dataSet.hpp>
 
-#define MASTER 0
+#include <HPCSDefs.hpp>
 
 using namespace std;
 

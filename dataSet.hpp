@@ -2,23 +2,15 @@
 #ifndef _DATASET_HPP__
 #define _DATASET_HPP__
 
-#include <string>
-#include <cassert>
-#include <vector>
-#include <fstream>
-#include <iostream>
-#include <boost/shared_ptr.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/numeric/ublas/storage.hpp>
-#include <set>
+
+#include <HPCSDefs.hpp>
 
 namespace HPCS
 {
-
-typedef unsigned int UInt;
-typedef double Real;
   
 class DataSet
 {

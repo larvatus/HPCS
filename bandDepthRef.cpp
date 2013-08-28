@@ -1,7 +1,5 @@
 
-#include "bandDepthRef.hpp"
-#include <utility>
-#include <algorithm>
+#include <bandDepthRef.hpp>
 
 namespace HPCS
 {

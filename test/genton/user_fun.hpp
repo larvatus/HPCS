@@ -3,23 +3,8 @@
 #ifndef __USER_FUN_HPP_
 #define __USER_FUN_HPP_
 
-#include <vector>
-#include <string>
-#include <cstring>
-#include <sstream>
-#include <algorithm>
-#include <cstdlib>
-#include <iostream>
-#include <iomanip>
-
-#include <mpi.h>
-
-#include <boost/smart_ptr/shared_ptr.hpp>
-
 #include "dataSet.hpp"
-#include "GetPot"
 #include "combinations.hpp"
-
 
 namespace HPCS
 {

@@ -3,15 +3,9 @@
 #ifndef __BANDDEPTH_DATA_HPP__
 #define __BANDDEPTH_DATA_HPP__
 
-#include "dataSet.hpp"
-#include <cassert>
-#include <fstream>
-#include "GetPot"
-#include <vector>
-#include <string>
-#include <boost/shared_ptr.hpp>
+#include <dataSet.hpp>
 
-
+#include <HPCSDefs.hpp>
 
 namespace HPCS
 { 
