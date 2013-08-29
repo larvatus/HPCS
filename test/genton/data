@@ -1,11 +1,11 @@
 [GENTON]
 
-  nbPz = 149
-  nbPts = 700
+  nbPz = 30
+  nbPts = 500
   leftOffset = 0
   rightOffset = 0
 
-  inputFilename = ../../../leads/I.txt
+  inputFilename = ../../../synthetic/amplitudeSine/I.txt
 
   outputFilename = bd.I.genton.dat
 
@@ -18,12 +18,12 @@
 
 [REFERENCE]
 
-  nbPz = 149
-  nbPts = 700
+  nbPz = 30
+  nbPts = 500
   leftOffset = 0
   rightOffset = 0
 
-  inputFilename = ../../../leads/I.txt
+  inputFilename = ../../../synthetic/amplitudeSine/I.txt
 
   outputFilename = bd.I.reference.dat
 

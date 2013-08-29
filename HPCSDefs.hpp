@@ -1,6 +1,6 @@
 
 
-#ifndef __HPCS_DEFS_HPP
+#ifndef __HPCS_DEFS_HPP__
 #define __HPCS_DEFS_HPP__
 
 
@@ -9,7 +9,9 @@
 #include <list>
 #include <map>
 #include <set>
+#include <functional>
 #include <utility>
+
 
 #include <algorithm>
 
@@ -29,9 +31,10 @@
 //COMMON BOOST HEADERS
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
+#include <boost/static_assert.hpp>
 
 // MPI
-#include <mpi.h>
+#include "mpi.h"
 
 // GETPOT
 #include <ioutput/GetPot>
@@ -44,6 +47,8 @@ namespace HPCS
 {
     typedef unsigned int UInt;
     typedef double Real;
+    
+    enum BDPolicy { Reference, All };
 
 }
 

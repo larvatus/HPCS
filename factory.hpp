@@ -93,9 +93,6 @@ showMe( std::ostream & output ) const
   return;
 }
 
-
-enum BDPolicy { Reference, All };
-
 template < BDPolicy _policy >
 struct creationRule
 {
@@ -164,7 +161,7 @@ public:
 
    typedef BandDepthBase bdBase_Type;
           
-   BDFactory();
+   BDFactory(){};
   
    ~BDFactory(){}
   

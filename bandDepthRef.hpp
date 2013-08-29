@@ -38,6 +38,10 @@ namespace HPCS
     
     typedef GetPot data_Type;
     
+    typedef BandDepthData bdData_Type;
+    
+    typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
+    
     typedef BandDepthRefData bdRefData_Type;
     
     typedef boost::shared_ptr< bdRefData_Type > bdRefDataPtr_Type;
@@ -92,6 +96,9 @@ namespace HPCS
     * \param bdRefData New BandDepthData object that will replace the old one.
     */
     void setBandDepthData( const bdRefData_Type & bdRefData );
+    
+    //! To be used polymorphically.
+//     void setBandDepthData( const bdDataPtr_Type & bdDataPtr );
   
     //! Method for the setting up or the resetting of the dataSet.
     /*!
@@ -126,7 +133,7 @@ namespace HPCS
     const IDContainer_Type & getTestSet() const;
 
     //! Getter of the computed BDs
-    const std::vector< Real > & getBDs() const;
+    void getBDs( std::vector< Real > & bds ) const;
     
     //! The method writing the BDs to the file name specified inside the BD Data Object.
     void writeBDs() const;

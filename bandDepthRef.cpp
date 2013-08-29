@@ -69,6 +69,23 @@ namespace HPCS
     return;   
  }
  
+  // Method for resetting the Band Depth Data object
+//   void
+//   BandDepthRef::
+//   setBandDepthData( const bdDataPtr_Type & bdDataPtr )
+//   {
+//       //! @todo AGGIUNGI UN ASSERT STATICO SUL TIPO PUNTATO DA BDDATAPTR, CHE DEVE ESSERE
+//       //! QUELLO DERIVATO BDDATAREF 
+//     
+//       this->M_bdRefDataPtr = bdDataPtr;
+//       
+//       if ( bdDataPtr->readDataFromFile() ) this->readData();
+//       
+//       if ( bdDataPtr->readLevelsFromFile() ) this->readLevels();
+//     
+//       return;   
+//   } 
+ 
  // Reset dataSet pointer. This allow using the object without a file from which to read.
  void
  BandDepthRef::
@@ -141,6 +158,7 @@ namespace HPCS
  }
  
  // Getter of the reference set IDs.
+ inline
  const
  BandDepthRef::IDContainer_Type &
  BandDepthRef::
@@ -150,6 +168,7 @@ namespace HPCS
  }
  
  // Getter of the test set IDs.
+ inline
  const
  BandDepthRef::IDContainer_Type &
  BandDepthRef::
@@ -159,12 +178,14 @@ namespace HPCS
  }
  
  // Getter of the BDs
- const
- std::vector< Real > &
+ inline
+ void
  BandDepthRef::
- getBDs() const
+ getBDs( std::vector< Real > & bds ) const
  {
-    return this->M_BDs;
+    bds = this->M_BDs;
+    
+    return;
  }
  
  

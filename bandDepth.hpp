@@ -32,6 +32,8 @@ public:
   
   typedef double UInt;
   
+  typedef boost::shared_ptr< BandDepthData > bdDataPtr_Type;
+  
   BandDepthBase(){};
   
   ~BandDepthBase(){};
@@ -40,7 +42,11 @@ public:
   
   virtual void setBandDepthData( const BandDepthData & bdData ){};
   
-  virtual void writeBDs()const {};
+  virtual void setBandDepthData( const bdDataPtr_Type & bdDataPtr ){};
+  
+  virtual void writeBDs() const {};
+  
+  virtual void getBDs( std::vector< Real > & bds ) const {};
   
 protected:
   
@@ -111,7 +117,7 @@ public:
   void writeBDs() const;
   
   //! Getter of the Band Depths
-  const std::vector< Real > & getBDs() const; 
+  void getBDs( std::vector< Real > & bds ) const; 
   
   //! Method for resetting the BandDepthData object.
   /*!
@@ -122,6 +128,8 @@ public:
    * \param bdData New BandDepthData object that will replace the old one.
    */
   void setBandDepthData( const bdData_Type & bdData );
+  
+  void setBandDepthData( const bdDataPtr_Type & bdDataPtr );
   
   
   //! Method for the setting up or the resetting of the dataSet.
@@ -209,6 +217,20 @@ private:
     this->M_mpiUtilPtr.reset( new mpiUtility_Type() );
     
     if ( bdData.readDataFromFile() ) this->readData();
+ }
+ 
+ // Reset BandDepthData type object contained 
+ template < UInt _J >
+ inline
+ void 
+ BandDepth< _J >::
+ setBandDepthData( const bdDataPtr_Type & bdDataPtr )
+ {
+    this->M_bdDataPtr = bdDataPtr;
+
+    this->M_mpiUtilPtr.reset( new mpiUtility_Type() );
+    
+    if ( bdDataPtr->readDataFromFile() ) this->readData();
  }
  
  // Reset dataSet pointer. This allow using the object without a file from which to read.
@@ -382,12 +404,13 @@ writeBDs() const
 // Method to get the computed BDs
 template < UInt _J >
 inline 
-const
-std::vector< Real > &
+void
 BandDepth< _J >::
-getBDs() const
+getBDs( std::vector< Real > & bds ) const
 {
-    return this->M_BDs;
+    bds = this->M_BDs;
+  
+    return;
 }
 
 

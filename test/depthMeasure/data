@@ -1,0 +1,30 @@
+[BDALL]
+
+  nbPz = 30
+  nbPts = 500
+  leftOffset = 0
+  rightOffset = 0
+
+  inputFilename = ../../../synthetic/amplitudeSine/I.txt
+
+  outputFilename = bd.I.amplitudeSine.dat
+
+  J = 3
+
+  verbosity = 3
+
+[../]
+
+[BDREFERENCE]
+
+[../]
+
+[MBDALL]
+
+[../]
+
+
+[MBDREFERENCE]
+
+[../]
+
