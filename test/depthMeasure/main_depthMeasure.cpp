@@ -3,12 +3,15 @@
 #include <HPCSDefs.hpp>
 
 #include <depthMeasure.hpp>
+#include <depthMeasureFactory.hpp>
 #include <bandDepthData.hpp>
 
 using namespace std;
 using namespace HPCS;
 
-typedef DepthMeasure< 3, All > depthMeasure_Type;
+typedef DepthMeasureBase dmBase_Type;
+typedef boost::shared_ptr< dmBase_Type > dmBasePtr_Type;
+typedef DMFactory< All > dmFactory_Type;
 typedef BandDepthData bdData_Type;
 typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
 
@@ -34,9 +37,17 @@ int main( int argc, char * argv[] )
    
    bdDataPtr_Type bdDataPtr( new bdData_Type( dataFile, "BDALL") );
    
-   depthMeasure_Type DM( bdDataPtr );
+   dmFactory_Type factory;
    
-   DM.compute();
+   dmBasePtr_Type dmPtr( factory.create( bdDataPtr->J() ) );
+   
+   dmPtr->setBDData( bdDataPtr );
+
+   dmPtr->compute();
+   
+//    depthMeasure_Type DM( bdDataPtr );
+   
+//    DM.compute();
    
  MPI_Finalize();
   

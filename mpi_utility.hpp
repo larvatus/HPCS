@@ -33,6 +33,14 @@ public:
 
    void leaderPrint( const char * string, std::ostream & output = std::cout ) const;
    
+   void startTimer();
+   
+   void stopTimer();
+   
+   void resetTimer();
+   
+   Real elapsedTime() const;
+   
 private:
    
    //! Do NOT change this, otherwise the code using it could stop running.
@@ -41,6 +49,12 @@ private:
    int M_myRank;
    
    int M_nbThreads;
+   
+   Real M_startTime;
+   
+   Real M_stopTime;
+   
+   Real M_elapsedTime;
 
 };
 

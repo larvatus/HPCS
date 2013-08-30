@@ -11,8 +11,6 @@
 #include <set>
 #include <functional>
 #include <utility>
-
-
 #include <algorithm>
 
 // IOUTPUT & ASSERTS & OTHERS
@@ -42,6 +40,9 @@
 
 // DEFINITION OF MASTER PROC
 #define MASTER 0
+
+// TIMING OF MPI IS GLOBAL
+#define MPI_WTIME_IS_GLOBAL 1
 
 namespace HPCS
 {

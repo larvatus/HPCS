@@ -6,16 +6,43 @@
 #include <HPCSDefs.hpp>
 
 #include <bandDepth.hpp>
-
-
-#include <factory.hpp>
+#include <bandDepthFactory.hpp>
 #include <bandDepthData.hpp>
 #include <extendedSort.hpp>
 
 namespace HPCS
-{  
+{ 
+  
+  class DepthMeasureBase
+  {
+    
+  public:
+    
+    typedef BandDepthData bdData_Type;
+    
+    typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
+    
+    DepthMeasureBase(){};
+    
+    ~DepthMeasureBase(){};
+    
+    virtual void getDepths( std::vector< Real > & dephts ) const {};
+    
+    virtual void getRanks( std::vector< Real > & dephts ) {};
+    
+    virtual void setBDData( const bdDataPtr_Type & bdDataPtr ){};
+    
+    virtual void compute(){};
+    
+  protected:
+    
+  private:
+    
+    
+  };
+  
   template < UInt _J, BDPolicy _policy >
-  class DepthMeasure
+  class DepthMeasure : public DepthMeasureBase
   {
   public:
     
@@ -31,7 +58,7 @@ namespace HPCS
     
     typedef boost::shared_ptr< depths_Type > depthsPtr_Type;
     
-    DepthMeasure(){};
+    DepthMeasure();
     
     ~DepthMeasure(){};
     
@@ -88,12 +115,21 @@ namespace HPCS
   
   template < UInt _J, BDPolicy _policy >
   DepthMeasure< _J, _policy >::
+  DepthMeasure()
+  :
+  M_sortPtr( new sort_Type() ),
+  M_bdFactoryPtr( new bdFactory_Type() )
+  {
+  }
+  
+  template < UInt _J, BDPolicy _policy >
+  DepthMeasure< _J, _policy >::
   DepthMeasure( const bdDataPtr_Type & bdDataPtr )
   :
   M_bdDataPtr( bdDataPtr ),
   M_sortPtr( new sort_Type() ),
   M_bdFactoryPtr( new bdFactory_Type() )
-  {    
+  {
   }
   
   template< UInt _J, BDPolicy _policy >
@@ -220,6 +256,7 @@ namespace HPCS
       
      std::vector< Real > currBDs;
       
+     //! @todo CHECK IF THIS ONE IS RIGHT WITH BANDDEPTHREF! 
      this->M_depths.resize( this->M_bdDataPtr->nbPz() );
      
      bdBasePtr_Type bdBasePtr( new bdBase_Type() );

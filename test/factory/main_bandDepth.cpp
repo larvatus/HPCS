@@ -1,7 +1,7 @@
 
 #include <bandDepth.hpp>
 #include <bandDepthData.hpp>
-#include <factory.hpp>
+#include <bandDepthFactory.hpp>
 #include <dataSet.hpp>
 
 #include <HPCSDefs.hpp>
