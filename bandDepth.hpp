@@ -23,32 +23,59 @@
 namespace HPCS
 {  
 
-class 
-BandDepthBase
+template < BDPolicy _policy >
+class BandDepthBase
+{
+};
+
+
+template <>
+class BandDepthBase< All >
 {
 public:
+    
+    typedef BandDepthData bdData_Type;
   
-  typedef double Real;
+    typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
+    
+    BandDepthBase(){};
+    
+    virtual ~BandDepthBase(){};
+    
+    virtual void computeBDs(){ std::cout << "HAHA" << std::endl; };
+    
+    virtual void setBandDepthData( const bdData_Type & bdData ){ std::cout << "HAHA" << std::endl; };      
+
+    virtual void setBandDepthData( const bdDataPtr_Type & bdDataPtr ){ std::cout << "HAHA" << std::endl; };
+    
+    virtual void writeBDs() const { std::cout << "HAHA" << std::endl; };
+    
+    virtual void getBDs( std::vector< Real > & bds ) const { std::cout << "HAHA" << std::endl;};
   
-  typedef double UInt;
+};
+
+template <>
+class BandDepthBase< Reference >
+{
+public:
+    
+    typedef BandDepthRefData bdData_Type;
   
-  typedef boost::shared_ptr< BandDepthData > bdDataPtr_Type;
-  
-  BandDepthBase(){};
-  
-  ~BandDepthBase(){};
-  
-  virtual void computeBDs(){};
-  
-  virtual void setBandDepthData( const BandDepthData & bdData ){};
-  
-  virtual void setBandDepthData( const bdDataPtr_Type & bdDataPtr ){};
-  
-  virtual void writeBDs() const {};
-  
-  virtual void getBDs( std::vector< Real > & bds ) const {};
-  
-protected:
+    typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
+    
+    BandDepthBase(){};
+    
+    virtual ~BandDepthBase(){};
+    
+    virtual void computeBDs(){};
+    
+    virtual void setBandDepthData( const bdData_Type & bdData ){};      
+
+    virtual void setBandDepthData( const bdDataPtr_Type & bdDataPtr ){};
+    
+    virtual void writeBDs() const {};
+    
+    virtual void getBDs( std::vector< Real > & bds ) const {};
   
 };
 
@@ -59,7 +86,7 @@ protected:
  */  
   
 template < UInt _J >
-class BandDepth : public BandDepthBase
+class BandDepth : public BandDepthBase< All >
 {
 public:
   
@@ -72,7 +99,7 @@ public:
   
   typedef unsigned int UInt;
   
-  typedef BandDepthData bdData_Type;
+  typedef BandDepthBase< All >::bdData_Type bdData_Type;
   typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
   
   typedef DataSet dataSet_Type;

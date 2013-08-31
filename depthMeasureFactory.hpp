@@ -7,45 +7,46 @@
 
 namespace HPCS
 {
+  
   template < BDPolicy _policy >
-  struct CreateDM2 : public CreationRule< DepthMeasureBase, _policy >
+  struct CreateDM2 : public CreationRule< DepthMeasureBase< _policy > >
   {
     CreateDM2(){}
     
-    DepthMeasureBase * operator()() const
+    DepthMeasureBase< _policy > * operator()() const
     {    
       return new DepthMeasure< 2, _policy >();
     }
   };
   
   template < BDPolicy _policy >
-  struct CreateDM3 : public CreationRule< DepthMeasureBase, _policy >
+  struct CreateDM3 : public CreationRule< DepthMeasureBase< _policy > >
   {
     CreateDM3(){}
     
-    DepthMeasureBase * operator()() const
+    DepthMeasureBase< _policy > * operator()() const
     {    
       return new DepthMeasure< 3, _policy >();
     }
   };
   
   template < BDPolicy _policy >
-  struct CreateDM4 : public CreationRule< DepthMeasureBase, _policy >
+  struct CreateDM4 : public CreationRule< DepthMeasureBase< _policy > >
   {
     CreateDM4(){}
     
-    DepthMeasureBase * operator()() const
+    DepthMeasureBase< _policy > * operator()() const
     {    
       return new DepthMeasure < 4, _policy >();
     }
   };
   
   template < BDPolicy _policy >
-  struct CreateDM5 : public CreationRule< DepthMeasureBase, _policy >
+  struct CreateDM5 : public CreationRule< DepthMeasureBase< _policy > >
   {
     CreateDM5(){}
     
-    DepthMeasureBase * operator()() const
+    DepthMeasureBase< _policy > * operator()() const
     {    
       return new DepthMeasure< 5, _policy >();
     }
@@ -55,16 +56,16 @@ namespace HPCS
   template < BDPolicy _policy >
   class DMFactory 
   : 
-  public Factory< DepthMeasureBase, UInt, CreationRulePtrWrapper< DepthMeasureBase, _policy > >
+  public Factory< DepthMeasureBase< _policy >, UInt, CreationRulePtrWrapper< DepthMeasureBase< _policy > > >
   {
     
   public:
     
     typedef BDPolicy bdPolicy_Type;
 	
-    typedef Factory< DepthMeasureBase, UInt, CreationRulePtrWrapper< DepthMeasureBase, _policy > > factoryBase_Type;
+    typedef Factory< DepthMeasureBase< _policy >, UInt, CreationRulePtrWrapper< DepthMeasureBase< _policy > > > factoryBase_Type;
 
-    typedef DepthMeasureBase dmBase_Type;
+    typedef DepthMeasureBase< _policy > dmBase_Type;
 	    
     DMFactory();
     
@@ -78,10 +79,10 @@ namespace HPCS
   DMFactory< _policy >::
   DMFactory()
   :
-  Factory< DepthMeasureBase, UInt, CreationRulePtrWrapper< DepthMeasureBase, _policy > >()
+  Factory< DepthMeasureBase< _policy >, UInt, CreationRulePtrWrapper< DepthMeasureBase< _policy > > >()
   {
-    typedef boost::shared_ptr< CreationRule< DepthMeasureBase, _policy > > Ptr_Type;
-    typedef CreationRulePtrWrapper< DepthMeasureBase, _policy > wrapper_Type;    
+    typedef boost::shared_ptr< CreationRule< DepthMeasureBase< _policy > > > Ptr_Type;
+    typedef CreationRulePtrWrapper< DepthMeasureBase< _policy > > wrapper_Type;    
     
     bool flag = this->registerProduct( 2, wrapper_Type( Ptr_Type( new CreateDM2 < _policy >() ) ) );
       

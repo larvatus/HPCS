@@ -25,7 +25,7 @@ namespace HPCS
    * (i.e. each of the remaining functional data).
    * 
    */
-  class BandDepthRef : public BandDepthBase
+  class BandDepthRef : public BandDepthBase < Reference >
   {
   public:
     

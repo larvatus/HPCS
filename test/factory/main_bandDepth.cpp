@@ -13,7 +13,7 @@ typedef double Real;
 typedef unsigned int UInt;
 typedef BandDepthData bandDepthData_Type;
 typedef BDFactory< All > bdFactory_Type;
-typedef boost::shared_ptr< BandDepthBase > bdBasePtr_Type; 
+typedef boost::shared_ptr< BandDepthBase< All > > bdBasePtr_Type; 
 
 int main( int argc, char * argv[] )
 {
