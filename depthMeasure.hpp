@@ -12,23 +12,26 @@
 
 namespace HPCS
 { 
-  
+  template < BDPolicy _policy >
   class DepthMeasureBase
   {
-    
   public:
     
-    typedef BandDepthData bdData_Type;
+    typedef BandDepthBase< _policy > bdBase_Type;
+    
+    typedef boost::shared_ptr< bdBase_Type > bdBasePtr_Type;
+    
+    typedef typename bdBase_Type::bdData_Type bdData_Type;
     
     typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
     
     DepthMeasureBase(){};
     
-    ~DepthMeasureBase(){};
+    virtual ~DepthMeasureBase(){};
     
-    virtual void getDepths( std::vector< Real > & dephts ) const {};
+    virtual void getDepths( std::vector< Real > & dephts ) const{};
     
-    virtual void getRanks( std::vector< Real > & dephts ) {};
+    virtual void getRanks( std::vector< Real > & dephts ){};
     
     virtual void setBDData( const bdDataPtr_Type & bdDataPtr ){};
     
@@ -42,15 +45,15 @@ namespace HPCS
   };
   
   template < UInt _J, BDPolicy _policy >
-  class DepthMeasure : public DepthMeasureBase
+  class DepthMeasure : public DepthMeasureBase< _policy >
   {
   public:
     
-    typedef BandDepthBase bdBase_Type;
+    typedef BandDepthBase< _policy > bdBase_Type;
     
     typedef boost::shared_ptr< bdBase_Type > bdBasePtr_Type;
     
-    typedef BandDepthData bdData_Type;
+    typedef typename bdBase_Type::bdData_Type bdData_Type;
     
     typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
     
@@ -247,6 +250,7 @@ namespace HPCS
 	  return;
       }
   
+  //! TODO FINISH ME! CHECK SPECIALIZATION
   template< UInt _J, BDPolicy _policy >
   void
   DepthMeasure< _J, _policy >::

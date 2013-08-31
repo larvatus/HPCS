@@ -8,16 +8,13 @@
 // #include <bandDepthRef.hpp>
 
 namespace HPCS
-{
-  
-  //! TODO MAKE THIS STRUCT A BDPolicy TEMPLATE PUBLIC DERIVATION FROM creationRule< BandDepthBase, _policy >
-  
+{  
   struct 
-  CreateBDAll2 : public CreationRule< BandDepthBase, All >
+  CreateBDAll2 : public CreationRule< BandDepthBase< All > >
   {
     CreateBDAll2(){}
     
-    BandDepthBase * operator()() const
+    BandDepthBase< All > * operator()() const
     {    
       return new BandDepth< 2 >();
     }
@@ -25,13 +22,35 @@ namespace HPCS
 
 
   struct 
-  CreateBDAll3 : public CreationRule< BandDepthBase, All >
+  CreateBDAll3 : public CreationRule< BandDepthBase< All > >
   {
     CreateBDAll3(){}
     
-    BandDepthBase * operator()() const
+    BandDepthBase< All > * operator()() const
     {
       return new BandDepth< 3 >();
+    }
+  };
+  
+   struct 
+  CreateBDAll4 : public CreationRule< BandDepthBase< All > >
+  {
+    CreateBDAll4(){}
+    
+    BandDepthBase< All > * operator()() const
+    {
+      return new BandDepth< 4 >();
+    }
+  };
+  
+   struct 
+  CreateBDAll5 : public CreationRule< BandDepthBase< All > >
+  {
+    CreateBDAll5(){}
+    
+    BandDepthBase< All > * operator()() const
+    {
+      return new BandDepth< 5 >();
     }
   };
 
@@ -54,20 +73,38 @@ namespace HPCS
   //     return new BandDepthRef< 3 >();
   //   }
   // };
+  // struct 
+  // createBDRef3 : public creationRule< BandDepthBase, All >
+  // {
+  //   BandDepthBase * operator()() const
+  //   {
+  //     return new BandDepthRef< 3 >();
+  //   }
+  // };
+
+  // struct 
+  // createBDRef3 : public creationRule< BandDepthBase, All >
+  // {
+  //   BandDepthBase * operator()() const
+  //   {
+  //     return new BandDepthRef< 3 >();
+  //   }
+  // };
+
 
   template < BDPolicy _policy >
   class BDFactory 
   : 
-  public Factory< BandDepthBase, UInt, CreationRulePtrWrapper< BandDepthBase, _policy > >
+  public Factory< BandDepthBase< _policy >, UInt, CreationRulePtrWrapper< BandDepthBase< _policy > > >
   {
     
   public:
     
     typedef BDPolicy bdPolicy_Type;
 	
-    typedef Factory< BandDepthBase, UInt,  CreationRulePtrWrapper< BandDepthBase, _policy >  > factoryBase_Type;
+    typedef Factory< BandDepthBase< _policy >, UInt,  CreationRulePtrWrapper< BandDepthBase< _policy > >  > factoryBase_Type;
 
-    typedef BandDepthBase bdBase_Type;
+    typedef BandDepthBase< _policy > bdBase_Type;
 	    
     BDFactory();
     
@@ -81,14 +118,18 @@ namespace HPCS
   BDFactory< All >::
   BDFactory()
   :
-  Factory< BandDepthBase, UInt,  CreationRulePtrWrapper< BandDepthBase, All > >()
+  Factory< BandDepthBase< All >, UInt,  CreationRulePtrWrapper< BandDepthBase< All > > >()
   {    
-    typedef boost::shared_ptr< CreationRule< BandDepthBase, All > > Ptr_Type;
-    typedef CreationRulePtrWrapper< BandDepthBase, All > wrapper_Type;
+    typedef boost::shared_ptr< CreationRule< BandDepthBase< All > > > Ptr_Type;
+    typedef CreationRulePtrWrapper< BandDepthBase< All > > wrapper_Type;
     
     bool flag = this->registerProduct( 2, wrapper_Type( Ptr_Type( new CreateBDAll2() ) ) );
       
     flag = flag & ( this->registerProduct( 3, wrapper_Type( Ptr_Type( new CreateBDAll3() ) ) ) );
+    
+    flag = flag & ( this->registerProduct( 4, wrapper_Type( Ptr_Type( new CreateBDAll4() ) ) ) );
+    
+    flag = flag & ( this->registerProduct( 5, wrapper_Type( Ptr_Type( new CreateBDAll5() ) ) ) );
 	  
     assert( flag == true );
       

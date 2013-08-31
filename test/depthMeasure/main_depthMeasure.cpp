@@ -9,7 +9,7 @@
 using namespace std;
 using namespace HPCS;
 
-typedef DepthMeasureBase dmBase_Type;
+typedef DepthMeasureBase< All > dmBase_Type;
 typedef boost::shared_ptr< dmBase_Type > dmBasePtr_Type;
 typedef DMFactory< All > dmFactory_Type;
 typedef BandDepthData bdData_Type;
@@ -44,10 +44,7 @@ int main( int argc, char * argv[] )
    dmPtr->setBDData( bdDataPtr );
 
    dmPtr->compute();
-   
-//    depthMeasure_Type DM( bdDataPtr );
-   
-//    DM.compute();
+
    
  MPI_Finalize();
   

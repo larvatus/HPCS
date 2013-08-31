@@ -119,7 +119,7 @@ namespace HPCS
  {
     const std::string baseName( section );
     
-    std::cout << " WARNING! CHANGE GETOPOT VARIABLE levelsFilename TO levelsExtremaFilename !!!! " << std::enl;
+    std::cout << " WARNING! CHANGE GETOPOT VARIABLE levelsFilename TO levelsExtremaFilename !!!! " << std::endl;
     
     this->M_levelsExtremaFilename =  dataFile( ( baseName + "/levelsExtremaFilename"  ).data(), "levels.dat" );
     

@@ -89,7 +89,11 @@ namespace HPCS
     return;
   }
 
-  template < typename _returnType, BDPolicy _policy >
+  
+  
+  
+  
+  template < typename _returnType >
   struct CreationRule
   {
       CreationRule(){}
@@ -103,12 +107,12 @@ namespace HPCS
   //! QUI HO BISOGNO DI UN WRAPPER Ad un puntatore a creation rule< _returnType, _policy >, per costruire una factory che
   //! che possa usare in ingresso delle regole di creazione polimorfiche.
   
-  template < typename _returnType, BDPolicy _policy >
+  template < typename _returnType >
   class CreationRulePtrWrapper
   {
   public:
     
-      typedef boost::shared_ptr< CreationRule< _returnType, _policy > > creationRulePtr_Type;
+      typedef boost::shared_ptr< CreationRule< _returnType > > creationRulePtr_Type;
     
       CreationRulePtrWrapper( const creationRulePtr_Type & rulePtr );
   
@@ -120,8 +124,8 @@ namespace HPCS
       
   };  
 
-  template < typename _returnType, BDPolicy _policy >
-  CreationRulePtrWrapper< _returnType, _policy >::
+  template < typename _returnType >
+  CreationRulePtrWrapper< _returnType >::
   CreationRulePtrWrapper( const creationRulePtr_Type & rulePtr )
   :
   M_creationRulePtr( rulePtr )

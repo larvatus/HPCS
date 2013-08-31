@@ -25,7 +25,7 @@ namespace HPCS
 
     if ( bdRefData.readDataFromFile() ) this->readData();
     
-    if ( bdRefData.readLevelsFromFile() ) this->readLevels();
+    if ( bdRefData.readLevelsExtremaFromFile() ) this->readLevels();
    
  }
 
@@ -50,7 +50,7 @@ namespace HPCS
  BandDepthRef::
  readLevels()
  {   
-    this->M_dataSetPtr->readLevelsExtrema( M_bdRefDataPtr->levelsFilename() );    
+    this->M_dataSetPtr->setLevelsFromExtrema( M_bdRefDataPtr->levelsExtremaFilename() );    
     
     return;
  }
@@ -64,7 +64,7 @@ namespace HPCS
     
     if ( bdRefData.readDataFromFile() ) this->readData();
     
-    if ( bdRefData.readLevelsFromFile() ) this->readLevels();
+    if ( bdRefData.readLevelsExtremaFromFile() ) this->readLevels();
    
     return;   
  }
@@ -99,7 +99,7 @@ namespace HPCS
    
    assert( not( this->M_bdRefDataPtr->readDataFromFile() ) );
    
-   assert( not( this->M_bdRefDataPtr->readLevelsFromFile() ) );
+   assert( not( this->M_bdRefDataPtr->readLevelsExtremaFromFile() ) );
    
    this->M_dataSetPtr = dataPtr;
    
