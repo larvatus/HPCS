@@ -3,7 +3,8 @@
 
 namespace HPCS
 {
- ///////////////////////////
+/*
+  ///////////////////////////
  //	BAND DEPTH REF
  //////////////////////////
  
@@ -280,9 +281,12 @@ computeBDs()
    MPI_Barrier( MPI_COMM_WORLD );
 
     return;
-    */
-}
 
+    }
+    */
+
+
+/*
 void
 BandDepthRef::
 writeBDs() const
@@ -301,7 +305,7 @@ writeBDs() const
     
     return;
 }
- 
+ */
  
  
 }

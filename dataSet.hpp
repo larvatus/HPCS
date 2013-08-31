@@ -46,7 +46,7 @@ public:
     
     void writeData( std::ostream & output = std::cout ) const;
     
-    void showMe( std::ostream & output = std::cout ) const;
+    virtual void showMe( std::ostream & output = std::cout ) const;
     
     void setData( const Real * data, const UInt & nbSamples, const UInt & nPts);
     
@@ -104,7 +104,7 @@ public:
   
   typedef boost::shared_ptr< levelsContainer_Type > levelsContainerPtr_Type;
   
-  
+
   DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
  
   DataSetLevelled( const Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels );
@@ -129,8 +129,7 @@ public:
   IDContainer_Type & levelIDs( const UInt lev ) const;
   
   UInt cardinality( const UInt & levelID );
-  
-  
+   
 private:
   
   levelsContainerPtr_Type M_levelsPtr;

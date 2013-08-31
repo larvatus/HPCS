@@ -76,7 +76,13 @@ public:
     virtual void writeBDs() const {};
     
     virtual void getBDs( std::vector< Real > & bds ) const {};
-  
+    
+    virtual void addToReferenceSet( const UInt & levelID, const UInt & size, const UInt & seed = 1){};
+    
+    virtual void setTestSet(){};
+    
+    virtual void clearReferenceSet(){};
+      
 };
 
 
@@ -188,7 +194,7 @@ private:
   //! Each thread reads data from data files.
   void readData();
     
-  //! To compute binomial coefficients
+  //! Method to compute binomial coefficients
   UInt binomial( const UInt & N , const UInt & K );
   
   //@}
@@ -311,7 +317,62 @@ M_mpiUtilPtr( new mpiUtility_Type() )
    return;
  }
  
- // Method for the computation of BDs
+
+// Method to write the computed BDs
+template < UInt _J >
+void
+BandDepth< _J >::
+writeBDs() const
+{    
+    if ( this->M_mpiUtilPtr->isMaster() )
+    {
+      std::ofstream output( this->M_bdDataPtr->outputFilename().data(), std::ios_base::out );
+      
+      for( UInt iPz(0); iPz < this->M_bdDataPtr->nbPz(); ++iPz )
+      {
+	  output << iPz << " " << this->M_BDs[ iPz ] << std::endl;
+      }
+      
+      output.close();
+    }
+  
+    return;
+}
+
+
+// Method to get the computed BDs
+template < UInt _J >
+inline 
+void
+BandDepth< _J >::
+getBDs( std::vector< Real > & bds ) const
+{
+    bds = this->M_BDs;
+  
+    return;
+}
+
+
+// Method for the computation of binomial coefficients
+template < UInt _J >
+UInt
+BandDepth< _J >::
+binomial( const UInt & N , const UInt & K )
+{    
+    UInt num( 1 );
+    UInt denom( 1 );
+    
+    for ( UInt iK(0); iK < K; ++iK )
+    {
+	num *= N - iK;
+	denom *= iK + 1;
+    }
+  
+   return static_cast< UInt >( num/denom );
+}
+
+
+// Method for the computation of BDs
  template < UInt _J >
  void
  BandDepth< _J >::
@@ -320,11 +381,9 @@ M_mpiUtilPtr( new mpiUtility_Type() )
    const UInt myRank = this->M_mpiUtilPtr->myRank();
    const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
    
-//    const UInt MASTER = this->M_mpiUtilPtr->master();
-   
    const UInt nbPz 	= this->M_bdDataPtr->nbPz();
    const UInt nbPts	= this->M_bdDataPtr->nbPts();
-//    const UInt J	   	= this->M_bdDataPtr->J();
+   
    const UInt verbosity = this->M_bdDataPtr->verbosity();
    
    typedef dataSet_Type::dataPtr_Type dataSetPtr_Type;
@@ -422,73 +481,15 @@ M_mpiUtilPtr( new mpiUtility_Type() )
   
 } 
 
-// Method to write the computed BDs
-template < UInt _J >
-void
-BandDepth< _J >::
-writeBDs() const
-{    
-    if ( this->M_mpiUtilPtr->isMaster() )
-    {
-      std::ofstream output( this->M_bdDataPtr->outputFilename().data(), std::ios_base::out );
-      
-      for( UInt iPz(0); iPz < this->M_bdDataPtr->nbPz(); ++iPz )
-      {
-	  output << iPz << " " << this->M_BDs[ iPz ] << std::endl;
-      }
-      
-      output.close();
-    }
-  
-    return;
-}
-
-
-// Method to get the computed BDs
-template < UInt _J >
-inline 
-void
-BandDepth< _J >::
-getBDs( std::vector< Real > & bds ) const
-{
-    bds = this->M_BDs;
-  
-    return;
-}
-
-
-// Method for the computation of binomial coefficients
-template < UInt _J >
-UInt
-BandDepth< _J >::
-binomial( const UInt & N , const UInt & K )
-{    
-    UInt num( 1 );
-    UInt denom( 1 );
-    
-    for ( UInt iK(0); iK < K; ++iK )
-    {
-	num *= N - iK;
-	denom *= iK + 1;
-    }
-  
-   return static_cast< UInt >( num/denom );
-}
-
-
-// UPGRADE: USE A VIEW OF DATASET
-
 template <>
 void
 BandDepth< 2 >::
 computeBDs()
 {
-    // UPGRADE: USE A VIEW OF DATASET
+   // UPGRADE: USE A VIEW OF DATASET
     
    const UInt myRank = this->M_mpiUtilPtr->myRank();
    const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
-   
-//    const UInt MASTER = this->M_mpiUtilPtr->master();
    
    const UInt nbPz 	= this->M_bdDataPtr->nbPz();
    const UInt nbPts	= this->M_bdDataPtr->nbPts();

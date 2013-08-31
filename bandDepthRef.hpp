@@ -3,10 +3,11 @@
 #ifndef __BANDDEPTH_REF_HPP__
 #define __BANDDEPTH_REF_HPP__
 
+#include <dataSet.hpp>
+#include <mpi_utility.hpp>
 #include <bandDepthData.hpp>
 #include <bandDepth.hpp>
-#include <mpi_utility.hpp>
-#include <dataSet.hpp>
+#include <extendedSort.hpp>
 
 #include <HPCSDefs.hpp>
 
@@ -14,16 +15,12 @@ namespace HPCS
 {
   
   template < UInt _J >
-  class BandDepthRef : public BandDepthBase
+  class BandDepthRef : public BandDepthBase< Reference >
   {
     
   public:
     
     typedef GetPot data_Type;
-    
-    typedef BandDepthData bdData_Type;
-    
-    typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
     
     typedef BandDepthRefData bdRefData_Type;
     
@@ -42,7 +39,7 @@ namespace HPCS
     typedef boost::shared_ptr< IDContainer_Type > IDContainerPtr_Type;
     
     //! Default constructor
-    BandDepth();
+    BandDepthRef();
     
     BandDepthRef( const bdRefData_Type & bdRefData );
 	
@@ -50,30 +47,48 @@ namespace HPCS
   
     void computeBDs();
 
-    void setSeed( const UInt & seed );
+//     void setSeed( const UInt & seed );
 
     void setBandDepthData( const bdRefData_Type & bdRefData );
-    
-    //! To be used polymorphically.
-//     void setBandDepthData( const bdDataPtr_Type & bdDataPtr );
   
     void setDataSet( const dataSetPtr_Type & dataPtr ); 
-
-    void setReferenceSet( const UInt & size, const UInt & referenceLevel = 0 );
-      
-    //TODO MODIFICA: restituisce void e modifica.
-    const IDContainer_Type & getReferenceSet() const;
     
-    //TODO MODIFICA: restituisce void e modifica.
-    const IDContainer_Type & getTestSet() const;
+    void addToReferenceSet( const UInt & levelID, const UInt & size, const UInt & seed = 1 );
+    
+    void setTestSet();
+    
+    void clearReferenceSet();
+    
+    template < typename _containerType >
+      void getReferenceSetIDs( _containerType & idCont ) const;
 
-    //!TODO @todo MODIFICA! Tre template, rispetto al contenitore, alla coppia di iteratori e al puntatore al contenitore (?).
-    void getBDs( std::vector< Real > & bds ) const;
+    template < typename _containerType >
+      void getReferenceSetIDs( boost::shared_ptr< _containerType > & idContPtr ) const;
+
+    template < typename _iteratorType >
+      void getReferenceSetIDs( _iteratorType begin, _iteratorType end ) const;
+
+    template < typename _containerType >
+      void getTestSetIDs( _containerType & idCont ) const;
+
+    template < typename _containerType >
+      void getTestSetIDs( boost::shared_ptr< _containerType > & idContPtr ) const;
+
+    template < typename _iteratorType >
+      void getTestSetIDs( _iteratorType begin, _iteratorType end ) const;
+
+    template < typename _containerType > 
+      void getBDs( _containerType & bds ) const;
+      
+    template < typename _containerType >
+      void getBDs( boost::shared_ptr< _containerType > & bdsPtr ) const;
+      
+    template < typename _iteratorType >
+      void getBDs( _iteratorType begin, _iteratorType end ) const;
     
     //! The method writing the BDs to the file name specified inside the BD Data Object.
     void writeBDs() const;
     
-    //! TODO IMPLEMENTA!
     //! The method writing the BDs to an output file.
     void writeBDs( std::ostream & output ) const;
     
@@ -89,10 +104,10 @@ namespace HPCS
     
     //! Each thread reads levels from levels file.
     void readLevels();
-        
-    //! Method allowing to determine the remaining part of dataSet other than the reference set, i.e. the "test set".
-    void setTestSet();
 
+    //! Method for the computation of binomial coefficients
+    UInt binomial( const UInt & N , const UInt & K );
+    
     //@}
 
     //! @name Private members
@@ -109,27 +124,17 @@ namespace HPCS
     
     //! MPI utility pointer object
     mpiUtilityPtr_Type M_mpiUtilPtr;
-    
-//     //! Shared pointer to a bandDepth object, used as a tool to compute full bandDepths on reduced parts of data set.
-//     bandDepthPtr_Type M_bandDepthPtr;
-    
-    //! Seed for the pseudo-random number generator
-    UInt M_seed;
-    
+
     //! Vector containing the IDs of the test set
     IDContainer_Type M_testSetIDs;
     
     //! Vector containing the IDs of the reference set
     IDContainer_Type M_referenceSetIDs;
     
-    //! ID of the reference level
-    UInt M_referenceLevel;
-    
     //! Number of levels
     static const UInt S_nbLevels = 2 ;
     
     //@}
-    
     
   };
   
@@ -159,13 +164,17 @@ namespace HPCS
     this->M_bdRefDataPtr.reset( new bdRefData_Type( bdRefData ) );
    
     this->M_mpiUtilPtr.reset( new mpiUtility_Type() );
-   
-    this->M_seed = 0;
 
     if ( bdRefData.readDataFromFile() ) this->readData();
     
-    if ( bdRefData.readLevelsFromFile() ) this->readLevels();
-   
+    if ( bdRefData.readLevelsExtremaFromFile() ) 
+    {
+      this->readLevels();
+      
+      this->setReferenceSet();
+      
+      this->setTestSet();
+    }
  }
 
  // Method for reading data from input file
@@ -212,39 +221,10 @@ namespace HPCS
     return;   
  }
  
-  //! Method for resetting the Band Depth Data object with a polymorphic pointer
-  template < UInt _J >
-  void
-  BandDepthRef< _J >::
-  setBandDepthData( const bdDataPtr_Type & bdDataPtr )
-  {
-    
-    //! @TODO SCIOGLI QUESTO NODO!
-    this->M_bdRefDataPtr = bdDataPtr;
-    
-    
-    return;
-  }
-  
-  //   void
-//   BandDepthRef::
-//   setBandDepthData( const bdDataPtr_Type & bdDataPtr )
-//   {
-//       //! @todo AGGIUNGI UN ASSERT STATICO SUL TIPO PUNTATO DA BDDATAPTR, CHE DEVE ESSERE
-//       //! QUELLO DERIVATO BDDATAREF 
-//     
-//       this->M_bdRefDataPtr = bdDataPtr;
-//       
-//       if ( bdDataPtr->readDataFromFile() ) this->readData();
-//       
-//       if ( bdDataPtr->readLevelsFromFile() ) this->readLevels();
-//     
-//       return;   
-//   } 
- 
  // Reset dataSet pointer. This allow using the object without a file from which to read.
+ template < UInt _J >
  void
- BandDepthRef::
+ BandDepthRef< _J >::
  setDataSet( const dataSetPtr_Type & dataPtr )
  {
    assert( 
@@ -263,390 +243,372 @@ namespace HPCS
     
  }
  
- // Method for the setup of the seed for the pseudo-random number generator
- void
- BandDepthRef::
- setSeed( const UInt & seed )
- {
-    this->M_seed = seed;
-   
-    return;
- }
- 
- //
- void
- BandDepthRef::
- setReferenceSet( const UInt & size, const UInt & referenceLevel )
- {
-    assert( this->M_dataSetPtr->cardinality( referenceLevel ) >= size );
-   
-    this->M_referenceLevel = referenceLevel;
-    
-    srand48( this->M_seed );
+  template < UInt _J >
+  void
+  BandDepthRef< _J >::
+  addToReferenceSet ( const UInt & levelID, const UInt & size, const UInt & seed )
+  {
+      assert( size <= this->M_dataSetPtr->cardinality( levelID ) );
+
+      srand48( seed );
       
-    while( this->M_referenceSetIDs.size() != size )
-    {
-      const UInt temp( static_cast< UInt >( this->M_dataSetPtr->cardinality( this->M_referenceLevel ) * drand48() ) );
-      
-      if ( this->M_dataSetPtr->levelIDs( this->M_referenceLevel ).find( temp ) != this->M_dataSetPtr->levelIDs( this->M_referenceLevel ).end() )
+      for ( UInt iInsert(0); iInsert < size; )
       {
-	this->M_referenceSetIDs.insert( temp );	
+	UInt temp = static_cast< UInt >( ( this->M_dataSetPtr->cardinality( levelID ) - 1 ) * drand48() );
+	
+	for ( UInt iLevel(0); iLevel < levelID; ++iLevel )
+	{
+	    temp += this->M_dataSetPtr->cardinality( levelID );
+	}
+	
+	if ( this->M_referenceSetIDs.insert( temp ).second == true )
+	{
+	    ++iInsert;
+	}
+	
       }
-    }
-   
-    return;
- }
- 
- 
+    
+      return;
+  }
+  
+  template < UInt _J >
+  void
+  BandDepthRef< _J >::
+  clearReferenceSet ()
+  {
+      this->M_referenceSetIDs.clear();
+      
+      this->M_testSetIDs.clear();
+      
+      return;
+  }
+    
+    
+ //! @TODO CIOÒ CHE NON È REFERENCE SET!!   
+ template < UInt _J >
  void
- BandDepthRef::
+ BandDepthRef< _J >::
  setTestSet()
  {
-    for( UInt iPz(0); iPz < this->M_bdRefDataPtr->nbPz(); ++iPz )
+    for( UInt iSample(0); iSample < this->M_bdRefDataPtr->nbPz(); ++iSample )
     {
-      if ( this->M_referenceSetIDs.find( iPz ) == this->M_referenceSetIDs.end() )
+      if ( this->M_referenceSetIDs.find( iSample ) == this->M_referenceSetIDs.end() )
       {
-	this->M_testSetIDs.insert( iPz );	
+	this->M_testSetIDs.insert( iSample );	
       }
     }
 
     return;
  }
  
- // Getter of the reference set IDs.
- inline
- const
- BandDepthRef::IDContainer_Type &
- BandDepthRef::
- getReferenceSet() const
- {
-    return this->M_referenceSetIDs;
- }
- 
- // Getter of the test set IDs.
- inline
- const
- BandDepthRef::IDContainer_Type &
- BandDepthRef::
- getTestSet() const
- {
-    return this->M_testSetIDs;
- }
- 
- // Getter of the BDs
- inline
- void
- BandDepthRef::
- getBDs( std::vector< Real > & bds ) const
- {
-    bds = this->M_BDs;
-    
-    return;
- }
- 
- 
-// TODO FINISH ME!! 
-void
-BandDepthRef::
-computeBDs()
-{
-/*   this->setTestSet();
-   
-   const UInt nbThreads( this->M_mpiUtilPtr->nbThreads() );
-   
-   const UInt myRank( this->M_mpiUtilPtr->myRank() );
-   
-   const UInt MASTER( this->M_mpiUtilPtr->master() );
-   
-           
-   const UInt nbTestPz( static_cast< UInt >( this->M_testSetIDs.size() ) );
-      
-   const UInt slaveProcNbTestPz( static_cast< UInt >( nbTestPz / nbThreads ) );
-   
-   const UInt masterProcNbTestPz( static_cast< UInt >( nbTestPz / nbThreads ) + static_cast< UInt >( nbTestPz % nbThreads ) );
-   
-   const UInt verbosity( this->M_bdRefDataPtr->verbosity() );
-
-   this->M_BDs.resize( nbTestPz );
-   
-   UInt nbMyPz;
-   
-   this->M_mpiUtilPtr->isMaster() ? nbMyPz = masterProcNbTestPz : nbMyPz = slaveProcNbTestPz;   
-   
-   IDContainer_Type::const_iterator it = this->M_testSetIDs.begin();
-
-   // Advancing to my part of dataSet to process
-   if ( not( this->M_mpiUtilPtr->isMaster() ) )
-   {
-     for( UInt iCount(0); iCount < masterProcNbTestPz + ( myRank - 1 ) * slaveProcNbTestPz; ++iCount )
-     {
-	++it;
-     }
+  // Getter of the reference set IDs.
+  template < UInt _J >
+   template < typename _containerType >
+   inline
+   void
+   BandDepthRef< _J >::
+   getReferenceSetIDs( _containerType & idCont ) 
+   const
+   {    
+      idCont.assign( this->M_referenceSetIDs.begin(), this->M_referenceSetIDs.end() );
    }
-   
-   std::vector< UInt > subSetIDs( this->M_referenceSetIDs.size() + 1 );
-   
-   std::copy( this->M_referenceSetIDs.begin(), this->M_referenceSetIDs.end(), subSetIDs.begin() ); 
-   
-   typedef BandDepthData bdData_Type;
-   
-   typedef BandDepth::dataSet_Type dataSetSimple_Type;
-   
-   typedef BandDepth::dataSetPtr_Type dataSetSimplePtr_Type;
     
-   this->M_bandDepthPtr.reset( new BandDepth( bdData_Type(  this->M_referenceSetIDs.size() + 1, this->M_bdRefDataPtr->nbPts(), 
-						 0, 0, this->M_bdRefDataPtr->J(), 0, false )
-					     )
-			     );
-   
-   for ( UInt iPz(0); iPz < nbMyPz; ++iPz )
+    // Getter of the reference set IDs.
+  template < UInt _J >
+   template < typename _containerType >
+   inline
+   void
+   BandDepthRef< _J >::
+   getReferenceSetIDs( boost::shared_ptr< _containerType > & idContPtr )
+   const
    {
-      if( verbosity > 2 )  printf( "Proc %d is at %d / %d patients\n", myRank, iPz + 1, nbMyPz );   
-      
-      dataSetSimplePtr_Type dataSubSetPtr( new  dataSetSimple_Type( this->M_dataSetPtr->getRowSubSet( subSetIDs ) ) );
-      
-      this->M_bandDepthPtr->setDataSet( dataSubSetPtr );
-      
-      this->M_bandDepthPtr->computeBDs();
-      
-      this->M_BDs[ iPz ] = this->M_bandDepthPtr->getBDs()[ this->M_referenceSetIDs.size() ];
+	idContPtr->assign( this->M_referenceSetIDs.begin(), this->M_referenceSetIDs.end() );
+   }
+    
+    // Getter of the reference set IDs.
+  template < UInt _J >
+   template < typename _iteratorType >
+   void
+   BandDepthRef< _J >::
+   getReferenceSetIDs( _iteratorType begin, _iteratorType end )
+   const
+   {
+	assert( begin != end );
+	
+	std::copy( this->M_referenceSetIDs.begin(), this->M_referenceSetIDs.end(), begin );
+   }
  
+  // Getter of the test set IDs.
+  template < UInt _J >
+   template < typename _containerType >
+   inline
+   void 
+   BandDepthRef< _J >::
+   getTestSetIDs( _containerType & idCont ) 
+   const
+   {
+	idCont.assign( this->M_testSetIDs.begin(), this->M_testSetIDs.end() );
+   }
+	
+  // Getter of the test set IDs.
+  template < UInt _J >
+   template < typename _containerType >
+   void
+   BandDepthRef< _J >::
+   getTestSetIDs( boost::shared_ptr< _containerType > & idContPtr )
+   const
+   {
+      idContPtr->assign( this->M_testSetIDs.begin(), this->M_testSetIDs.end() );
+   }
+
+  // Getter of the test set IDs.
+  template < UInt _J >
+   template < typename _iteratorType >
+   void
+   BandDepthRef< _J >::
+   getTestSetIDs( _iteratorType begin, _iteratorType end ) 
+   const
+   {
+      assert( begin != end );
+      
+      std::copy( this->M_testSetIDs.begin(), this->M_testSetIDs.end(), begin );
+   }
+ 
+  // Getter of the BDs
+  template < UInt _J >
+   template < typename _containerType >
+   inline
+   void
+   BandDepthRef< _J >::
+   getBDs( _containerType & container ) 
+   const
+   {
+	container.assign( this->M_BDs.begin(), this->M_BDs.end() );
+	
+	return;
+   }  
+  
+  // Getter of the BDs
+  template < UInt _J >
+   template < typename _containerType >
+   inline
+   void
+   BandDepthRef< _J >::
+   getBDs( boost::shared_ptr< _containerType > & contPtr ) 
+   const
+   {
+      contPtr->assign( this->M_BDs.begin(), this->M_BDs.end() );
+	
+      return;
+   }
+
+  // Getter of the BDs
+  template < UInt _J >
+   template < typename _iteratorType >
+   void
+   BandDepthRef< _J >::
+   getBDs( _iteratorType begin, _iteratorType end ) 
+   const
+   {
+      assert( begin != end );
+     
+      std::copy( this->M_BDs.begin(), this->M_BDs.end(), begin );
+
+      return;
+   }
+
+  // The method writing the BDs to the output. 
+  template < UInt _J >
+  void
+  BandDepthRef< _J >::
+  writeBDs() 
+  const
+  {
+      if ( this->M_mpiUtilPtr->isMaster() );
+      {
+	std::ofstream output( this->M_bdRefDataPtr->outputFilename().data(), std::ios_base::out );
+	
+	typedef IDContainer_Type::const_iterator IDiter_Type;
+	
+	typedef std::list< std::pair< UInt, Real > > list_Type;
+	
+	typedef list_Type::const_iterator listIt_Type;
+	
+	list_Type bdList;
+		
+	UInt iBD(0);
+	
+	for ( IDiter_Type it = this->M_testSetIDs.begin(); it != this->M_testSetIDs.end(); ++it )
+	{
+	    bdList.push_back( std::make_pair< UInt, Real >( *it, this->M_BDs[ iBD ] ) );
+	    
+	    ++iBD;
+	}
+	
+	bdList.sort( LessThanPairFirst< UInt, Real >() );	
+	
+	for ( listIt_Type it = bdList.begin(); it != bdList.end(); ++it )
+	{
+	    output << it->first << "\t" << it->second << std::endl;
+	}
+	
+	output.close();
+      }
+      
+      return;
   }
-   
-   // COMMUNICATING BAND DEPTHS
-    
-   for ( UInt iThread = 1; iThread < nbThreads; ++iThread )
-   {
-    if ( this->M_mpiUtilPtr->isMaster() )
-    {
-      MPI_Status status;
-
-      MPI_Recv( & this->M_BDs[0] + masterProcNbTestPz + ( iThread - 1 ) * slaveProcNbTestPz, slaveProcNbTestPz, MPI_DOUBLE_PRECISION, iThread, iThread, MPI_COMM_WORLD, & status );
-    }
-    else if ( myRank == iThread )
-    {
-      MPI_Send( & this->M_BDs[0], slaveProcNbTestPz, MPI_DOUBLE_PRECISION, MASTER, myRank, MPI_COMM_WORLD );
-    }
-   }
   
-   if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
-      
-     printf( " All depths have been gathered\n" );   
- 
-   MPI_Barrier( MPI_COMM_WORLD );
-
-    return;
-    */
-}
-
-void
-BandDepthRef::
-writeBDs() const
-{
-    if ( this->M_mpiUtilPtr->isMaster() );
-    {
-      std::ofstream output( this->M_bdRefDataPtr->outputFilename().data(), std::ios_base::out );
-      
-      for ( UInt iBD(0); iBD != this->M_bdRefDataPtr->nbPz(); ++iBD )
-      {
-	  output << iBD << " " << this->M_BDs[ iBD ] << std::endl;
+  // The method writing the BDs to a specified output.
+  template < UInt _J >
+  void
+  BandDepthRef< _J >::
+  writeBDs( std::ostream & output ) 
+  const
+  {
+      if ( this->M_mpiUtilPtr->isMaster() );
+      {      
+	typedef IDContainer_Type::const_iterator iter_Type;
+	
+	UInt iBD(0);
+	
+	for ( iter_Type it = this->M_testSetIDs.begin(); it != this->M_testSetIDs.end(); ++it )
+	{
+	    output << *it << " " << this->M_BDs[ iBD ] << std::endl;
+	    
+	    ++iBD;
+	}
+	
       }
       
-      output.close();
-    }
-    
-    return;
-}
+      return;
+  }
  
+  // Method for the computation of binomial coefficients
+  template < UInt _J >
+  UInt
+  BandDepthRef< _J >::
+  binomial( const UInt & N , const UInt & K )
+  {    
+      UInt num( 1 );
+      UInt denom( 1 );
+      
+      for ( UInt iK(0); iK < K; ++iK )
+      {
+	  num *= N - iK;
+	  denom *= iK + 1;
+      }
+    
+    return static_cast< UInt >( num/denom );
+  }
+
+ // TODO FINISH ME!!
+ template < UInt _J >
+ void
+ BandDepthRef< _J >::
+ computeBDs()
+ {
+    return;
+ }
   
+ 
+ template <>
+ void
+ BandDepthRef< 2 >::
+ computeBDs()
+ {
+   const UInt myRank = this->M_mpiUtilPtr->myRank();
+   const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
+   
+   const UInt nbSamples = this->M_bdRefDataPtr->nbPz();
+   const UInt nbRefSamples = this->M_referenceSetIDs.size();
+   const UInt nbTestSamples = this->M_testSetIDs.size();
+   
+   const UInt nbPts	= this->M_bdRefDataPtr->nbPts();
+   
+   const UInt verbosity = this->M_bdRefDataPtr->verbosity();
+   
+   typedef dataSet_Type::dataPtr_Type dataSetPtr_Type;
+   
+   const dataSetPtr_Type dataPtr( this->M_dataSetPtr->getData() );  
+            
+   const UInt slaveProcNbSamples = static_cast< UInt >( nbTestSamples / nbThreads );
+   const UInt masterProcNbSamples = static_cast< UInt >( nbTestSamples / nbThreads ) + static_cast< UInt >( nbTestSamples % nbThreads );
+   
+   const UInt slaveProcNbPts = static_cast< UInt >( nbPts / nbThreads );
+   const UInt masterProcNbPts = static_cast< UInt >( nbPts / nbThreads ) + static_cast< UInt >( nbPts % nbThreads );
+   
+   this->M_BDs.assign( nbTestSamples, 0 );
+   
+   // FIRST STAGE: // MOVE THIS INSIDE A NEW CLASS
   
-  
-  
-  
-  
-  
-//   /*!
-//    * This class allow to compute the Band Depth of a functional data set with respect to a
-//    * subset of the data set itself.
-//    * 
-//    * The data set used to build a BandDepthRef object is arranged into levels, 
-//    * identifying the different groups among functional data.
-//    * 
-//    * Before computing, it is possible to specify both the size and the level from which building 
-//    * the reference subset, that is used in the next to compute the Band Depth of the test set 
-//    * (i.e. each of the remaining functional data).
-//    * 
-//    */
-//   class BandDepthRef : public BandDepthBase
-//   {
-//   public:
-//     
-//     //! @name Typedefs
-//     //@{
-//     
-//     typedef unsigned int UInt;	
-//     
-//     typedef double Real;
-//     
-//     typedef GetPot data_Type;
-//     
-//     typedef BandDepthData bdData_Type;
-//     
-//     typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
-//     
-//     typedef BandDepthRefData bdRefData_Type;
-//     
-//     typedef boost::shared_ptr< bdRefData_Type > bdRefDataPtr_Type;
-//     
-//     typedef DataSetLevelled dataSet_Type;
-//     
-//     typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
-//     
-//     typedef mpiUtility mpiUtility_Type;
-//     
-//     typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
-//     
-// //     typedef BandDepth bandDepth_Type;
-//     
-// //     typedef boost::shared_ptr< bandDepth_Type > bandDepthPtr_Type;
-//     
-//     typedef std::set< UInt > IDContainer_Type;
-//     
-//     typedef boost::shared_ptr< IDContainer_Type > IDContainerPtr_Type;
-//     
-//     //@}
-//     
-//     //! @name Constructors and Destructor
-//     //@{
-//     
-//     BandDepthRef( const bdRefData_Type & bdRefData );
-// 	
-//     ~BandDepthRef();
-//   
-//     //@}
-// 
-//     //! @name Generic public methods
-//     //@{
-//       
-//     //! The method for the computation of Band Depths, executing the computation in parallel.
-//     void computeBDs();
-//     
-//     //@}
-// 
-//     //! @name Public Setters & Getters
-//     //@{
-// 
-//     //! It allows to set a particular seed for the initialisation of the pseudo-random number generator.
-//     void setSeed( const UInt & seed );
-// 
-//     //! Method for resetting the BandDepthData object.
-//     /*!
-//     * It enables the re-use of the BandDepthRef object in order to compute other bandDepths, e.g. for
-//     * other input files. This is useful when a class contains a pointer to a BandDepth object that
-//     * may be used over different datasets.
-//     * 
-//     * \param bdRefData New BandDepthData object that will replace the old one.
-//     */
-//     void setBandDepthData( const bdRefData_Type & bdRefData );
-//     
-//     //! To be used polymorphically.
-// //     void setBandDepthData( const bdDataPtr_Type & bdDataPtr );
-//   
-//     //! Method for the setting up or the resetting of the dataSet.
-//     /*!
-//     * The purpose of this method is to break the dependency of the object on
-//     * a specific data file containing data. With can set up (or reset) the data
-//     * constituting the data set, if the "dimensions" agree with those expressed by
-//     * band depth data object.
-//     * This use is meant to pair with a constructor taking a Band Depth Data with no
-//     * input filename nor levels filename, and thus M_readDataFromFile flag and 
-//     * M_readLevelsFromFime equal to false.
-//     * 
-//     * \param dataPtr Pointer to the new dataSet.
-//     */
-//     void setDataSet( const dataSetPtr_Type & dataPtr ); 
-//     
-//     //! Method for choosing the reference set IDs in the population. 
-//     /*! It launches a pseudo-random number generators determining the 
-//     *  initial IDs of reference set (referenceSetIDs) of size specified
-//     *  by "size" variable. The level ID of the reference set is specified by
-//     *  "referenceLevel".
-//     * 
-//     * \param size Size of the reference subset
-//     * \param referenceLevel ID of the reference level in dataSetLevelled data structure,
-//     * 			    this will be stored in M_referenceLevel.
-//     */
-//     void setReferenceSet( const UInt & size, const UInt & referenceLevel = 0 );
-//       
-//     //! Getter of the reference set.
-//     const IDContainer_Type & getReferenceSet() const;
-//     
-//     //! Getter of the test set.
-//     const IDContainer_Type & getTestSet() const;
-// 
-//     //! Getter of the computed BDs
-//     void getBDs( std::vector< Real > & bds ) const;
-//     
-//     //! The method writing the BDs to the file name specified inside the BD Data Object.
-//     void writeBDs() const;
-//     
-//     //@}
-//      
-//   private:
-//     
-//     //! @name Private methods
-//     //@{
-// 
-//     //! Each thread reads data from data file.
-//     void readData();
-//     
-//     //! Each thread reads levels from levels file.
-//     void readLevels();
-//         
-//     //! Method allowing to determine the remaining part of dataSet other than the reference set, i.e. the "test set".
-//     void setTestSet();
-// 
-//     //@}
-// 
-//     //! @name Private members
-//     //@{
-//     
-//     //! Shared pointer to a BandDepthData type object
-//     bdRefDataPtr_Type M_bdRefDataPtr;
-//     
-//     //! Shared pointer to a dataSet type object, containing data.
-//     dataSetPtr_Type M_dataSetPtr;
-//     
-//     //! Computed band depths
-//     std::vector< Real > M_BDs;
-//     
-//     //! MPI utility pointer object
-//     mpiUtilityPtr_Type M_mpiUtilPtr;
-//     
-// //     //! Shared pointer to a bandDepth object, used as a tool to compute full bandDepths on reduced parts of data set.
-// //     bandDepthPtr_Type M_bandDepthPtr;
-//     
-//     //! Seed for the pseudo-random number generator
-//     UInt M_seed;
-//     
-//     //! Vector containing the IDs of the test set
-//     IDContainer_Type M_testSetIDs;
-//     
-//     //! Vector containing the IDs of the reference set
-//     IDContainer_Type M_referenceSetIDs;
-//     
-//     //! ID of the reference level
-//     UInt M_referenceLevel;
-//     
-//     //! Number of levels
-//     static const UInt S_nbLevels = 2 ;
-//     
-//     //@}
-//     
-//     
-//   };
-//   
-//   
+   UInt nbMySamples, nbMyPts;
+   
+   this->M_mpiUtilPtr->isMaster() ? nbMySamples = masterProcNbSamples : nbMySamples = slaveProcNbSamples;
+   this->M_mpiUtilPtr->isMaster() ? nbMyPts = masterProcNbPts : nbMyPts = slaveProcNbPts;
+    
+   for ( UInt iPt(0); iPt < nbMyPts; ++iPt )
+   {
+       if( verbosity > 2 ) printf( "Proc %d is at %d / %d points\n", myRank, iPt + 1, nbMyPts );
+     
+       UInt globalPtID;
+	    
+       this->M_mpiUtilPtr->isMaster() ? globalPtID = iPt : globalPtID = masterProcNbPts + ( myRank - 1 ) * slaveProcNbPts + iPt; 
+     
+       std::vector< Real > testSetTimes;
+       
+       testSetTimes.reserve( nbTestSamples );
+       
+       for ( IDContainer_Type::iterator it( this->M_testSetIDs.begin() ); it != this->M_testSetIDs.end(); ++it )
+       {
+	  testSetTimes.push_back( (*dataPtr)( *it, globalPtID ) );  
+       }
+       
+       for ( UInt gIDSample(0); gIDSample < nbTestSamples; ++gIDSample )
+       {
+	 const Real timeCurr( (*dataPtr)( gIDSample, globalPtID ) ); 
+	 
+	 const UInt howManyBefore = std::count_if( testSetTimes.begin(), testSetTimes.end(), std::bind2nd( std::less< Real >(), timeCurr ) );
+	 
+	 const UInt howManyAfter( nbTestSamples - howManyBefore );
+	 
+ 	 this->M_BDs[ gIDSample ] += howManyBefore * howManyAfter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbTestSamples, 2 ) ) ;
+ 	
+       }
+   } 
+
+   // NOW REDUCING, BUT WITH A LARGE COMMUNICATION, RATHER THAN A VECTOR OF SINGLE
+   
+   for ( UInt iThread(1); iThread < nbThreads; ++iThread )
+   {
+      if ( myRank == MASTER )  //! I'm MASTER
+      {
+	MPI_Status status;
+	  
+	  std::vector< Real > temp( nbTestSamples );
+
+	  MPI_Recv( & temp[0], nbTestSamples, MPI_DOUBLE_PRECISION, iThread, iThread, MPI_COMM_WORLD, & status );
+	  
+	  for ( UInt iSample(0); iSample < nbTestSamples; ++iSample )
+	  {
+	      this->M_BDs[ iSample ] += temp[ iSample ];
+	  }	  
+      }
+      else if ( myRank == iThread )
+      {
+	  MPI_Send( & this->M_BDs[0], nbTestSamples, MPI_DOUBLE_PRECISION, MASTER, iThread, MPI_COMM_WORLD );
+      }
+   }
+   
+   MPI_Bcast( & this->M_BDs[0], nbTestSamples, MPI_DOUBLE_PRECISION, MASTER, MPI_COMM_WORLD );
+   
+   if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
+
+      printf( " All depths have been gathered\n" );
+
+   return;   
+   
+  }
+
 }
 
 

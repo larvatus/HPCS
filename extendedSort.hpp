@@ -8,19 +8,39 @@
 namespace HPCS
 {
 
-  template < typename _T >
-  struct PairLessThan : 
-  public std::binary_function< std::pair< _T, UInt >, std::pair< _T, UInt >, bool > 
+  template < typename _T, typename _U >
+  struct LessThanPairSecond :
+  public std::binary_function< std::pair< _T, _U >, std::pair< _T, _U >, bool >
   {
-    typedef std::pair< _T, UInt > data_Type;
+      typedef std::pair< _T, _U > data_Type;
+      
+      bool operator()( const data_Type & D1, const data_Type & D2 );
+      
+  };
+  
+  template < typename _T, typename _U >
+  inline
+  bool
+  LessThanPairSecond< _T, _U >::
+  operator()( const data_Type & D1, const data_Type & D2 )
+  {
+      return ( D1.second < D2.second );
+  }
+  
+  
+  template < typename _T, typename _U >
+  struct LessThanPairFirst : 
+  public std::binary_function< std::pair< _T, _U >, std::pair< _T, _U >, bool > 
+  {
+    typedef std::pair< _T, _U > data_Type;
     
     bool operator()( const data_Type & D1, const data_Type & D2 );
   };
   
-  template < typename _T >
+  template < typename _T, typename _U >
   inline
   bool
-  PairLessThan< _T >::
+  LessThanPairFirst< _T, _U >::
   operator()( const data_Type & D1, const data_Type & D2 )
   {
       return ( D1.first < D2.first );
@@ -240,7 +260,7 @@ namespace HPCS
     ExtendedSort< _T >::
     performSort()
     {      
-	this->M_dataPtr->sort( PairLessThan< _T >() );
+	this->M_dataPtr->sort( LessThanPairFirst< _T, UInt >() );
       
 	this->M_sortedFlag = true;
 

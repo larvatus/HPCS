@@ -19,10 +19,10 @@
   nbPts = 700
   leftOffset = 0
   rightOffset = 0
-  inputFilename = ../leads/I.txt
-  outputFilename = bd.I.all.dat
+  inputFilename = ../../../leads/I.txt
+  outputFilename = bd.I.ref.dat
 
-  levelsFilename = leads/levels.dat
+  levelsExtremaFilename = ../../../leads/levels.dat
 
   J = 2
 

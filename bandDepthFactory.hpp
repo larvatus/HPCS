@@ -5,10 +5,13 @@
 
 #include <factory.hpp>
 #include <bandDepth.hpp>
-// #include <bandDepthRef.hpp>
+#include <bandDepthRef.hpp>
 
 namespace HPCS
 {  
+  
+  // BD ALL
+  
   struct 
   CreateBDAll2 : public CreationRule< BandDepthBase< All > >
   {
@@ -32,7 +35,7 @@ namespace HPCS
     }
   };
   
-   struct 
+  struct 
   CreateBDAll4 : public CreationRule< BandDepthBase< All > >
   {
     CreateBDAll4(){}
@@ -43,7 +46,7 @@ namespace HPCS
     }
   };
   
-   struct 
+  struct 
   CreateBDAll5 : public CreationRule< BandDepthBase< All > >
   {
     CreateBDAll5(){}
@@ -55,41 +58,43 @@ namespace HPCS
   };
 
   
-  // struct 
-  // createBDRef2 : public creationRule< BandDepthBase, All >
-  // {
-  //   BandDepthBase * operator()() const
-  //   {
-  //     return new BandDepthRef< 2 >();
-  //   }
-  // };
-  // 
-  // 
-  // struct 
-  // createBDRef3 : public creationRule< BandDepthBase, All >
-  // {
-  //   BandDepthBase * operator()() const
-  //   {
-  //     return new BandDepthRef< 3 >();
-  //   }
-  // };
-  // struct 
-  // createBDRef3 : public creationRule< BandDepthBase, All >
-  // {
-  //   BandDepthBase * operator()() const
-  //   {
-  //     return new BandDepthRef< 3 >();
-  //   }
-  // };
+  // BD REFERENCE
+  
+  struct 
+  CreateBDRef2 : public CreationRule< BandDepthBase< Reference > >
+  {
+    BandDepthBase< Reference > * operator()() const
+    {
+       return new BandDepthRef< 2 >();
+     }
+   };
+   
+   struct 
+   CreateBDRef3 : public CreationRule< BandDepthBase < Reference > >
+   {
+     BandDepthBase< Reference > * operator()() const
+     {
+       return new BandDepthRef< 3 >();
+     }
+   };
+   
+   struct 
+   CreateBDRef4 : public CreationRule< BandDepthBase< Reference > >
+   {
+     BandDepthBase< Reference > * operator()() const
+     {
+       return new BandDepthRef< 4 >();
+     }
+   };
 
-  // struct 
-  // createBDRef3 : public creationRule< BandDepthBase, All >
-  // {
-  //   BandDepthBase * operator()() const
-  //   {
-  //     return new BandDepthRef< 3 >();
-  //   }
-  // };
+   struct 
+   CreateBDRef5 : public CreationRule< BandDepthBase < Reference > >
+   {
+     BandDepthBase< Reference > * operator()() const
+     {
+       return new BandDepthRef< 5 >();
+     }
+   };
 
 
   template < BDPolicy _policy >
@@ -121,6 +126,7 @@ namespace HPCS
   Factory< BandDepthBase< All >, UInt,  CreationRulePtrWrapper< BandDepthBase< All > > >()
   {    
     typedef boost::shared_ptr< CreationRule< BandDepthBase< All > > > Ptr_Type;
+    
     typedef CreationRulePtrWrapper< BandDepthBase< All > > wrapper_Type;
     
     bool flag = this->registerProduct( 2, wrapper_Type( Ptr_Type( new CreateBDAll2() ) ) );
@@ -135,22 +141,27 @@ namespace HPCS
       
   }
 
-  // template <>
-  // BDFactory< Reference >::
-  // BDFactory()
-  // :
-  // Factory< BandDepthBase, UInt, creationRule< Reference > >()
-  // {
-  //     
-  //    typedef typename factoryBase_Type::creator_Type creator_Type;
-  //    
-  //     bool flag = ( this->registerProduct( 2, createBDRef2 ));
-  //     
-  //     flag = flag & ( this->registerProduct( 3, createBDRef3 ));
-  //         
-  //     assert( flag == true )
-  //     
-  // }
+  template <>
+  BDFactory< Reference >::
+  BDFactory()
+  :
+  Factory< BandDepthBase< Reference >, UInt,  CreationRulePtrWrapper< BandDepthBase< Reference > > >()
+  {    
+    typedef boost::shared_ptr< CreationRule< BandDepthBase< Reference > > > Ptr_Type;
+    
+    typedef CreationRulePtrWrapper< BandDepthBase< Reference > > wrapper_Type;
+    
+    bool flag = this->registerProduct( 2, wrapper_Type( Ptr_Type( new CreateBDRef2() ) ) );
+      
+    flag = flag & ( this->registerProduct( 3, wrapper_Type( Ptr_Type( new CreateBDRef3() ) ) ) );
+    
+    flag = flag & ( this->registerProduct( 4, wrapper_Type( Ptr_Type( new CreateBDRef4() ) ) ) );
+    
+    flag = flag & ( this->registerProduct( 5, wrapper_Type( Ptr_Type( new CreateBDRef5() ) ) ) );
+	  
+    assert( flag == true );
+      
+  }
 
 }
 
