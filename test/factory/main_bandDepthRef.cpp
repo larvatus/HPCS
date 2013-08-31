@@ -32,13 +32,14 @@ MPI_Init( &argc, &argv );
    
    bdPtr->setBandDepthData( bdData );
    
+  
    bdPtr->addToReferenceSet( 0, 50 );
    
    bdPtr->setTestSet();
        
-   bdPtr->computeBDs();
+    bdPtr->computeBDs();
   
-   bdPtr->writeBDs();
+    bdPtr->writeBDs();
 
 MPI_Finalize();
 

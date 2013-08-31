@@ -47,8 +47,6 @@ namespace HPCS
   
     void computeBDs();
 
-//     void setSeed( const UInt & seed );
-
     void setBandDepthData( const bdRefData_Type & bdRefData );
   
     void setDataSet( const dataSetPtr_Type & dataPtr ); 
@@ -251,10 +249,10 @@ namespace HPCS
       assert( size <= this->M_dataSetPtr->cardinality( levelID ) );
 
       srand48( seed );
-      
+            
       for ( UInt iInsert(0); iInsert < size; )
-      {
-	UInt temp = static_cast< UInt >( ( this->M_dataSetPtr->cardinality( levelID ) - 1 ) * drand48() );
+      {	
+	UInt temp = static_cast< UInt >( ( this->M_dataSetPtr->cardinality( levelID ) - 1)* drand48() );
 	
 	for ( UInt iLevel(0); iLevel < levelID; ++iLevel )
 	{
@@ -266,6 +264,19 @@ namespace HPCS
 	    ++iInsert;
 	}
 	
+      }
+      
+      //! @TODO REMOVE ME!!
+      if ( this->M_mpiUtilPtr->isMaster() )
+      {
+	  std::cout << " REFERENCE SET " << std::endl;
+	
+	  for ( IDContainer_Type::const_iterator it = this->M_referenceSetIDs.begin(); it != this->M_referenceSetIDs.end(); ++it )
+	  {
+	      std::cout << *it << " ";
+	  }
+	
+	  std::cout << std::endl;
       }
     
       return;
@@ -297,6 +308,19 @@ namespace HPCS
 	this->M_testSetIDs.insert( iSample );	
       }
     }
+    
+    //! @TODO REMOVE ME!!
+    if ( this->M_mpiUtilPtr->isMaster() )
+      {	
+	  std::cout << " TEST SET " << std::endl;
+	
+	  for ( IDContainer_Type::const_iterator it = this->M_testSetIDs.begin(); it != this->M_testSetIDs.end(); ++it )
+	  {
+	      std::cout << *it << " ";
+	  }
+	
+	  std::cout << std::endl;
+      }
 
     return;
  }
@@ -445,11 +469,18 @@ namespace HPCS
 	    ++iBD;
 	}
 	
+   	//!@todo MODIFY ME!
+    	iBD = 0;
+	
 	bdList.sort( LessThanPairFirst< UInt, Real >() );	
 	
 	for ( listIt_Type it = bdList.begin(); it != bdList.end(); ++it )
 	{
-	    output << it->first << "\t" << it->second << std::endl;
+   	    //! @todo replace me with it->first!!
+   	    output << iBD << "\t" << it->second << std::endl;
+   	    ++iBD;
+//   	    output << it->first << "\t" << it->second << std::endl;
+
 	}
 	
 	output.close();
@@ -465,20 +496,7 @@ namespace HPCS
   writeBDs( std::ostream & output ) 
   const
   {
-      if ( this->M_mpiUtilPtr->isMaster() );
-      {      
-	typedef IDContainer_Type::const_iterator iter_Type;
-	
-	UInt iBD(0);
-	
-	for ( iter_Type it = this->M_testSetIDs.begin(); it != this->M_testSetIDs.end(); ++it )
-	{
-	    output << *it << " " << this->M_BDs[ iBD ] << std::endl;
-	    
-	    ++iBD;
-	}
-	
-      }
+      
       
       return;
   }
@@ -529,6 +547,8 @@ namespace HPCS
    
    typedef dataSet_Type::dataPtr_Type dataSetPtr_Type;
    
+   typedef IDContainer_Type::const_iterator iter_Type;
+   
    const dataSetPtr_Type dataPtr( this->M_dataSetPtr->getData() );  
             
    const UInt slaveProcNbSamples = static_cast< UInt >( nbTestSamples / nbThreads );
@@ -539,39 +559,44 @@ namespace HPCS
    
    this->M_BDs.assign( nbTestSamples, 0 );
    
-   // FIRST STAGE: // MOVE THIS INSIDE A NEW CLASS
+   // FIRST STAGE:
   
    UInt nbMySamples, nbMyPts;
    
    this->M_mpiUtilPtr->isMaster() ? nbMySamples = masterProcNbSamples : nbMySamples = slaveProcNbSamples;
+   
    this->M_mpiUtilPtr->isMaster() ? nbMyPts = masterProcNbPts : nbMyPts = slaveProcNbPts;
     
    for ( UInt iPt(0); iPt < nbMyPts; ++iPt )
    {
        if( verbosity > 2 ) printf( "Proc %d is at %d / %d points\n", myRank, iPt + 1, nbMyPts );
-     
+       
        UInt globalPtID;
 	    
        this->M_mpiUtilPtr->isMaster() ? globalPtID = iPt : globalPtID = masterProcNbPts + ( myRank - 1 ) * slaveProcNbPts + iPt; 
      
-       std::vector< Real > testSetTimes;
+       std::vector< Real > referenceSetTimes;
        
-       testSetTimes.reserve( nbTestSamples );
+       referenceSetTimes.reserve( nbRefSamples );
        
-       for ( IDContainer_Type::iterator it( this->M_testSetIDs.begin() ); it != this->M_testSetIDs.end(); ++it )
+       for ( iter_Type it( this->M_referenceSetIDs.begin() ); it != this->M_referenceSetIDs.end(); ++it )
        {
-	  testSetTimes.push_back( (*dataPtr)( *it, globalPtID ) );  
+	  referenceSetTimes.push_back( (*dataPtr)( *it, globalPtID ) );  
        }
        
-       for ( UInt gIDSample(0); gIDSample < nbTestSamples; ++gIDSample )
-       {
-	 const Real timeCurr( (*dataPtr)( gIDSample, globalPtID ) ); 
+       UInt iCurrSample(0);
+       
+       for ( iter_Type it( this->M_testSetIDs.begin() ); it != this->M_testSetIDs.end(); ++it )
+       {	 
+	 const Real timeCurr( (*dataPtr)( *it, globalPtID ) ); 
 	 
-	 const UInt howManyBefore = std::count_if( testSetTimes.begin(), testSetTimes.end(), std::bind2nd( std::less< Real >(), timeCurr ) );
+	 const UInt howManyBefore = std::count_if( referenceSetTimes.begin(), referenceSetTimes.end(), std::bind2nd( std::less< Real >(), timeCurr ) );
 	 
-	 const UInt howManyAfter( nbTestSamples - howManyBefore );
+	 const UInt howManyAfter( nbRefSamples - howManyBefore );
 	 
- 	 this->M_BDs[ gIDSample ] += howManyBefore * howManyAfter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbTestSamples, 2 ) ) ;
+ 	 this->M_BDs[ iCurrSample ] += howManyBefore * howManyAfter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbRefSamples, 2 ) ) ;
+	 
+	 ++iCurrSample;
  	
        }
    } 
@@ -602,9 +627,9 @@ namespace HPCS
    MPI_Bcast( & this->M_BDs[0], nbTestSamples, MPI_DOUBLE_PRECISION, MASTER, MPI_COMM_WORLD );
    
    if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
-
-      printf( " All depths have been gathered\n" );
-
+   {
+      printf( " Depths of the %d test samples have been gathered\n", nbTestSamples );
+   }
    return;   
    
   }
