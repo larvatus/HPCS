@@ -393,7 +393,7 @@ binomial( const UInt & N , const UInt & K )
    const UInt slaveProcNbPz = static_cast< UInt >( nbPz / nbThreads );
    const UInt masterProcNbPz = static_cast< UInt >( nbPz / nbThreads ) + static_cast< UInt >( nbPz % nbThreads );
    
-   this->M_BDs.resize( nbPz );
+   this->M_BDs.assign( nbPz, 0 );
    
    UInt nbMyPz;
    
@@ -415,7 +415,6 @@ binomial( const UInt & N , const UInt & K )
       
       combinationsID.resetPointerToHeadCombination();      
       
-//    while( not( combinationsID.hasGeneratedAll() ) )
       while( not( combinationsID.hasTraversedAll() ) )
       {
 	tuple_Type pzTupleIDs;
@@ -505,7 +504,7 @@ computeBDs()
    const UInt slaveProcNbPts = static_cast< UInt >( nbPts / nbThreads );
    const UInt masterProcNbPts = static_cast< UInt >( nbPts / nbThreads ) + static_cast< UInt >( nbPts % nbThreads );
      
-   this->M_BDs.resize( nbPz );
+   this->M_BDs.assign( nbPz, 0 );
    
    // FIRST STAGE: // MOVE THIS INSIDE A NEW CLASS
   

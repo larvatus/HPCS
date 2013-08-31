@@ -8,6 +8,7 @@
 #include <bandDepthData.hpp>
 #include <bandDepth.hpp>
 #include <extendedSort.hpp>
+#include <combinations.hpp>
 
 #include <HPCSDefs.hpp>
 
@@ -37,6 +38,10 @@ namespace HPCS
     typedef std::set< UInt > IDContainer_Type;
     
     typedef boost::shared_ptr< IDContainer_Type > IDContainerPtr_Type;
+    
+    typedef CombinationsID combinationsID_Type;
+    
+    typedef CombinationsID::tuple_Type tuple_Type;
     
     //! Default constructor
     BandDepthRef();
@@ -252,18 +257,21 @@ namespace HPCS
             
       for ( UInt iInsert(0); iInsert < size; )
       {	
-	UInt temp = static_cast< UInt >( ( this->M_dataSetPtr->cardinality( levelID ) - 1)* drand48() );
+	UInt temp = static_cast< UInt >( this->M_dataSetPtr->cardinality( levelID ) * drand48() );
 	
-	for ( UInt iLevel(0); iLevel < levelID; ++iLevel )
+	if ( temp != this->M_dataSetPtr->cardinality( levelID ) )
 	{
-	    temp += this->M_dataSetPtr->cardinality( levelID );
-	}
 	
-	if ( this->M_referenceSetIDs.insert( temp ).second == true )
-	{
-	    ++iInsert;
+	    for ( UInt iLevel(0); iLevel < levelID; ++iLevel )
+	    {
+		temp += this->M_dataSetPtr->cardinality( levelID );
+	    }
+	    
+	    if ( this->M_referenceSetIDs.insert( temp ).second == true )
+	    {
+		++iInsert;
+	    }
 	}
-	
       }
       
       //! @TODO REMOVE ME!!
@@ -519,12 +527,115 @@ namespace HPCS
     return static_cast< UInt >( num/denom );
   }
 
- // TODO FINISH ME!!
+ 
  template < UInt _J >
  void
  BandDepthRef< _J >::
  computeBDs()
  {
+   const UInt myRank = this->M_mpiUtilPtr->myRank();
+   const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
+   
+   const UInt nbSamples = this->M_bdRefDataPtr->nbPz();
+   const UInt nbRefSamples = this->M_referenceSetIDs.size();
+   const UInt nbTestSamples = this->M_testSetIDs.size();
+   
+   const UInt nbPts = this->M_bdRefDataPtr->nbPts();
+   
+   const UInt verbosity = this->M_bdRefDataPtr->verbosity();
+   
+   typedef dataSet_Type::dataPtr_Type dataSetPtr_Type;
+   
+   typedef IDContainer_Type::const_iterator iter_Type;
+   
+   const dataSetPtr_Type dataPtr( this->M_dataSetPtr->getData() );  
+            
+   const UInt slaveProcNbSamples = static_cast< UInt >( nbTestSamples / nbThreads );
+   const UInt masterProcNbSamples = static_cast< UInt >( nbTestSamples / nbThreads ) + static_cast< UInt >( nbTestSamples % nbThreads );
+   
+   this->M_BDs.assign( nbTestSamples, 0 );
+   
+   // FIRST STAGE:
+   
+   combinationsID_Type combinationsID( nbRefSamples, _J, true );
+   
+   combinationsID.generateCombinationsID();
+  
+   UInt nbMySamples;
+   
+   this->M_mpiUtilPtr->isMaster() ? nbMySamples = masterProcNbSamples : nbMySamples = slaveProcNbSamples;
+   
+   for ( UInt iSample(0); iSample < nbMySamples; ++iSample )
+   {
+      if( verbosity > 2 ) printf( "Proc %d is at %d / %d samples\n", myRank, iSample + 1, nbMySamples );
+      
+      UInt globalSampleID;
+      
+      this->M_mpiUtilPtr->isMaster() ? globalSampleID = iSample : globalSampleID = masterProcNbSamples + ( myRank - 1 ) * slaveProcNbSamples + iSample; 
+      
+      Real comprisedCounter(0);
+      
+      combinationsID.resetPointerToHeadCombination();      
+      
+      while( not( combinationsID.hasTraversedAll() ) )
+      {
+	tuple_Type pzTupleIDs;
+
+	combinationsID.getNextCombinationID( pzTupleIDs );
+		
+	// IMPORTANT: mapping the IDs of the tuple to the IDs of the reference sub-population
+	for ( UInt iJ(0); iJ < _J; ++iJ )
+	{	  
+	  IDContainer_Type::const_iterator it = this->M_referenceSetIDs.begin();
+	  
+	  std::advance( it, pzTupleIDs[ iJ ] );
+	  
+	  pzTupleIDs[ iJ ] = *it;  	  
+	}
+	
+	std::vector< Real > currentValues( _J );
+	
+	Real envMax, envMin, sampleVal;
+	
+	for ( UInt iPt(0); iPt < nbPts; ++iPt )
+	{
+	  for ( UInt iJ(0); iJ < _J; ++iJ )
+	  {		
+	    currentValues[ iJ ] = (*dataPtr)( pzTupleIDs[ iJ ], iPt );
+	  } 
+	  
+	  envMax =  *( std::max_element( currentValues.begin(), currentValues.end() ) );
+	  envMin =  *( std::min_element( currentValues.begin(), currentValues.end() ) );
+	  sampleVal = (*dataPtr)( globalSampleID, iPt );
+	  
+	  if ( sampleVal <= envMax && sampleVal >= envMin ) ++comprisedCounter;  
+  
+	}
+      }
+
+	this->M_BDs[ iSample ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbRefSamples, _J ) );
+    }	    
+ 
+    // COMMUNICATING BAND DEPTHS
+      
+    for ( UInt iThread = 1; iThread < nbThreads; ++iThread )
+    {
+      if ( this->M_mpiUtilPtr->isMaster() )
+      {
+	MPI_Status status;
+
+	MPI_Recv( & this->M_BDs[0] + masterProcNbSamples + ( iThread - 1 ) * slaveProcNbSamples, slaveProcNbSamples, MPI_DOUBLE_PRECISION, iThread, iThread, MPI_COMM_WORLD, & status );
+      }
+      else if ( myRank == iThread )
+      {
+	MPI_Send( & this->M_BDs[0], slaveProcNbSamples, MPI_DOUBLE_PRECISION, MASTER, myRank, MPI_COMM_WORLD );
+      }
+    }
+    
+    if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
+
+      printf( " All depths have been gathered\n" );
+    
     return;
  }
   
@@ -541,7 +652,7 @@ namespace HPCS
    const UInt nbRefSamples = this->M_referenceSetIDs.size();
    const UInt nbTestSamples = this->M_testSetIDs.size();
    
-   const UInt nbPts	= this->M_bdRefDataPtr->nbPts();
+   const UInt nbPts = this->M_bdRefDataPtr->nbPts();
    
    const UInt verbosity = this->M_bdRefDataPtr->verbosity();
    
@@ -635,7 +746,6 @@ namespace HPCS
   }
 
 }
-
 
 
 #endif

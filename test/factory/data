@@ -4,7 +4,7 @@
   nbPts = 700
   leftOffset = 0
   rightOffset = 0
-  inputFilename = ../../../leads/I.txt
+  inputFilename = ../../../synthetic/amplitudeSine/I.txt
   outputFilename = bd.I.all.dat
 
   J = 2
@@ -15,14 +15,19 @@
 
 [BDREF]
 
-  nbPz = 149
-  nbPts = 700
+  nbPz = 30
+
+  nbReferenceSamples = 20
+
+  nbPts = 500
+
   leftOffset = 0
   rightOffset = 0
-  inputFilename = ../../../leads/I.txt
+  inputFilename = ../../../synthetic/amplitudeSine/I.txt
+  
   outputFilename = bd.I.ref.dat
 
-  levelsExtremaFilename = ../../../leads/levels.dat
+  levelsExtremaFilename = ../../../synthetic/amplitudeSine/levels.dat
 
   J = 2
 
