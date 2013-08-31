@@ -122,7 +122,7 @@ public:
   
   void setLevels( const std::vector< UInt > & linearExtrema );
   
-  void readLevelsExtrema( const std::string & levelsExtremaFilename );
+  void setLevelsFromExtrema( const std::string & levelsExtremaFilename );
 
   void showMe( std::ostream & output = std::cout ) const;  
   

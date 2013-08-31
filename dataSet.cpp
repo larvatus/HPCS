@@ -401,7 +401,7 @@ showMe( std::ostream & output ) const
 
 void
 DataSetLevelled::
-readLevelsExtrema( const std::string & filename)
+setLevelsFromExtrema( const std::string & filename)
 {  
    std::ifstream input( filename.data(), std::ios_base::in );
    

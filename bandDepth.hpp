@@ -23,14 +23,9 @@
 namespace HPCS
 {  
 
-class 
-BandDepthBase
+class BandDepthBase
 {
 public:
-  
-  typedef double Real;
-  
-  typedef double UInt;
   
   typedef boost::shared_ptr< BandDepthData > bdDataPtr_Type;
   
@@ -51,6 +46,8 @@ public:
 protected:
   
 };
+
+
 
 
 /*!
@@ -90,7 +87,7 @@ public:
   //@{
     
   //! Default constructor
-  BandDepth(){};
+  BandDepth();
     
   //! Constructor from a BandDepthData object
   BandDepth( const bdData_Type & bdData );
@@ -116,6 +113,11 @@ public:
    */
   void writeBDs() const;
   
+  //! TODO IMPLEMENTA!
+  //! The method writing the BDs to an output file.
+  void writeBDs( std::ostream & output ) const;
+  
+  //! TODO @todo MODIFICA! Tre template, rispetto al contenitore, alla coppia di iteratori e al puntatore al contenitore (?).
   //! Getter of the Band Depths
   void getBDs( std::vector< Real > & bds ) const; 
   
@@ -183,6 +185,16 @@ private:
  /////////////////////////
  // 	Band Depth
  /////////////////////////
+
+// Default constructor
+template < UInt _J >
+BandDepth< _J >::
+BandDepth()
+:
+M_mpiUtilPtr( new mpiUtility_Type() )
+{
+}
+
  
  // Constructor from BandDepthData type object
  template < UInt _J > 

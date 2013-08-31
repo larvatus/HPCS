@@ -105,10 +105,10 @@ namespace HPCS
  BandDepthRefData::
  BandDepthRefData( const UInt & nbPz, const UInt & nbPts, const UInt & leftOffset, 
 	 const UInt & rightOffset, const UInt & J, const UInt & verbosity,
-	 const bool & readDataFromFile, const bool & readLevelsFromFile )
+	 const bool & readDataFromFile, const bool & readLevelsExtremaFromFile )
  :
  BandDepthData(nbPz, nbPts, leftOffset, rightOffset, J, verbosity, readDataFromFile),
- M_readLevelsFromFile( readLevelsFromFile )
+ M_readLevelsExtremaFromFile( readLevelsExtremaFromFile )
  {}
   
  // Constructor from Get Pot type object
@@ -119,20 +119,22 @@ namespace HPCS
  {
     const std::string baseName( section );
     
-    this->M_levelsFilename =  dataFile( ( baseName + "/levelsFilename"  ).data(), "levels.dat" );
+    std::cout << " WARNING! CHANGE GETOPOT VARIABLE levelsFilename TO levelsExtremaFilename !!!! " << std::enl;
     
-    this->M_readLevelsFromFile = true;
+    this->M_levelsExtremaFilename =  dataFile( ( baseName + "/levelsExtremaFilename"  ).data(), "levels.dat" );
+    
+    this->M_readLevelsExtremaFromFile = true;
       
  }
  
  // Setter for the input filename containing extrema data
  void 
  BandDepthRefData::
- setLevelsFilename( const std::string & inputFilename )
+ setLevelsExtremaFilename( const std::string & inputFilename )
  {
-    this->M_levelsFilename = inputFilename;
+    this->M_levelsExtremaFilename = inputFilename;
     
-    this->M_readLevelsFromFile = true;
+    this->M_readLevelsExtremaFromFile = true;
     
     return;
 }
@@ -140,9 +142,9 @@ namespace HPCS
 // Getter of the levels filename
 std::string
 BandDepthRefData::
-levelsFilename() const
+levelsExtremaFilename() const
 { 
-  return this->M_levelsFilename; 
+  return this->M_levelsExtremaFilename; 
 }
 
 // Copy constructor
@@ -156,9 +158,9 @@ levelsFilename() const
     
     this->M_outputFilename = bdRefData.outputFilename();
     
-    this->M_levelsFilename = bdRefData.levelsFilename();
+    this->M_levelsExtremaFilename = bdRefData.levelsExtremaFilename();
     
-    this->M_readLevelsFromFile = bdRefData.readLevelsFromFile();
+    this->M_readLevelsExtremaFromFile = bdRefData.readLevelsExtremaFromFile();
  }
  
  

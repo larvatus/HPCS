@@ -145,20 +145,20 @@ public:
   //@{
 
   //! Method for setting up the file name containing the extrema to be used to build dataSetLevelled.
-  void setLevelsFilename( const std::string & inputFilename );
+  void setLevelsExtremaFilename( const std::string & inputFilename );
   
   //! Getter of the levels filename
-  std::string levelsFilename() const;
+  std::string levelsExtremaFilename() const;
   
-  bool readLevelsFromFile() const { return this->M_readLevelsFromFile; }
+  bool readLevelsExtremaFromFile() const { return this->M_readLevelsExtremaFromFile; }
   
   //@}
   
 private:
 
-  std::string M_levelsFilename;
+  std::string M_levelsExtremaFilename;
   
-  bool M_readLevelsFromFile;
+  bool M_readLevelsExtremaFromFile;
   
 };
 
