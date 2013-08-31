@@ -42,15 +42,15 @@ public:
     
     virtual ~BandDepthBase(){};
     
-    virtual void computeBDs(){ std::cout << "HAHA" << std::endl; };
+    virtual void computeBDs(){};
     
-    virtual void setBandDepthData( const bdData_Type & bdData ){ std::cout << "HAHA" << std::endl; };      
+    virtual void setBandDepthData( const bdData_Type & bdData ){};      
 
-    virtual void setBandDepthData( const bdDataPtr_Type & bdDataPtr ){ std::cout << "HAHA" << std::endl; };
+    virtual void setBandDepthData( const bdDataPtr_Type & bdDataPtr ){};
     
-    virtual void writeBDs() const { std::cout << "HAHA" << std::endl; };
+    virtual void writeBDs() const {};
     
-    virtual void getBDs( std::vector< Real > & bds ) const { std::cout << "HAHA" << std::endl;};
+    virtual void getBDs( std::vector< Real > & bds ) const {};
   
 };
 
