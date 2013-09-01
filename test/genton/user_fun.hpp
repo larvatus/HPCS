@@ -82,62 +82,6 @@ namespace HPCS
         
   };
   
-  
- 
- /*
-
-  class BDDirectComputation : public BandDepth< 3 >
-  {
-  public:
-    
-    typedef GetPot data_Type;
-    
-    typedef BandDepthData bdData_Type;
-    
-    BDDirectComputation();
-    
-    BDDirectComputation( const bdData_Type & bdData );
-    
-    virtual ~BDDirectComputation(){};
-    
-    void computeTHEBDs();
-    
-    void setJ( const UInt & _J );
-    
-  protected:
-    
-    Real M_J;
-    
-  private:
-   
-  };
- 
-  class BDRefDirectComputation : public BandDepthRef< 2 >
-  {
-  public:
-    
-    typedef GetPot data_Type;
-    
-    typedef BandDepthRefData bdRefData_Type;
-        
-    BDRefDirectComputation(){};
-    
-    BDRefDirectComputation( const bdRefData_Type & bdRefData ){};
-    
-    virtual ~BDRefDirectComputation(){};
-    
-    void computeTHEBDs(){};
-    
-    void setJ( const UInt & _J ){};
-    
-  protected:
-    
-    Real M_J;
-    
-  private:
-    
-  };
- */
 }
 
 
