@@ -48,9 +48,9 @@ namespace HPCS
     
     BandDepthRef( const bdRefData_Type & bdRefData );
 	
-    ~BandDepthRef();
+    virtual ~BandDepthRef();
   
-    void computeBDs();
+    virtual void computeBDs();
 
     void setBandDepthData( const bdRefData_Type & bdRefData );
   
@@ -97,24 +97,10 @@ namespace HPCS
     
     //@}
      
-  private:
-    
-    //! @name Private methods
+  protected:
+
     //@{
-
-    //! Each thread reads data from data file.
-    void readData();
-    
-    //! Each thread reads levels from levels file.
-    void readLevels();
-
-    //! Method for the computation of binomial coefficients
-    UInt binomial( const UInt & N , const UInt & K );
-    
-    //@}
-
-    //! @name Private members
-    //@{
+    //! @name Protected members
     
     //! Shared pointer to a BandDepthData type object
     bdRefDataPtr_Type M_bdRefDataPtr;
@@ -136,7 +122,20 @@ namespace HPCS
     
     //! Number of levels
     static const UInt S_nbLevels = 2 ;
+
+    //@}
     
+  private:
+       
+    //! @name Private methods
+    //@{
+
+    //! Each thread reads data from data file.
+    void readData();
+    
+    //! Each thread reads levels from levels file.
+    void readLevels();
+
     //@}
     
   };
@@ -171,13 +170,9 @@ namespace HPCS
     if ( bdRefData.readDataFromFile() ) this->readData();
     
     if ( bdRefData.readLevelsExtremaFromFile() ) 
-    {
+      
       this->readLevels();
-      
-      this->setReferenceSet();
-      
-      this->setTestSet();
-    }
+     
  }
 
  // Method for reading data from input file
@@ -214,7 +209,7 @@ namespace HPCS
  void
  BandDepthRef< _J >::
  setBandDepthData( const bdRefData_Type & bdRefData )
- {
+ {   
     this->M_bdRefDataPtr.reset( new bdRefData_Type( bdRefData ) );
     
     if ( bdRefData.readDataFromFile() ) this->readData();
@@ -273,7 +268,7 @@ namespace HPCS
 	    }
 	}
       }
-      
+ /*     
       //! @TODO REMOVE ME!!
       if ( this->M_mpiUtilPtr->isMaster() )
       {
@@ -286,7 +281,7 @@ namespace HPCS
 	
 	  std::cout << std::endl;
       }
-    
+  */  
       return;
   }
   
@@ -316,7 +311,7 @@ namespace HPCS
 	this->M_testSetIDs.insert( iSample );	
       }
     }
-    
+/*    
     //! @TODO REMOVE ME!!
     if ( this->M_mpiUtilPtr->isMaster() )
       {	
@@ -330,7 +325,7 @@ namespace HPCS
 	  std::cout << std::endl;
       }
 
-    return;
+ */   return;
  }
  
   // Getter of the reference set IDs.
@@ -478,16 +473,17 @@ namespace HPCS
 	}
 	
    	//!@todo MODIFY ME!
-    	iBD = 0;
+//     	iBD = 0;
 	
 	bdList.sort( LessThanPairFirst< UInt, Real >() );	
 	
 	for ( listIt_Type it = bdList.begin(); it != bdList.end(); ++it )
 	{
-   	    //! @todo replace me with it->first!!
-   	    output << iBD << "\t" << it->second << std::endl;
-   	    ++iBD;
-//   	    output << it->first << "\t" << it->second << std::endl;
+	  
+// 	  //! @todo replace me with it->first!!
+//    	    output << iBD << "\t" << it->second << std::endl;
+//    	    ++iBD;
+   	    output << it->first << "\t" << it->second << std::endl;
 
 	}
 	
@@ -496,37 +492,6 @@ namespace HPCS
       
       return;
   }
-  
-  //! @warning FINISH ME!
-  // The method writing the BDs to a specified output.
-  template < UInt _J >
-  void
-  BandDepthRef< _J >::
-  writeBDs( std::ostream & output ) 
-  const
-  {
-      
-      return;
-  }
- 
-  // Method for the computation of binomial coefficients
-  template < UInt _J >
-  UInt
-  BandDepthRef< _J >::
-  binomial( const UInt & N , const UInt & K )
-  {    
-      UInt num( 1 );
-      UInt denom( 1 );
-      
-      for ( UInt iK(0); iK < K; ++iK )
-      {
-	  num *= N - iK;
-	  denom *= iK + 1;
-      }
-    
-    return static_cast< UInt >( num/denom );
-  }
-
  
  template < UInt _J >
  void
@@ -569,9 +534,13 @@ namespace HPCS
    {
       if( verbosity > 2 ) printf( "Proc %d is at %d / %d samples\n", myRank, iSample + 1, nbMySamples );
       
-      UInt globalSampleID;
-      
-      this->M_mpiUtilPtr->isMaster() ? globalSampleID = iSample : globalSampleID = masterProcNbSamples + ( myRank - 1 ) * slaveProcNbSamples + iSample; 
+      UInt nbOffsets;
+	
+      this->M_mpiUtilPtr->isMaster() ? nbOffsets = iSample : nbOffsets = masterProcNbSamples + ( myRank - 1 ) * slaveProcNbSamples + iSample; 
+	
+      IDContainer_Type::const_iterator globalSampleIDIter = this->M_testSetIDs.begin();
+	
+      std::advance( globalSampleIDIter, nbOffsets );
       
       Real comprisedCounter(0);
       
@@ -606,14 +575,14 @@ namespace HPCS
 	  
 	  envMax =  *( std::max_element( currentValues.begin(), currentValues.end() ) );
 	  envMin =  *( std::min_element( currentValues.begin(), currentValues.end() ) );
-	  sampleVal = (*dataPtr)( globalSampleID, iPt );
+	  sampleVal = (*dataPtr)( *globalSampleIDIter, iPt );
 	  
 	  if ( sampleVal <= envMax && sampleVal >= envMin ) ++comprisedCounter;  
   
 	}
       }
 
-	this->M_BDs[ iSample ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbRefSamples, _J ) );
+	this->M_BDs[ iSample ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * binomial( nbRefSamples, _J ) );
     }	    
  
     // COMMUNICATING BAND DEPTHS
@@ -680,7 +649,7 @@ namespace HPCS
     
    for ( UInt iPt(0); iPt < nbMyPts; ++iPt )
    {
-       if( verbosity > 2 ) printf( "Proc %d is at %d / %d points\n", myRank, iPt + 1, nbMyPts );
+       if( verbosity > 2 && ( iPt % 50  == 0 ) ) printf( "Proc %d is at %d / %d points\n", myRank, iPt + 1, nbMyPts );
        
        UInt globalPtID;
 	    
@@ -705,7 +674,7 @@ namespace HPCS
 	 
 	 const UInt howManyAfter( nbRefSamples - howManyBefore );
 	 
- 	 this->M_BDs[ iCurrSample ] += howManyBefore * howManyAfter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbRefSamples, 2 ) ) ;
+ 	 this->M_BDs[ iCurrSample ] += howManyBefore * howManyAfter / static_cast< Real > ( ( nbPts - 1 ) * binomial( nbRefSamples, 2 ) ) ;
 	 
 	 ++iCurrSample;
  	

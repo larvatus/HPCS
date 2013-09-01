@@ -415,12 +415,12 @@ setLevelsFromExtrema( const std::string & filename)
    input.close();
    
    this->setLevels( linearExtrema );
-   
+/*   
     for ( UInt iLevel(0); iLevel < this->M_nbLevels; ++iLevel )
     {	
  	printf( " cardinality( %d ) = %d\n", iLevel, this->cardinality( iLevel ) );
     }
-   
+  */ 
    return;
 }
 

@@ -7,6 +7,10 @@
 namespace HPCS
 {
 
+//! Free function for the computation of binomial coefficients;
+UInt binomial( const UInt & N , const UInt & K );  
+  
+  
 class CombinationsID
 {
 public:

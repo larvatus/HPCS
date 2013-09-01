@@ -1,44 +1,87 @@
 [BDALL]
   
-  nbPz = 30
+  [./GENTON]
 
-  nbPts = 500
+    nbPz = 30
+    nbPts = 500
+    leftOffset = 0
+    rightOffset = 0
+    
+    inputFilename = ../../../synthetic/amplitudeSine/I.txt
 
-  leftOffset = 0
+    outputFilename = bd_I_all.dat
+    
+    J = 2
+    
+    verbosity = 4
 
-  rightOffset = 0
+  [../]
 
-  inputFilename = ../../../synthetic/amplitudeSine/I.txt
+  [./DIRECT]
 
-  outputFilename = bd.I.all.dat
+    nbSamples = 30
+    nbPts = 500
+    leftOffset = 0
+    rightOffset = 0
+    
+    inputFilename = ../../../synthetic/amplitudeSine/I.txt
 
-  J = 2
+    outputFilename = bd_I_all_direct.dat
+    
+    J = 2
+    
+    verbosity = 4
 
-  verbosity = 3
+  [../]
+
 
 [../]
 
 
 [BDREFERENCE]
 
-  nbPz = 30
+  [./GENTON]
 
-  nbPts = 500
+    nbPz = 30
+    nbPts = 500
+    nbReferenceSamples = 20
+    leftOffset = 0
+    rightOffset = 0
 
-  nbReferenceSamples = 20
+    inputFilename = ../../../synthetic/amplitudeSine/I.txt
 
-  leftOffset = 0
+    levelsExtremaFilename = ../../../synthetic/amplitudeSine/levels.dat
 
-  rightOffset = 0
+    outputFilename = bd_I_ref.dat
 
-  inputFilename = ../../../synthetic/amplitudeSine/I.txt
+    J = 3
 
-  levelsExtremaFilename = ../../../synthetic/amplitudeSine/levels.dat
+    verbosity = 3
 
-  outputFilename = bd.I.ref.dat
+  [../]
 
-  J = 2
+  [./DIRECT]
 
-  verbosity = 3
+
+    nbSamples = 30
+    nbPts = 500
+    nbReferenceSamples = 20
+    leftOffset = 0
+    rightOffset = 0
+
+    inputFilename = ../../../synthetic/amplitudeSine/I.txt
+
+    levelsExtremaFilename = ../../../synthetic/amplitudeSine/levels.dat
+
+    seed = 1
+
+    outputFilename = bd_I_ref_direct.dat
+
+    J = 3
+
+    verbosity = 3
+
+
+  [../]
 
 [../]

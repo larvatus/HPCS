@@ -1,6 +1,6 @@
 
-#ifndef __BD_HPP__
-#define __BD_HPP__
+#ifndef __BANDDEPTH_HPP__
+#define __BANDDEPTH_HPP__
 
 #include <HPCSDefs.hpp>
 
@@ -133,7 +133,7 @@ public:
   //! Constructor from a shared pointer to BandDepthData object
   BandDepth( const bdDataPtr_Type & bdDataPtr );
   
-  ~BandDepth(){};
+  virtual ~BandDepth(){};
 
   //@}
   
@@ -142,7 +142,7 @@ public:
 
     
   //! Method for the computation of BDs. Computation is made in parallel exploiting MPI.
-  void computeBDs();
+  virtual void computeBDs();
   
   //! Method for the printing of computed BDs.
   /*!
@@ -186,21 +186,9 @@ public:
   
   //@}
   
-private:
+protected:
   
-  //! @name Private methods
-  //@{
-
-  //! Each thread reads data from data files.
-  void readData();
-    
-  //! Method to compute binomial coefficients
-  UInt binomial( const UInt & N , const UInt & K );
-  
-  //@}
-  
-
-  //! @name Private members
+  //! @name Protected members
   //@{
   
   //! Shared pointer to a BandDepthData type object
@@ -215,6 +203,16 @@ private:
   //! MPI utility pointer object
   mpiUtilityPtr_Type M_mpiUtilPtr;
   
+  //@}
+  
+private:
+  
+  //! @name Private methods
+  //@{
+
+  //! Each thread reads data from data files.
+  void readData();
+    
   //@}
     
 };
@@ -353,25 +351,6 @@ getBDs( std::vector< Real > & bds ) const
 }
 
 
-// Method for the computation of binomial coefficients
-template < UInt _J >
-UInt
-BandDepth< _J >::
-binomial( const UInt & N , const UInt & K )
-{    
-    UInt num( 1 );
-    UInt denom( 1 );
-    
-    for ( UInt iK(0); iK < K; ++iK )
-    {
-	num *= N - iK;
-	denom *= iK + 1;
-    }
-  
-   return static_cast< UInt >( num/denom );
-}
-
-
 // Method for the computation of BDs
  template < UInt _J >
  void
@@ -453,7 +432,7 @@ binomial( const UInt & N , const UInt & K )
 	}
       }
 
-	this->M_BDs[ iPz ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbPz - 1, _J ) );
+	this->M_BDs[ iPz ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * binomial( nbPz - 1, _J ) );
   }	    
  
   // COMMUNICATING BAND DEPTHS
@@ -586,7 +565,7 @@ computeBDs()
  	
        }
        
-       this->M_BDs[ globalPzID ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * this->binomial( nbPz - 1, 2 ) );
+       this->M_BDs[ globalPzID ] = comprisedCounter / static_cast< Real > ( ( nbPts - 1 ) * binomial( nbPz - 1, 2 ) );
      
   }
    

@@ -38,6 +38,7 @@ MPI_Init( &argc, &argv );
   
    bdPtr->addToReferenceSet( 0, nbReferenceSamples );
    
+   // To finalize the construction of reference set.
    bdPtr->setTestSet();
        
    bdPtr->computeBDs();

@@ -27,6 +27,7 @@ namespace HPCS
  BandDepthData::
  BandDepthData( const data_Type & dataFile, const std::string & section )
  {
+    
     const std::string baseName( section );
       
     this->M_nbPz =  dataFile( ( baseName + "/nbPz"  ).data(), 10 );
@@ -59,7 +60,7 @@ namespace HPCS
     
     this->M_leftOffset = bdData.leftOffset();
     
-    this->M_rightOffset = bdData.leftOffset();
+    this->M_rightOffset = bdData.rightOffset();
     
     this->M_nbPts = bdData.nbPts();
     
@@ -73,6 +74,31 @@ namespace HPCS
     
     this->M_readDataFromFile = bdData.readDataFromFile();
  }
+ 
+ // Show me method
+ void
+ BandDepthData::
+ showMe( std::ostream & output ) const
+ {
+   output << "--------------------------------" << std::endl;
+   output << " ### BAND DEPTH DATA ### " << std::endl;
+
+   output << " nbPz = " 		<< this->M_nbPz 		<< std::endl;
+   output << " leftOffset = " 		<< this->M_leftOffset 		<< std::endl;
+   output << " rightOffset = " 		<< this->M_rightOffset 		<< std::endl;
+   output << " nbPts = " 		<< this->M_nbPts 		<< std::endl;
+   output << " J = " 			<< this->M_J 			<< std::endl;
+   output << " verbosity = " 		<< this->M_verbosity 		<< std::endl;
+   output << " inputFilename = "	<< this->M_inputFilename 	<< std::endl;
+   output << " outputFilename = "	<< this->M_outputFilename 	<< std::endl;
+   output << " readDataFromFile = " 	<< this->M_readDataFromFile 	<< std::endl;
+   
+   output << "---------------------------------" << std::endl;
+   
+   return;
+   
+ }
+
  
  // Setter for the output filename
  void 

@@ -4,10 +4,25 @@
 namespace HPCS
 {
   
+  // Free function for the computation of binomial coefficients
+  UInt
+  binomial( const UInt & N , const UInt & K )
+  {    
+      UInt num( 1 );
+      UInt denom( 1 );
+      
+      for ( UInt iK(0); iK < K; ++iK )
+      {
+	  num *= N - iK;
+	  denom *= iK + 1;
+      }
+    
+    return static_cast< UInt >( num/denom );
+  }
+  
   /////////////////////////
   /// 
   /////////////////////////
-  
   
   CombinationsID::
   CombinationsID( const UInt & N, const UInt & K, const bool & storeFlag  )

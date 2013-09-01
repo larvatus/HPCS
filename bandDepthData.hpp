@@ -46,7 +46,7 @@ public:
   BandDepthData( const BandDepthData & bddata );
   
   //! Standard destructor
-  ~BandDepthData(){}
+  virtual ~BandDepthData(){}
   
   //! @name Setters & Getters 
   //@{
@@ -74,6 +74,8 @@ public:
   std::string outputFilename() const { return this->M_outputFilename; }
   
   std::string inputFilename() const { return this->M_inputFilename; }
+  
+  virtual void showMe( std::ostream & output = std::cout ) const;
   
   //@}
   
