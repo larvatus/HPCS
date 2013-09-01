@@ -12,8 +12,7 @@
 using namespace std;
 using namespace HPCS;
 
-typedef double Real;
-typedef unsigned int UInt;
+
 typedef BandDepthData bandDepthData_Type;
 typedef BandDepth< 2 > bandDepth_Type;
 typedef DataSet dataSet_Type;
@@ -36,15 +35,17 @@ MPI_Init( &argc, &argv );
    
    GetPot command_line( argc, argv );
       
-   const string data_file_name = command_line.follow( "data", 2, "-f", "--file" );
-     
+   const std::string data_file_name = command_line.follow( "data", 2, "-f", "--file" );
+
+   const std::string section = "BDALL";
+   
    GetPot dataFile( data_file_name.data() );
    
    // STARTING COMPUTATION VIA GENTON METHOD
    
    if ( myRank == MASTER ) printf( " ***** STARTING COMPUTATION VIA GENTON ALGORITHM \n" );
 
-   bandDepthData_Type bdData( dataFile, "GENTON" );
+   bandDepthData_Type bdData( dataFile, section );
    
    bandDepth_Type bd( bdData );
     
@@ -58,8 +59,15 @@ MPI_Init( &argc, &argv );
    
    if ( myRank == MASTER ) printf( " ***** STARTING COMPUTATION IN DIRECT WAY \n" );
    
-   GentonTest::computeBDs( dataFile, "REFERENCE" );
-
+   GentonTest< All > test;
+   
+   test.computeBDs( dataFile, section );
+   
+   std::string outputFilename( dataFile ( ( section + "/outputFilename" ).data(), "bd.all.dat" ) ); 
+   
+   outputFilename = outputFilename + ".direct";
+   
+   test.writeBDs( outputFilename );
    
     /////////////////////////////////////////////////////////
     /////

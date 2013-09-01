@@ -1,13 +1,16 @@
-[GENTON]
-
+[BDALL]
+  
   nbPz = 30
+
   nbPts = 500
+
   leftOffset = 0
+
   rightOffset = 0
 
   inputFilename = ../../../synthetic/amplitudeSine/I.txt
 
-  outputFilename = bd.I.genton.dat
+  outputFilename = bd.I.all.dat
 
   J = 2
 
@@ -16,16 +19,23 @@
 [../]
 
 
-[REFERENCE]
+[BDREFERENCE]
 
   nbPz = 30
+
   nbPts = 500
+
+  nbReferenceSamples = 20
+
   leftOffset = 0
+
   rightOffset = 0
 
   inputFilename = ../../../synthetic/amplitudeSine/I.txt
 
-  outputFilename = bd.I.reference.dat
+  levelsExtremaFilename = ../../../synthetic/amplitudeSine/levels.dat
+
+  outputFilename = bd.I.ref.dat
 
   J = 2
 

@@ -2,12 +2,19 @@
 #include "user_fun.hpp"
 
 namespace HPCS
-{
-   namespace GentonTest
-   {  
+{  /*
      void 
      computeBDs( const GetPot & dataFile, const std::string & section )
      {
+	typedef DataSet dataSet_Type;
+	typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
+    
+	typedef dataSet_Type::data_Type data_Type;
+	typedef dataSet_Type::dataPtr_Type dataPtr_Type;
+    
+	typedef CombinationsID combinationsID_Type;
+	typedef CombinationsID::tuple_Type tuple_Type;
+       
        
 	int nbThreads(0), myRank(0);
       
@@ -145,39 +152,14 @@ namespace HPCS
 	}
 	
 	// WRITING BAND DEPTHS TO OUTPUT FILENAME
-	
-	if ( myRank == MASTER )
-	{
-	  std::ofstream output( outputFilename.data(), std::ios_base::out );
-	  
-	  for( UInt iPz(0); iPz < nbPz; ++iPz )
-	  {
-	      output << iPz << " " << bandDepths[ iPz ] << std::endl;
-	  }
-	
-	  output.close();
-	}
+
       
 	if ( myRank == MASTER ) printf( " FINISHED COMPUTATION IN DIRECT WAY \n" );
 	
 	return;
 	
      }
+     */
+  
      
-    UInt 
-    binomial( const UInt & N , const UInt & K )
-    {    
-	UInt num( 1 );
-	UInt denom( 1 );
-	
-	for ( UInt iK(0); iK < K; ++iK )
-	{
-	    num *= N - iK;
-	    denom *= iK + 1;
-	}
-      
-      return static_cast< UInt >( num/denom );
-    }
-     
-   }
 }

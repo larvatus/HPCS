@@ -497,6 +497,7 @@ namespace HPCS
       return;
   }
   
+  //! @warning FINISH ME!
   // The method writing the BDs to a specified output.
   template < UInt _J >
   void
@@ -504,7 +505,6 @@ namespace HPCS
   writeBDs( std::ostream & output ) 
   const
   {
-      
       
       return;
   }
