@@ -1,21 +1,37 @@
 [BDALL]
 
-  nbPz = 50
-  nbPts = 500
-  leftOffset = 0
-  rightOffset = 0
+    nbPz = 30
+    nbPts = 500
+    leftOffset = 0
+    rightOffset = 0
 
-  inputFilename = ../../../synthetic/amplitudeSine/I.txt
+    inputFilename = ../../../synthetic/amplitudeSine/I.txt
 
-  outputFilename = bd.I.amplitudeSine.dat
+    outputFilename = bd.I.amplitudeSine.dat
 
-  J = 3
+    J = 3
 
-  verbosity = 3
+    verbosity = 3
 
 [../]
 
 [BDREFERENCE]
+
+    nbPz = 30
+    nbPts = 500
+    nbReferenceSamples = 20
+    leftOffset = 0
+    rightOffset = 0
+
+    inputFilename = ../../../synthetic/amplitudeSine/I.txt
+
+    levelsExtremaFilename = ../../../synthetic/amplitudeSine/levels.dat
+
+    outputFilename = bd_I_ref.dat
+
+    J = 2
+
+    verbosity = 3
 
 [../]
 

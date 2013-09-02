@@ -154,9 +154,10 @@ public:
   //! The method writing the BDs to an output file.
   void writeBDs( std::ostream & output ) const;
   
-  //! TODO @todo MODIFICA! Tre template, rispetto al contenitore, alla coppia di iteratori e al puntatore al contenitore (?).
   //! Getter of the Band Depths
-  void getBDs( std::vector< Real > & bds ) const; 
+  
+  
+  void getBDs(  std::vector< Real > & bds ) const; 
   
   //! Method for resetting the BandDepthData object.
   /*!
@@ -343,9 +344,9 @@ template < UInt _J >
 inline 
 void
 BandDepth< _J >::
-getBDs( std::vector< Real > & bds ) const
+getBDs(  std::vector< Real > & bds ) const
 {
-    bds = this->M_BDs;
+    bds.assign( this->M_BDs.begin(), this->M_BDs.end() );
   
     return;
 }

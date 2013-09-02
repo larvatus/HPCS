@@ -53,6 +53,8 @@ namespace HPCS
     virtual void computeBDs();
 
     void setBandDepthData( const bdRefData_Type & bdRefData );
+    
+    void setBandDepthData( const bdDataPtr_Type & bdDataPtr );
   
     void setDataSet( const dataSetPtr_Type & dataPtr ); 
     
@@ -80,14 +82,8 @@ namespace HPCS
     template < typename _iteratorType >
       void getTestSetIDs( _iteratorType begin, _iteratorType end ) const;
 
-    template < typename _containerType > 
-      void getBDs( _containerType & bds ) const;
-      
-    template < typename _containerType >
-      void getBDs( boost::shared_ptr< _containerType > & bdsPtr ) const;
-      
-    template < typename _iteratorType >
-      void getBDs( _iteratorType begin, _iteratorType end ) const;
+    //! Overrides the corresponding base class method
+    void getBDs(  std::vector< Real > & bds ) const;
     
     //! The method writing the BDs to the file name specified inside the BD Data Object.
     void writeBDs() const;
@@ -140,14 +136,12 @@ namespace HPCS
     
   };
   
-  
-  
   // Default constructor
   template < UInt _J >
   BandDepthRef< _J >::
   BandDepthRef()
   :
-  M_mpiUtilPtr( new mpiUtility_Type() )  
+  M_mpiUtilPtr( new mpiUtility_Type() )
   {
   }
 
@@ -169,9 +163,7 @@ namespace HPCS
 
     if ( bdRefData.readDataFromFile() ) this->readData();
     
-    if ( bdRefData.readLevelsExtremaFromFile() ) 
-      
-      this->readLevels();
+    if ( bdRefData.readLevelsExtremaFromFile() )  this->readLevels();
      
  }
 
@@ -180,7 +172,7 @@ namespace HPCS
  void
  BandDepthRef< _J >::
  readData()
- {
+ {   
     const UInt nbLevels = BandDepthRef::S_nbLevels;
    
     this->M_dataSetPtr.reset( new dataSet_Type( M_bdRefDataPtr->nbPz(), M_bdRefDataPtr->nbPts(), nbLevels ) );
@@ -209,12 +201,28 @@ namespace HPCS
  void
  BandDepthRef< _J >::
  setBandDepthData( const bdRefData_Type & bdRefData )
- {   
+ {
+   
     this->M_bdRefDataPtr.reset( new bdRefData_Type( bdRefData ) );
     
     if ( bdRefData.readDataFromFile() ) this->readData();
     
     if ( bdRefData.readLevelsExtremaFromFile() ) this->readLevels();
+   
+    return;   
+ }
+ 
+ // Method for resetting the Band Depth Data object
+ template < UInt _J >
+ void
+ BandDepthRef< _J >::
+ setBandDepthData( const bdRefDataPtr_Type & bdRefDataPtr )
+ {   
+    this->M_bdRefDataPtr = bdRefDataPtr;
+    
+    if ( bdRefDataPtr->readDataFromFile() ) this->readData();
+    
+    if ( bdRefDataPtr->readLevelsExtremaFromFile() ) this->readLevels();
    
     return;   
  }
@@ -400,50 +408,20 @@ namespace HPCS
       
       std::copy( this->M_testSetIDs.begin(), this->M_testSetIDs.end(), begin );
    }
- 
+   
   // Getter of the BDs
   template < UInt _J >
-   template < typename _containerType >
-   inline
-   void
-   BandDepthRef< _J >::
-   getBDs( _containerType & container ) 
-   const
-   {
-	container.assign( this->M_BDs.begin(), this->M_BDs.end() );
-	
-	return;
-   }  
-  
-  // Getter of the BDs
-  template < UInt _J >
-   template < typename _containerType >
-   inline
-   void
-   BandDepthRef< _J >::
-   getBDs( boost::shared_ptr< _containerType > & contPtr ) 
-   const
-   {
-      contPtr->assign( this->M_BDs.begin(), this->M_BDs.end() );
+  inline
+  void
+  BandDepthRef< _J >::
+  getBDs( std::vector< Real > & container ) 
+  const
+  {     
+      container.assign( this->M_BDs.begin(), this->M_BDs.end() );
 	
       return;
-   }
-
-  // Getter of the BDs
-  template < UInt _J >
-   template < typename _iteratorType >
-   void
-   BandDepthRef< _J >::
-   getBDs( _iteratorType begin, _iteratorType end ) 
-   const
-   {
-      assert( begin != end );
-     
-      std::copy( this->M_BDs.begin(), this->M_BDs.end(), begin );
-
-      return;
-   }
-
+  }
+   
   // The method writing the BDs to the output. 
   template < UInt _J >
   void

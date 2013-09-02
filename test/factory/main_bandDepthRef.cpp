@@ -34,9 +34,9 @@ MPI_Init( &argc, &argv );
    
    bdPtr->setBandDepthData( bdData );
    
-   const UInt nbReferenceSamples( dataFile( ( section + "/nbReferenceSamples"  ).data(), 0 ) );
+//    const UInt nbReferenceSamples( dataFile( ( section + "/nbReferenceSamples"  ).data(), 0 ) );
   
-   bdPtr->addToReferenceSet( 0, nbReferenceSamples );
+   bdPtr->addToReferenceSet( 0, bdData.nbReferenceSamples() );
    
    // To finalize the construction of reference set.
    bdPtr->setTestSet();

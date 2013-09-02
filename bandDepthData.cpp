@@ -98,7 +98,6 @@ namespace HPCS
    return;
    
  }
-
  
  // Setter for the output filename
  void 
@@ -147,6 +146,8 @@ namespace HPCS
     
     this->M_levelsExtremaFilename =  dataFile( ( baseName + "/levelsExtremaFilename"  ).data(), "levels.dat" );
     
+    this->M_nbRefSamples = dataFile( ( baseName + "/nbReferenceSamples" ).data(), 0 );
+    
     this->M_readLevelsExtremaFromFile = true;
       
  }
@@ -163,15 +164,41 @@ namespace HPCS
     return;
 }
 
-// Getter of the levels filename
-std::string
-BandDepthRefData::
-levelsExtremaFilename() const
-{ 
-  return this->M_levelsExtremaFilename; 
-}
+ // Method for resetting the number of Reference samples.
+ void 
+ BandDepthRefData::
+ setNbReferenceSamples( const UInt & nbRefSamples )
+ {
+    this->M_nbRefSamples = nbRefSamples;
+    
+    return;
+ }
 
-// Copy constructor
+ // Getter for the number of reference samples
+ UInt
+ BandDepthRefData::
+ nbReferenceSamples() const
+ {
+    return this->M_nbRefSamples;
+ }
+ 
+ // Getter for the number of test samples (i.e. all the non-reference samples )
+ UInt 
+ BandDepthRefData::
+ nbTestSamples() const
+ {
+    return ( this->M_nbPz - this->M_nbRefSamples); 
+ }
+ 
+ // Getter of the levels filename
+ std::string
+ BandDepthRefData::
+ levelsExtremaFilename() const
+ { 
+   return this->M_levelsExtremaFilename; 
+ }
+
+ // Copy constructor
  BandDepthRefData::
  BandDepthRefData( const BandDepthRefData & bdRefData )
  :
@@ -187,5 +214,32 @@ levelsExtremaFilename() const
     this->M_readLevelsExtremaFromFile = bdRefData.readLevelsExtremaFromFile();
  }
  
+ 
+ void
+ BandDepthRefData::
+ showMe( std::ostream & output ) const
+ {
+   output << "--------------------------------" << std::endl;
+   output << " ### BAND DEPTH REF DATA ### " << std::endl;
+
+   output << " nbPz = " 			<< this->M_nbPz 		<< std::endl;
+   output << " leftOffset = " 			<< this->M_leftOffset 		<< std::endl;
+   output << " rightOffset = " 			<< this->M_rightOffset 		<< std::endl;
+   output << " nbPts = " 			<< this->M_nbPts 		<< std::endl;
+   output << " J = " 				<< this->M_J 			<< std::endl;
+   output << " verbosity = " 			<< this->M_verbosity 		<< std::endl;
+   output << " inputFilename = "		<< this->M_inputFilename 	<< std::endl;
+   output << " outputFilename = "		<< this->M_outputFilename 	<< std::endl;
+   output << " readDataFromFile = " 		<< this->M_readDataFromFile 	<< std::endl;
+   output << " nbRefSamples = "			<< this->M_nbRefSamples		<< std::endl;
+   output << " levelsExtremaFilename = "	<< this->M_levelsExtremaFilename << std::endl;
+   output << " readLevelsExtremaFromFile = " 	<< this->M_readLevelsExtremaFromFile << std::endl;
+   
+   output << "---------------------------------" << std::endl;
+    
+   
+    return;
+ }
+  
  
 }

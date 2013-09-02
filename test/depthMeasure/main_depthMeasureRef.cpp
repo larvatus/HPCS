@@ -9,10 +9,10 @@
 using namespace std;
 using namespace HPCS;
 
-typedef DepthMeasureBase< All > dmBase_Type;
+typedef DepthMeasureBase< Reference > dmBase_Type;
 typedef boost::shared_ptr< dmBase_Type > dmBasePtr_Type;
-typedef DMFactory< All > dmFactory_Type;
-typedef BandDepthData bdData_Type;
+typedef DMFactory< Reference > dmFactory_Type;
+typedef BandDepthRefData bdData_Type;
 typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
 
 int main( int argc, char * argv[] )
@@ -25,7 +25,17 @@ int main( int argc, char * argv[] )
    
    MPI_Comm_size( MPI_COMM_WORLD, & nbThreads );
    
+   if ( myRank == MASTER )
+   {
+      printf( "=======================================\n" );
+   }
+   
    // INPUT OF DATA FROM FILEANAMES
+   
+   if ( myRank == MASTER )
+   {
+      printf( " *** DATA SETUP *** \n" );
+   }
    
    GetPot command_line( argc, argv );
       
@@ -35,16 +45,36 @@ int main( int argc, char * argv[] )
    
    // STARTING COMPUTATION VIA GENTON METHOD
    
-   bdDataPtr_Type bdDataPtr( new bdData_Type( dataFile, "BDALL") );
+   bdDataPtr_Type bdDataPtr( new bdData_Type( dataFile, "BDREFERENCE") );
    
    dmFactory_Type factory;
    
    dmBasePtr_Type dmPtr( factory.create( bdDataPtr->J() ) );
    
-   dmPtr->setBDData( bdDataPtr );
+   dmPtr->setBandDepthData( bdDataPtr );
 
-   dmPtr->compute();
+   if ( myRank == MASTER )
+   {
+      printf( " *** COMPUTATION OF DEPTHS *** \n" );
+   }
+   
+   dmPtr->computeDepths();
+   
+   dmPtr->computeRanks();
 
+   dmPtr->writeDepths();
+
+   if ( myRank == MASTER )
+   {
+      printf( " *** RANKS INDUCED BY DEPTHS *** \n" );
+   }
+   
+   dmPtr->writeRanks();
+   
+   if ( myRank == MASTER )
+   {
+      printf( "=======================================\n" );
+   }
    
  MPI_Finalize();
   

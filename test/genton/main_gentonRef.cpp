@@ -50,10 +50,9 @@ MPI_Init( &argc, &argv );
    
    bdPtr->setBandDepthData( bdDataGenton );
    
-   const UInt nbRefSamples( dataFile( ( gentonSection + "/nbReferenceSamples" ).data(), 5 ) );
+   bdPtr->addToReferenceSet( 0, bdDataGenton.nbReferenceSamples() );
    
-   bdPtr->addToReferenceSet( 0, nbRefSamples );
-   
+   // To finalize the construction of reference set.
    bdPtr->setTestSet();
     
    bdPtr->computeBDs();

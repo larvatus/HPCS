@@ -141,7 +141,7 @@ public:
   BandDepthRefData( const BandDepthRefData & bddata );
   
   //! Standard destructor
-  ~BandDepthRefData(){}
+  virtual ~BandDepthRefData(){}
   
   //! @name Setters & Getters 
   //@{
@@ -149,18 +149,35 @@ public:
   //! Method for setting up the file name containing the extrema to be used to build dataSetLevelled.
   void setLevelsExtremaFilename( const std::string & inputFilename );
   
+  //! Method for resetting the number of Reference samples.
+  void setNbReferenceSamples( const UInt & nbRefSamples );
+  
   //! Getter of the levels filename
   std::string levelsExtremaFilename() const;
   
+  //! Do I read levels extrema from file?
   bool readLevelsExtremaFromFile() const { return this->M_readLevelsExtremaFromFile; }
+  
+  //! Getter for the number of reference samples
+  UInt nbReferenceSamples() const;
+  
+  //! Getter for the number of test samples (i.e. all the non-reference samples )
+  UInt nbTestSamples() const;
+  
+  virtual void showMe( std::ostream & output = std::cout ) const;
   
   //@}
   
-private:
+protected:
 
+  UInt M_nbRefSamples;
+  
   std::string M_levelsExtremaFilename;
   
   bool M_readLevelsExtremaFromFile;
+  
+private:
+  
   
 };
 

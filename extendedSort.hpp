@@ -67,7 +67,7 @@ namespace HPCS
       
       typedef boost::shared_ptr< ID_Type > IDPtr_Type;
       
-      ExtendedSort(){};
+      ExtendedSort();
       
       ~ExtendedSort(){};
       
@@ -105,6 +105,15 @@ namespace HPCS
       void performSort();
       
     };
+    
+    template < typename _T >
+    ExtendedSort< _T >::
+    ExtendedSort()
+    :
+    M_dataPtr( new data_Type() ),
+    M_IDsPtr( new ID_Type() )
+    {
+    }
      
     template < typename _T >
       template < typename _containerType >
@@ -187,7 +196,7 @@ namespace HPCS
       {
 	this->M_sortedFlag = false;
 	
-	this->M_dataPtr->erase();
+	this->M_dataPtr->clear();
 	
 	typedef _iteratorType it_Type;
 	
