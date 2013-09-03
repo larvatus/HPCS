@@ -11,7 +11,7 @@ library(mvtnorm)
 
 ### PARAMETERS ###
 
-N = 30;
+N = 100;
 
 S = 2;
 

@@ -14,14 +14,6 @@ INCLUDE_DIRECTORIES(${MPI_INCLUDE_PATH})
 
 ADD_LIBRARY( mbd bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet )
 
-# A first executable
-ADD_EXECUTABLE(main.exe main)
-TARGET_LINK_LIBRARIES(main.exe ${MPI_LIBRARIES} mbd)
-EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/data data )
-# ENABLE_TESTING()
-# ADD_TEST(mytest  ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${CMAKE_CURRENT_BINARY_DIR}/main.exe )
-
-
 # Adding test subdirectory
 
 ADD_SUBDIRECTORY(test)

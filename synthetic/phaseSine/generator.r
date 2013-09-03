@@ -6,7 +6,7 @@ rm ( list = ls() );
 
 ### PARAMETERS ###
 
-N = 30;
+N = 100;
 
 S = 2;
 

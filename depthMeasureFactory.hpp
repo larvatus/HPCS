@@ -86,9 +86,9 @@ namespace HPCS
       
     flag = flag & ( this->registerProduct( 3, wrapper_Type( Ptr_Type( new CreateDM3 < _policy >() ) ) ) );
 	  
-    flag = flag & ( this->registerProduct( 4, wrapper_Type( Ptr_Type( new CreateDM3 < _policy >() ) ) ) );
+    flag = flag & ( this->registerProduct( 4, wrapper_Type( Ptr_Type( new CreateDM4 < _policy >() ) ) ) );
     
-    flag = flag & ( this->registerProduct( 5, wrapper_Type ( Ptr_Type( new CreateDM4 < _policy >() ) ) ) );
+    flag = flag & ( this->registerProduct( 5, wrapper_Type ( Ptr_Type( new CreateDM5 < _policy >() ) ) ) );
     
     assert( flag == true );
       

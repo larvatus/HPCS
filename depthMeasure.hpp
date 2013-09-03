@@ -362,56 +362,7 @@ namespace HPCS
     
     return;
   } 
-/*  
- template < UInt _J, BDPolicy _policy >
- void
- DepthMeasure< _J, _policy >::
- getDepths( depths_Type & dephts ) const
- {
-    assert( this->M_depthsPtr->size() != 0 );
-   
-    dephts.assign( this->M_depthsPtr->begin(), this->M_depthsPtr->end() );
-    
-    return;
- };
- 
- template < UInt _J, BDPolicy _policy >
- void
- DepthMeasure< _J, _policy >::
- getDepths( depthsPtr_Type & depthsPtr ) const
- {
-    assert( this->M_depthsPtr->size() != 0 );
-   
-    depthsPtr = this->M_depthsPtr;
-    
-    return;
- }
-    
- template < UInt _J, BDPolicy _policy >
- void
- DepthMeasure< _J, _policy >::
- getRanks( ranks_Type & ranks ) const
- {
-    assert( this->M_ranksPtr.size() != 0 );
-    
-    ranks.assign( this->M_ranksPtr->begin(), this->M_ranksPtr->end() );
-    
-    return;
-    
- }
- 
- template < UInt _J, BDPolicy _policy >
- void
- DepthMeasure< _J, _policy >::
- getDepths( ranksPtr_Type & ranksPtr ) const
- {
-    assert( this->M_ranksPtr->size() != 0 );
-   
-    ranksPtr = this->M_ranksPtr;
-    
-    return;
- }
- */
+
   
   //! Poiché non è possibile dare specializzazioni parziali di singoli metodi di una classe con multipli parametri
   //! Template, costruisco questa classe che implementa il compute:

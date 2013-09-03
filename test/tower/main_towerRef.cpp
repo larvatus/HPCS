@@ -1,6 +1,5 @@
 
 
-
 #include <HPCSDefs.hpp>
 #include <multiDepthMeasure.hpp>
 #include <multiDepthMeasureFactory.hpp>
@@ -97,7 +96,7 @@ MPI_Init( & argc, & argv );
     
       const std::string outputMBD( dataFile( (baseName + "/outputFilename" ).data(), "mbd.dat" ) );
       
-      std::string commandString = "gnuplot -p -e \"bd_I=\'" + outputBD1 + "\'; bd_II=\'" + outputBD2 + "\'; mbd=\'" + outputMBD + "\'\" multiDepthMeasure.plot";
+      std::string commandString = "gnuplot -p -e \"bd_I=\'" + outputBD1 + "\'; bd_II=\'" + outputBD2 + "\'; mbd=\'" + outputMBD + "\'\" multiDepthMeasureAll.plot";
       
       system( commandString.data() );
     

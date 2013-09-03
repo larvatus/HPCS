@@ -1,0 +1,15 @@
+
+
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/data ${CMAKE_CURRENT_BINARY_DIR}/data  )
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/tower.plot ${CMAKE_CURRENT_BINARY_DIR}/tower.plot )
+
+# A first executable
+
+ADD_EXECUTABLE(main_towerAll.exe main_towerAll )
+TARGET_LINK_LIBRARIES(main_towerAll.exe ${MPI_LIBRARIES} mbd)
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/weightsAll.dat ${CMAKE_CURRENT_BINARY_DIR}/weightsAll.dat  )
+
+
+ADD_EXECUTABLE(main_towerRef.exe main_towerRef )
+TARGET_LINK_LIBRARIES(main_towerRef.exe ${MPI_LIBRARIES} mbd)
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/weightsRef.dat ${CMAKE_CURRENT_BINARY_DIR}/weightsRef.dat  )

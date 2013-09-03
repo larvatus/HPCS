@@ -1,0 +1,146 @@
+
+[MBDALL]
+
+  [./first]
+
+      outputFilename = mbd.first.towerSine.dat
+
+      weightsFilename = weightsAll.dat
+
+      J = 2
+
+      [./I]
+	
+	nbPz = 30
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/towerSine/I.txt
+
+	outputFilename = bd.first.I.towerSine.dat
+
+	J = 2
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 30
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/towerSine/II.txt
+
+	outputFilename = bd.first.II.towerSine.dat
+
+	J = 2
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+  [./second]
+
+      outputFilename = mbd.second.towerSine.dat
+
+      weightsFilename = weightsAll.dat
+
+      J = 3
+
+      [./I]
+	
+	nbPz = 30
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/towerSine/I.txt
+
+	outputFilename = bd.second.I.towerSine.dat
+
+	J = 3
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 30
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/towerSine/II.txt
+
+	outputFilename = bd.second.II.towerSine.dat
+
+	J = 3
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+  [./third]
+
+      outputFilename = mbd.third.towerSine.dat
+
+      weightsFilename = weightsAll.dat
+
+      J = 4
+
+      [./I]
+	
+	nbPz = 30
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/towerSine/I.txt
+
+	outputFilename = bd.third.I.towerSine.dat
+
+	J = 4
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 30
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/towerSine/II.txt
+
+	outputFilename = bd.third.II.towerSine.dat
+
+	J = 4
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+
+[../]
+
+
+[MBDREFERENCE]
+
+[../]
+
