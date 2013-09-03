@@ -37,6 +37,47 @@
 
 [MBDALL]
 
+  outputFilename = mbd.amplitudeSine.dat
+
+  weightsFilename = weightsAll.dat
+
+  J = 2
+
+  [./I]
+    
+    nbPz = 30
+    nbPts = 500
+    leftOffset = 0
+    rightOffset = 0
+
+    inputFilename = ../../../synthetic/amplitudeSine/I.txt
+
+    outputFilename = bd.I.amplitudeSine.dat
+
+    J = 2
+
+    verbosity = 3
+
+  [../]
+
+  [./II]
+
+    nbPz = 30
+    nbPts = 500
+    leftOffset = 0
+    rightOffset = 0
+
+    inputFilename = ../../../synthetic/amplitudeSine/II.txt
+
+    outputFilename = bd.II.amplitudeSine.dat
+
+    J = 2
+
+    verbosity = 3
+
+
+  [../]
+
 [../]
 
 

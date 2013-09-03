@@ -43,8 +43,6 @@ int main( int argc, char * argv[] )
      
    GetPot dataFile( data_file_name.data() );
    
-   // STARTING COMPUTATION VIA GENTON METHOD
-   
    bdDataPtr_Type bdDataPtr( new bdData_Type( dataFile, "BDREFERENCE") );
    
    dmFactory_Type factory;
@@ -74,6 +72,12 @@ int main( int argc, char * argv[] )
    if ( myRank == MASTER )
    {
       printf( "=======================================\n" );
+   }
+   
+   
+   if ( myRank == MASTER )
+   {
+    
    }
    
  MPI_Finalize();

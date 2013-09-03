@@ -61,6 +61,9 @@ public:
 
   UInt nbPts() const { return this->M_nbPts; }
   
+  //! Unified common interface to get the number of testing samples
+  virtual UInt nbTestSamples() const { return this->M_nbPz; }
+  
   UInt leftOffset() const { return this->M_leftOffset; }
   
   UInt rightOffset() const { return this->M_rightOffset; }
@@ -162,7 +165,7 @@ public:
   UInt nbReferenceSamples() const;
   
   //! Getter for the number of test samples (i.e. all the non-reference samples )
-  UInt nbTestSamples() const;
+  virtual UInt nbTestSamples() const;
   
   virtual void showMe( std::ostream & output = std::cout ) const;
   

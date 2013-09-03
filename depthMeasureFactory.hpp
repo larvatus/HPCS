@@ -60,8 +60,6 @@ namespace HPCS
   {
     
   public:
-    
-    typedef BDPolicy bdPolicy_Type;
 	
     typedef Factory< DepthMeasureBase< _policy >, UInt, CreationRulePtrWrapper< DepthMeasureBase< _policy > > > factoryBase_Type;
 

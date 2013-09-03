@@ -43,8 +43,6 @@ int main( int argc, char * argv[] )
      
    GetPot dataFile( data_file_name.data() );
    
-   // STARTING COMPUTATION VIA GENTON METHOD
-   
    bdDataPtr_Type bdDataPtr( new bdData_Type( dataFile, "BDALL") );
    
    dmFactory_Type factory;

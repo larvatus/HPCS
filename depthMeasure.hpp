@@ -38,9 +38,24 @@ namespace HPCS
     
     virtual ~DepthMeasureBase(){};
     
-    virtual void getDepths( std::vector< Real > & dephts ) const{};
+    //! LI METTO QUI ANCHE PERCHÉ NELLA CLASSE DERIVATA NON POTREBBERO ESSERE USATI IN MANIERA POLIMORFICA! (TEMPLATE NON POSSONO ESSERE VIRTUAL!)
+    template < typename _containerType >
+      void getDepths( boost::shared_ptr< _containerType > & containerPtr  ) const;
+
+    template < typename _containerType >
+      void getDepths( _containerType & container ) const;
+
+    template < typename _iteratorType >
+      void getDepths( _iteratorType begin, _iteratorType end ) const;    
     
-    virtual void getRanks( std::vector< Real > & dephts ){};
+    template < typename _containerType >
+      void getRanks( boost::shared_ptr< _containerType > &  containerPtr ) const;
+
+    template < typename _containerType >
+      void getRanks( _containerType &  container ) const;
+
+    template < typename _iteratorType >
+      void getRanks( _iteratorType begin, _iteratorType end ) const;
     
     virtual void setBandDepthData( const bdDataPtr_Type & bdDataPtr ){};
     
@@ -49,13 +64,25 @@ namespace HPCS
     virtual void computeRanks(){};
     
     virtual void writeDepths(){};
-    
+ 
     virtual void writeRanks( std::ostream & output = std::cout ){};
-     
-    virtual  void writeRanks( const std::string & outputFilename ){};
+      
+    virtual void writeRanks( const std::string & outputFilename ){};
      
   protected:
     
+    typedef std::vector< Real > depths_Type;
+    
+    typedef boost::shared_ptr< depths_Type > depthsPtr_Type;
+    
+    typedef std::vector< UInt > ranks_Type;
+    
+    typedef boost::shared_ptr< ranks_Type > ranksPtr_Type;
+    
+    depthsPtr_Type M_depthsPtr;
+    
+    ranksPtr_Type M_ranksPtr;
+
     mpiUtilityPtr_Type M_mpiUtilPtr;
     
   private:
@@ -67,8 +94,94 @@ namespace HPCS
   DepthMeasureBase< _policy >::
   DepthMeasureBase()
   :
-  M_mpiUtilPtr( new mpiUtility_Type() )
+  M_mpiUtilPtr( new mpiUtility_Type() ),
+  M_depthsPtr( new depths_Type() ),
+  M_ranksPtr( new ranks_Type() )
   {}
+  
+  
+  template < BDPolicy _policy >
+    template < typename _containerType >
+    void
+    DepthMeasureBase< _policy >::
+    getDepths( boost::shared_ptr< _containerType > & containerPtr ) const
+    {            
+      assert( this->M_depthsPtr->size() != 0 );
+	
+      containerPtr->assign( this->M_depthsPtr->begin(), this->M_depthsPtr->end() );
+	  
+      return;
+    }
+      
+  template < BDPolicy _policy >
+    template < typename _containerType >
+    void
+    DepthMeasureBase< _policy >::
+    getDepths( _containerType & container ) const
+    {
+      assert( this->M_depthsPtr.size() != 0 );
+	
+      container->assign( this->M_depthsPtr->begin(), this->M_depthsPtr->end() );
+	  
+      return;
+    }
+      
+  template < BDPolicy _policy >
+    template < typename _iteratorType >
+    void
+    DepthMeasureBase< _policy >::
+    getDepths( _iteratorType begin, _iteratorType end ) const
+    {
+      assert( this->M_depthsPtr->size() != 0 );
+	  
+      std::copy( this->M_depthsPtr->begin(), this->M_depthsPtr->end(), begin );
+	  
+      return;
+    }
+
+       
+  template < BDPolicy _policy >
+    template < typename _containerType >
+    void
+    DepthMeasureBase< _policy >::
+    getRanks( boost::shared_ptr< _containerType > & containerPtr ) const
+    {
+      assert( this->M_ranksPtr.size() != 0 );
+	
+      containerPtr->assign( this->M_ranksPtr->begin(), this->M_ranksPtr->end() );
+	  
+      return;
+    }
+      
+  template < BDPolicy _policy >
+    template < typename _containerType >
+    void
+    DepthMeasureBase< _policy >::
+    getRanks( _containerType & container ) const
+    {
+      assert( this->M_ranksPtr.size() != 0 );
+	
+      container.assign( this->M_ranksPtr->begin(), this->M_ranksPtr->end() );
+	  
+      return;
+    }   
+      
+   
+  template < BDPolicy _policy >
+    template < typename _iteratorType >
+    void
+    DepthMeasureBase< _policy >::
+    getRanks( _iteratorType begin, _iteratorType end ) const
+    {
+      assert( this->M_ranksPtr.size() != 0 );
+      
+      assert( begin != end );
+	
+      std::copy( this->M_ranksPtr->begin(), this->M_ranksPtr->end(), begin );
+	    
+      return;
+    }
+ 
   
   template < UInt _J, BDPolicy _policy  >
   class DepthMeasure : public DepthMeasureBase< _policy >
@@ -83,10 +196,6 @@ namespace HPCS
     
     typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
     
-    typedef std::vector< UInt > depths_Type;
-    
-    typedef boost::shared_ptr< depths_Type > depthsPtr_Type;
-    
     DepthMeasure();
     
     virtual ~DepthMeasure(){};
@@ -95,44 +204,29 @@ namespace HPCS
     
     //! polymorphic use of bdData
     void setBandDepthData( const bdDataPtr_Type & bdDataPtr );
-   
-    template < typename _containerType >
-      void getDepths( boost::shared_ptr< _containerType > & containerPtr  ) const;
 
-    template < typename _containerType >
-      void getDepths( _containerType & container ) const;
+    void computeDepths();
 
-    template < typename _iteratorType >
-      void getDepths( _iteratorType begin, _iteratorType end ) const;    
-    
-    //! NON SONO CONST PERCHÉ potrei doverli calcolare
-    template < typename _containerType >
-      void getRanks( boost::shared_ptr< _containerType > &  containerPtr );
-
-    template < typename _containerType >
-      void getRanks( _containerType &  container );
-
-    template < typename _iteratorType >
-      void getRanks( _iteratorType begin, _iteratorType end );
-
-     void computeDepths();
-
-     void computeRanks();
+    void computeRanks();
      
-     void writeDepths();
-
-     void writeRanks( std::ostream & output = std::cout );
-     
-     void writeRanks( const std::string & outputFilename );
+    void writeDepths();
+ 
+    void writeRanks( std::ostream & output = std::cout );
+      
+    void writeRanks( const std::string & outputFilename );
      
   protected:
+ 
+    typedef typename DepthMeasureBase< _policy >::depths_Type depths_Type;
+    
+    typedef typename DepthMeasureBase< _policy >::depthsPtr_Type depthsPtr_Type;
+    
+    typedef typename DepthMeasureBase< _policy >::ranks_Type ranks_Type;
+    
+    typedef typename DepthMeasureBase< _policy >::ranksPtr_Type ranksPtr_Type;
     
     bdDataPtr_Type M_bdDataPtr;
     
-    boost::shared_ptr< std::vector< Real > > M_depthsPtr;
-    
-    boost::shared_ptr< std::vector< UInt > > M_ranksPtr;
-
   private:
     
     typedef ExtendedSort< Real > sort_Type;
@@ -140,17 +234,15 @@ namespace HPCS
     typedef boost::shared_ptr< sort_Type > sortPtr_Type;
     
     sortPtr_Type M_sortPtr;
-    
+      
    };
   
   template < UInt _J, BDPolicy _policy >
   DepthMeasure< _J, _policy >::
   DepthMeasure()
   :
-  M_sortPtr( new sort_Type() ),
-  M_depthsPtr( new std::vector< Real >() ),
-  M_ranksPtr( new std::vector< UInt >() ),
-  DepthMeasureBase< _policy >()
+  DepthMeasureBase< _policy >(),
+  M_sortPtr( new sort_Type() )
   {
   }
   
@@ -158,9 +250,8 @@ namespace HPCS
   DepthMeasure< _J, _policy >::
   DepthMeasure( const bdDataPtr_Type & bdDataPtr )
   :
+  DepthMeasureBase< _policy >(),
   M_bdDataPtr( bdDataPtr ),
-   M_depthsPtr( new std::vector< Real >() ),
-  M_ranksPtr( new std::vector< UInt >() ),
   M_sortPtr( new sort_Type() )
   {
   }
@@ -173,9 +264,9 @@ namespace HPCS
   {
       this->M_bdDataPtr = bdDataPtr;
       
-      std::vector< Real >().swap( (*this->M_depthsPtr) ); 
+      depths_Type().swap( (*this->M_depthsPtr) ); 
       
-      std::vector< UInt >().swap( (*this->M_ranksPtr) ); 
+      ranks_Type().swap( (*this->M_ranksPtr) ); 
       
   }
   
@@ -184,6 +275,8 @@ namespace HPCS
   DepthMeasure< _J, _policy >::
   computeRanks()
   {
+      assert( this->M_depthsPtr->size() != 0 );
+    
       this->M_ranksPtr->assign( this->M_depthsPtr->size(), 0 );
 	  
       this->M_sortPtr->setData( this->M_depthsPtr->begin(), this->M_depthsPtr->end() );
@@ -202,7 +295,7 @@ namespace HPCS
     {
       std::ofstream output( this->M_bdDataPtr->outputFilename().data(), std::ios_base::out );
       
-      std::vector< Real >::const_iterator it;
+      typename depths_Type::const_iterator it;
       
       UInt count(0);
       
@@ -227,7 +320,7 @@ namespace HPCS
   {
     if ( this->M_mpiUtilPtr->isMaster() )
     {      
-      std::vector< UInt >::const_iterator it;
+      typename ranks_Type::const_iterator it;
       
       UInt count(0);
       
@@ -252,7 +345,7 @@ namespace HPCS
     {      
       std::ofstream output( outputFilename.data(), std::ios_base::out );
       
-      std::vector< UInt >::const_iterator it;
+      typename ranks_Type::const_iterator it;
       
       UInt count(0);
       
@@ -269,87 +362,57 @@ namespace HPCS
     
     return;
   } 
-  
-    template < UInt _J, BDPolicy _policy >
-      template < typename _containerType >
-      void
-      DepthMeasure< _J, _policy >::
-      getDepths( boost::shared_ptr< _containerType > & containerPtr ) const
-      {
-	  assert( this->M_depthsPtr->size() != 0 );
-	
-	  containerPtr->assign( this->M_depthsPtr->begin(), this->M_depthsPtr->end() );
-	  
-	  return;
-      }
-      
-    template < UInt _J, BDPolicy _policy >
-      template < typename _containerType >
-      void
-      DepthMeasure< _J, _policy >::
-      getDepths( _containerType & container ) const
-      {
-	  assert( this->M_depthsPtr.size() != 0 );
-	
-	  container->assign( this->M_depthsPtr->begin(), this->M_depthsPtr->end() );
-	  
-	  return;
-      }
-      
-    template < UInt _J, BDPolicy _policy >
-      template < typename _iteratorType >
-      void
-      DepthMeasure< _J, _policy >::
-      getDepths( _iteratorType begin, _iteratorType end ) const
-      {
-	  assert( this->M_depthsPtr->size() != 0 );
-	  
-	  std::copy( this->M_depthsPtr->begin(), this->M_depthsPtr->end(), begin );
-	  
-	  return;
-      }
-
-       
-    template < UInt _J, BDPolicy _policy >
-      template < typename _containerType >
-      void
-      DepthMeasure< _J, _policy >::
-      getRanks( boost::shared_ptr< _containerType > & containerPtr )
-      {
-	  assert( this->M_ranksPtr.size() != 0 );
-	
-	  containerPtr->assign( this->M_ranksPtr->begin(), this->M_ranksPtr->end() );
-	  
-	  return;
-      }
-      
-    template < UInt _J, BDPolicy _policy >
-      template < typename _containerType >
-      void
-      DepthMeasure< _J, _policy >::
-      getRanks( _containerType & container )
-      {
-	  assert( this->M_ranksPtr.size() != 0 );
-	
-	  container.assign( this->M_ranksPtr->begin(), this->M_ranksPtr->end() );
-	  
-	  return;
-      }   
-      
+/*  
+ template < UInt _J, BDPolicy _policy >
+ void
+ DepthMeasure< _J, _policy >::
+ getDepths( depths_Type & dephts ) const
+ {
+    assert( this->M_depthsPtr->size() != 0 );
    
-    template < UInt _J, BDPolicy _policy >
-      template < typename _iteratorType >
-      void
-      DepthMeasure< _J, _policy >::
-      getRanks( _iteratorType begin, _iteratorType end )
-      {
-	  assert( this->M_ranksPtr.size() != 0 );
-	
-	  std::copy( this->M_ranksPtr->begin(), this->M_ranksPtr->end(), begin );
-	  
-	  return;
-      }
+    dephts.assign( this->M_depthsPtr->begin(), this->M_depthsPtr->end() );
     
+    return;
+ };
+ 
+ template < UInt _J, BDPolicy _policy >
+ void
+ DepthMeasure< _J, _policy >::
+ getDepths( depthsPtr_Type & depthsPtr ) const
+ {
+    assert( this->M_depthsPtr->size() != 0 );
+   
+    depthsPtr = this->M_depthsPtr;
+    
+    return;
+ }
+    
+ template < UInt _J, BDPolicy _policy >
+ void
+ DepthMeasure< _J, _policy >::
+ getRanks( ranks_Type & ranks ) const
+ {
+    assert( this->M_ranksPtr.size() != 0 );
+    
+    ranks.assign( this->M_ranksPtr->begin(), this->M_ranksPtr->end() );
+    
+    return;
+    
+ }
+ 
+ template < UInt _J, BDPolicy _policy >
+ void
+ DepthMeasure< _J, _policy >::
+ getDepths( ranksPtr_Type & ranksPtr ) const
+ {
+    assert( this->M_ranksPtr->size() != 0 );
+   
+    ranksPtr = this->M_ranksPtr;
+    
+    return;
+ }
+ */
+  
   //! Poiché non è possibile dare specializzazioni parziali di singoli metodi di una classe con multipli parametri
   //! Template, costruisco questa classe che implementa il compute:
   template < UInt _J, BDPolicy _policy >
@@ -581,8 +644,6 @@ namespace HPCS
 	 bdBasePtr->computeBDs();
 	  
 	 bdBasePtr->getBDs( currBDs );
-	 
-	 std::cout << "SIZEEEEE " << currBDs.size() << std::endl;
 	 
 	 std::vector< Real >::const_iterator it1;
 
