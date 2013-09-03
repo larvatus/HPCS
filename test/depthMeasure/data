@@ -17,9 +17,9 @@
 
 [BDREFERENCE]
 
-    nbPz = 30
+    nbPz = 100
     nbPts = 500
-    nbReferenceSamples = 20
+    nbReferenceSamples = 50
     leftOffset = 0
     rightOffset = 0
 
@@ -45,7 +45,7 @@
 
   [./I]
     
-    nbPz = 30
+    nbPz = 100
     nbPts = 500
     leftOffset = 0
     rightOffset = 0
@@ -62,7 +62,7 @@
 
   [./II]
 
-    nbPz = 30
+    nbPz = 100
     nbPts = 500
     leftOffset = 0
     rightOffset = 0
