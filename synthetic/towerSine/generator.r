@@ -47,10 +47,10 @@ matplot( t(dataI[ 1:4,]), type = 'l');
 matplot( t(dataII[ 1:4, ]), type = 'l');
 
 ### SAVING IMAGES
-postscript('I_ampli_sine.ps');
+postscript('I_tower.ps');
 matplot( t(dataI), type = 'l');
 dev.off();
-postscript('II_ampli_sine.ps');
+postscript('II_tower.ps');
 matplot( t(dataII), type = 'l' );
 dev.off();
 

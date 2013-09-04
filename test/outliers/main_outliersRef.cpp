@@ -41,9 +41,8 @@ MPI_Init( & argc, & argv );
    
    baseNames[ 0 ] = "MBDREF/first";
    baseNames[ 1 ] = "MBDREF/second";
-   baseNames[ 2 ] = "MBDREF/third";
    
-   for ( UInt iJ(0); iJ < 3; ++iJ )
+   for ( UInt iJ(0); iJ < 2; ++iJ )
     {
 	if ( myRank == MASTER )
 	{
@@ -91,10 +90,9 @@ MPI_Init( & argc, & argv );
       const std::string outputMBD1( dataFile( ( baseNames[ 0 ] + "/outputFilename" ).data(), "mbd.1.dat" ) );
     
       const std::string outputMBD2( dataFile( ( baseNames[ 1 ] + "/outputFilename" ).data(), "mbd.2.dat" ) );
-    
-      const std::string outputMBD3( dataFile( ( baseNames[ 2 ] + "/outputFilename" ).data(), "mbd.3.dat" ) );
+
       
-      std::string commandString = "gnuplot -p -e \"mbd1=\'" + outputMBD1 + "\'; mbd2=\'" + outputMBD2 + "\'; mbd3=\'" + outputMBD3 + "\'\" tower.plot";
+      std::string commandString = "gnuplot -p -e \"mbd1=\'" + outputMBD1 + "\'; mbd2=\'" + outputMBD2 + "\'\" outliers.plot";
       
       system( commandString.data() );
     

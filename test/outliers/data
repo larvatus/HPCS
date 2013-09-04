@@ -1,0 +1,208 @@
+
+[MBDALL]
+
+  [./first]
+
+      outputFilename = mbd.first.outliers.dat
+
+      weightsFilename = weightsAll.w
+
+      J = 2
+
+      [./I]
+	
+	nbPz = 60
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/outliers/I.txt
+
+	outputFilename = bd.first.I.outliers.dat
+
+	J = 2
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 60
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/outliers/II.txt
+
+	outputFilename = bd.first.II.outliers.dat
+
+	J = 2
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+  [./second]
+
+      outputFilename = mbd.second.outliers.dat
+
+      weightsFilename = weightsAll.w
+
+      J = 3
+
+      [./I]
+	
+	nbPz = 60
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/outliers/I.txt
+
+	outputFilename = bd.second.I.outliers.dat
+
+	J = 3
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 60
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/outliers/II.txt
+
+	outputFilename = bd.second.II.outliers.dat
+
+	J = 3
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+
+[../]
+
+
+[MBDREF]
+
+  [./first]
+
+      outputFilename = mbd.first.ref.outliers.dat
+
+      weightsFilename = weightsAll.w
+
+      J = 2
+
+      [./I]
+	
+	nbPz = 60
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/outliers/I.txt
+
+	levelsExtremaFilename = ../../../synthetic/outliers/levels.dat
+	
+	outputFilename = bd.first.ref.I.outliers.dat
+
+	J = 2
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 60
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/outliers/II.txt
+
+	levelsExtremaFilename = ../../../synthetic/outliers/levels.dat
+
+	outputFilename = bd.first.ref.II.outliers.dat
+
+	J = 2
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+  [./second]
+
+      outputFilename = mbd.second.ref.outliers.dat
+
+      weightsFilename = weightsAll.w
+
+      J = 3
+
+      [./I]
+	
+	nbPz = 60
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/outliers/I.txt
+
+	levelsExtremaFilename = ../../../synthetic/outliers/levels.dat
+
+	outputFilename = bd.second.ref.I.outliers.dat
+
+	J = 3
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 60
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/outliers/II.txt
+
+	levelsExtremaFilename = ../../../synthetic/outliers/levels.dat
+
+	outputFilename = bd.second.ref.II.outliers.dat
+
+	J = 3
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+
+[../]
+

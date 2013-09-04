@@ -456,6 +456,8 @@ getBDs(  std::vector< Real > & bds ) const
 
     printf( " All depths have been gathered\n" );
   
+  MPI_Barrier( MPI_COMM_WORLD );
+  
    return;
   
 } 
@@ -464,9 +466,7 @@ template <>
 void
 BandDepth< 2 >::
 computeBDs()
-{
-   // UPGRADE: USE A VIEW OF DATASET
-    
+{    
    const UInt myRank = this->M_mpiUtilPtr->myRank();
    const UInt nbThreads = this->M_mpiUtilPtr->nbThreads();
    
@@ -585,6 +585,8 @@ computeBDs()
    if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
  
      printf( " All depths have been gathered\n" );
+   
+   MPI_Barrier( MPI_COMM_WORLD );
   
    return;
    

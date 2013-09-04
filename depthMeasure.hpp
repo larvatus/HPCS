@@ -595,7 +595,7 @@ namespace HPCS
 	 bdBasePtr->computeBDs();
 	  
 	 bdBasePtr->getBDs( currBDs );
-	 
+	 	 
 	 std::vector< Real >::const_iterator it1;
 
  	 std::vector< Real >::iterator it2 = this->M_containerPtr->begin();;

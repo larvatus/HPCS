@@ -7,11 +7,11 @@
 using namespace std;
 using namespace HPCS;
 
-typedef BandDepthRefData bdData_Type;
+typedef BandDepthData bdData_Type;
 typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
-typedef MultiDepthMeasureBase< Reference > MDMBase_Type;
+typedef MultiDepthMeasureBase< All > MDMBase_Type;
 typedef boost::shared_ptr< MDMBase_Type > mdmBasePtr_Type;
-typedef MultiDepthMeasureFactory< Reference > mdmFactory_Type;
+typedef MultiDepthMeasureFactory< All > mdmFactory_Type;
 
 int main( int argc, char * argv[] )
 {
@@ -39,11 +39,10 @@ MPI_Init( & argc, & argv );
    
    std::vector< std::string > baseNames(3);
    
-   baseNames[ 0 ] = "MBDREF/first";
-   baseNames[ 1 ] = "MBDREF/second";
-   baseNames[ 2 ] = "MBDREF/third";
+   baseNames[ 0 ] = "MBDALL/first";
+   baseNames[ 1 ] = "MBDALL/second";
    
-   for ( UInt iJ(0); iJ < 3; ++iJ )
+   for ( UInt iJ(0); iJ < 2; ++iJ )
     {
 	if ( myRank == MASTER )
 	{
@@ -91,10 +90,8 @@ MPI_Init( & argc, & argv );
       const std::string outputMBD1( dataFile( ( baseNames[ 0 ] + "/outputFilename" ).data(), "mbd.1.dat" ) );
     
       const std::string outputMBD2( dataFile( ( baseNames[ 1 ] + "/outputFilename" ).data(), "mbd.2.dat" ) );
-    
-      const std::string outputMBD3( dataFile( ( baseNames[ 2 ] + "/outputFilename" ).data(), "mbd.3.dat" ) );
       
-      std::string commandString = "gnuplot -p -e \"mbd1=\'" + outputMBD1 + "\'; mbd2=\'" + outputMBD2 + "\'; mbd3=\'" + outputMBD3 + "\'\" tower.plot";
+      std::string commandString = "gnuplot -p -e \"mbd1=\'" + outputMBD1 + "\'; mbd2=\'" + outputMBD2 + "\'\" outliers.plot";
       
       system( commandString.data() );
     

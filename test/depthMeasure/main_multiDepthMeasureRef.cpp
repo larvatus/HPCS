@@ -8,11 +8,11 @@
 using namespace std;
 using namespace HPCS;
 
-typedef BandDepthData bdData_Type;
+typedef BandDepthRefData bdData_Type;
 typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
-typedef MultiDepthMeasureBase< All > MDMBase_Type;
+typedef MultiDepthMeasureBase< Reference > MDMBase_Type;
 typedef boost::shared_ptr< MDMBase_Type > mdmBasePtr_Type;
-typedef MultiDepthMeasureFactory< All > mdmFactory_Type;
+typedef MultiDepthMeasureFactory< Reference > mdmFactory_Type;
 
 int main( int argc, char * argv[] )
 {
@@ -43,7 +43,7 @@ MPI_Init( & argc, & argv );
      
    GetPot dataFile( data_file_name.data() );
    
-   const std::string baseName( "MBDALL" );
+   const std::string baseName( "MBDREFERENCE" );
    
    const UInt J( dataFile( ( baseName + "/J" ).data(), 2 ) );
    

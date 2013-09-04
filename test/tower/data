@@ -5,7 +5,7 @@
 
       outputFilename = mbd.first.towerSine.dat
 
-      weightsFilename = weightsAll.dat
+      weightsFilename = weightsAll.w
 
       J = 2
 
@@ -50,7 +50,7 @@
 
       outputFilename = mbd.second.towerSine.dat
 
-      weightsFilename = weightsAll.dat
+      weightsFilename = weightsAll.w
 
       J = 3
 
@@ -95,7 +95,7 @@
 
       outputFilename = mbd.third.towerSine.dat
 
-      weightsFilename = weightsAll.dat
+      weightsFilename = weightsAll.w
 
       J = 4
 
@@ -140,7 +140,167 @@
 [../]
 
 
-[MBDREFERENCE]
+[MBDREF]
+
+  [./first]
+
+      outputFilename = mbd.first.ref.towerSine.dat
+
+      weightsFilename = weightsAll.w
+
+      J = 2
+
+      [./I]
+	
+	nbPz = 100
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/towerSine/I.txt
+
+	levelsExtremaFilename = ../../../synthetic/towerSine/levels.dat
+	
+	outputFilename = bd.first.ref.I.towerSine.dat
+
+	J = 2
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 100
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/towerSine/II.txt
+
+	levelsExtremaFilename = ../../../synthetic/towerSine/levels.dat
+
+	outputFilename = bd.first.ref.II.towerSine.dat
+
+	J = 2
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+  [./second]
+
+      outputFilename = mbd.second.ref.towerSine.dat
+
+      weightsFilename = weightsAll.w
+
+      J = 3
+
+      [./I]
+	
+	nbPz = 100
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/towerSine/I.txt
+
+	levelsExtremaFilename = ../../../synthetic/towerSine/levels.dat
+
+	outputFilename = bd.second.ref.I.towerSine.dat
+
+	J = 3
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 100
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/towerSine/II.txt
+
+	levelsExtremaFilename = ../../../synthetic/towerSine/levels.dat
+
+	outputFilename = bd.second.ref.II.towerSine.dat
+
+	J = 3
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+  [./third]
+
+      outputFilename = mbd.third.ref.towerSine.dat
+
+      weightsFilename = weightsAll.w
+
+      J = 4
+
+      [./I]
+	
+	nbPz = 100
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/towerSine/I.txt
+
+	levelsExtremaFilename = ../../../synthetic/towerSine/levels.dat
+
+	outputFilename = bd.third.ref.I.towerSine.dat
+
+	J = 4
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 100
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	nbReferenceSamples = 30 
+
+	inputFilename = ../../../synthetic/towerSine/II.txt
+
+	levelsExtremaFilename = ../../../synthetic/towerSine/levels.dat
+
+	outputFilename = bd.third.ref.II.towerSine.dat
+
+	J = 4
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
 
 [../]
 

@@ -579,9 +579,12 @@ namespace HPCS
       }
     }
     
+    
     if ( verbosity > 2 && this->M_mpiUtilPtr->isMaster() ) 
 
       printf( " All depths have been gathered\n" );
+    
+    MPI_Barrier( MPI_COMM_WORLD );
     
     return;
  }
@@ -645,7 +648,7 @@ namespace HPCS
        UInt iCurrSample(0);
        
        for ( iter_Type it( this->M_testSetIDs.begin() ); it != this->M_testSetIDs.end(); ++it )
-       {	 
+       {	 	 
 	 const Real timeCurr( (*dataPtr)( *it, globalPtID ) ); 
 	 
 	 const UInt howManyBefore = std::count_if( referenceSetTimes.begin(), referenceSetTimes.end(), std::bind2nd( std::less< Real >(), timeCurr ) );
@@ -688,6 +691,8 @@ namespace HPCS
    {
       printf( " Depths of the %d test samples have been gathered\n", nbTestSamples );
    }
+   MPI_Barrier( MPI_COMM_WORLD );
+      
    return;   
    
   }

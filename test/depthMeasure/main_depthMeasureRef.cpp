@@ -40,10 +40,12 @@ int main( int argc, char * argv[] )
    GetPot command_line( argc, argv );
       
    const string data_file_name = command_line.follow( "data", 2, "-f", "--file" );
+   
+   const std::string baseName( "BDREFERENCE" );
      
    GetPot dataFile( data_file_name.data() );
    
-   bdDataPtr_Type bdDataPtr( new bdData_Type( dataFile, "BDREFERENCE") );
+   bdDataPtr_Type bdDataPtr( new bdData_Type( dataFile, baseName ) );
    
    dmFactory_Type factory;
    
@@ -77,7 +79,11 @@ int main( int argc, char * argv[] )
    
    if ( myRank == MASTER )
    {
-    
+      const std::string outputBD( dataFile( (baseName + "/outputFilename" ).data(), "bd.I.dat" ) );
+      
+      std::string commandString = "gnuplot -p -e \"bd_I=\'" + outputBD + "\'\" depthMeasure.plot";
+      
+      system( commandString.data() );
    }
    
  MPI_Finalize();

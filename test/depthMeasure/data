@@ -39,7 +39,7 @@
 
   outputFilename = mbd.amplitudeSine.dat
 
-  weightsFilename = weightsAll.dat
+  weightsFilename = weightsAll.w
 
   J = 2
 
@@ -82,6 +82,52 @@
 
 
 [MBDREFERENCE]
+    
+    outputFilename = mbd.ref.amplitudeSine.dat
+
+    weightsFilename = weightsRef.w
+
+    J = 2
+
+    [./I]
+
+      nbPz = 100
+      nbPts = 500
+      nbReferenceSamples = 50
+      leftOffset = 0
+      rightOffset = 0
+
+      inputFilename = ../../../synthetic/amplitudeSine/I.txt
+
+      levelsExtremaFilename = ../../../synthetic/amplitudeSine/levels.dat
+
+      outputFilename = bd_I_ref.dat
+
+      J = 2
+
+      verbosity = 3
+
+    [../]
+
+    [./II]
+
+      nbPz = 100
+      nbPts = 500
+      nbReferenceSamples = 50
+      leftOffset = 0
+      rightOffset = 0
+
+      inputFilename = ../../../synthetic/amplitudeSine/II.txt
+
+      levelsExtremaFilename = ../../../synthetic/amplitudeSine/levels.dat
+
+      outputFilename = bd_II_ref.dat
+
+      J = 2
+
+      verbosity = 3
+
+    [../]
 
 [../]
 

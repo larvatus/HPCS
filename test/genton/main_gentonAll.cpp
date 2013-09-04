@@ -78,27 +78,13 @@ MPI_Init( &argc, &argv );
 
  if ( myRank == MASTER  )
  {
-    const std::string outputGenton( bdDataGenton.outputFilename() ); 
+     const std::string outputGenton( bdDataGenton.outputFilename() ); 
+      
+     const std::string outputReference( outputFilenameDirect ); 
     
-    const std::string outputReference( outputFilenameDirect ); 
-   
-    FILE *gnuplotPipe = popen("gnuplot -persist", "w");
-    fprintf(gnuplotPipe, "\n");
-    
-    std::string gnuPlotCommand(" set term wxt 0\n");
-    
-    gnuPlotCommand += "set key box\n";
-    gnuPlotCommand += "set grid\n";
-    
-    fprintf( gnuplotPipe, gnuPlotCommand.data() );
-    
-    gnuPlotCommand = "plot \"./" + outputGenton + "\" using 2 lt 2 title 'Genton', \"./" + outputReference + "\" using 2 lt 3 title 'Reference'\n";
-    
-    fprintf( gnuplotPipe, gnuPlotCommand.data() );
-
-    fflush(gnuplotPipe);  
-
-    fclose(gnuplotPipe);
+     std::string commandString = "gnuplot -p -e \"bdGen=\'" + outputGenton + "\'; bdDir=\'" + outputReference + "\'\" genton.plot";
+      
+     system( commandString.data() );
 
  }
  
