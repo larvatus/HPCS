@@ -13,21 +13,27 @@ typedef DataSet dataSet_Type;
 typedef DataSet::data_Type data_Type;
 typedef boost::shared_ptr< data_Type > dataPtr_Type;
 
-// typedef DataSetLevelled dataSetLevelled_Type;
-
 int main( int argc, char * argv[] )
-{
-    MPI_Init( & argc, & argv );
+{ 
+    GetPot command_line( argc, argv );
+      
+    const string data_file_name = command_line.follow( "data", 2, "-f", "--file" );
     
-    int nbThreads, myRank;
-    
-    MPI_Comm_size( MPI_COMM_WORLD, & nbThreads );
+    GetPot dataFile( data_file_name.data() );
 
-    MPI_Comm_rank( MPI_COMM_WORLD, & myRank );
- 
-    const UInt nbSamples = 9;
+    const std::string baseName( "DATASET" );
     
-    const UInt nbPts = 9;
+    const UInt nbSamples = dataFile( ( baseName + "/nbSamples" ).data(), 1 );
+    
+    const UInt nbPts = dataFile( ( baseName + "/nbPts" ).data(), 1 );
+   
+    const std::string inputFilename = dataFile( ( baseName + "/inputFilename" ).data(), "dataSet.dat" );
+    
+    // FIRST WAY TO INITIALIZE A DATASET OBJECT
+    
+    std::cout << "===============================================" << std::endl;
+    
+    std::cout << "		HILBERT MATRIX : " << std::endl << std::endl;
     
     dataSet_Type dataSet1( nbSamples, nbPts );
     
@@ -43,18 +49,24 @@ int main( int argc, char * argv[] )
     
     dataSet1.setData( dataPtr );
     
-    if ( myRank == MASTER ) dataSet1.showMe();
+    dataSet1.showMe();
   
+    std::cout << "===============================================" << std::endl << std::endl;
     
-    if ( myRank == MASTER ) std::cout << std::endl << std::endl;
+    // SECOND WAY TO INITIALIZE A DATASET OBJECT
+    
+    std::cout << "===============================================" << std::endl;
+    
+    std::cout << "		DATASET MATRIX : " << std::endl << std::endl;
     
     dataSet_Type dataSet2( nbSamples, nbPts );
     
     dataSet2.readData( "dataSet.dat" );
-    
-    if ( myRank == MASTER )  dataSet2.showMe();    
-    
-    MPI_Finalize();
+        
+    dataSet2.showMe();
+  
+    std::cout << "===============================================" << std::endl << std::endl;
+
     
     return EXIT_SUCCESS;
 }

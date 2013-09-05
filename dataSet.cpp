@@ -1,18 +1,33 @@
 
+/*!
+ *   @file DataSet.cpp
+     @brief Definition of DataSet and DataSetLevelled classes.
+
+     @date 08/2013
+     @author Nicholas Tarabelloni  <nicholas.tarabelloni@gmail.com>
+     @maintainer Nicholas Tarabelloni  <nicholas.tarabelloni@gmail.com>
+*/
 
 #include <dataSet.hpp>
 
 namespace HPCS
 {
     
-////////////////////////
-// DATA SET
-////////////////////////
+//////////////////////////////////////////
+//					//
+//					//
+// 	      DATA SET 			//
+//					//
+//					//
+//////////////////////////////////////////
 
+
+// Default constructor
 DataSet::
 ~DataSet()
 {}
 
+// Constructor from the number of samples and the number of points
 DataSet::
 DataSet( const UInt & nbSamples, const UInt & nbPts )
 :
@@ -24,6 +39,7 @@ M_data( new data_Type( nbSamples, nbPts ) )
 {
 }
 
+// Constructor from the raw data array, the number of samples and the number of points
 DataSet::
 DataSet( const Real * data, const UInt & nbSamples, const UInt & nbPts )
 :
@@ -33,6 +49,7 @@ M_rightOffset( 0 )
   this->setData( data, nbSamples, nbPts ) ;
 }
 
+// Constructor from the std::vector data array, the number of samples and the number of points
 DataSet::
 DataSet( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts )
 :
@@ -42,6 +59,7 @@ M_rightOffset( 0 )
   this->setData( data, nbSamples, nbPts ) ;
 }
 
+// Constructor from a boost::numeric::ublas::matrix object
 DataSet::
 DataSet( const data_Type & data )
 :
@@ -52,6 +70,7 @@ M_nbSamples( data.size1() ),
 M_nbPts( data.size2() )
 {}
 
+// Constructor from a shared pointer to a boost::numeric::ublas::matrix object
 DataSet::
 DataSet( const dataPtr_Type & dataPtr )
 :
@@ -62,6 +81,7 @@ M_nbSamples( dataPtr->size1() ),
 M_nbPts( dataPtr->size2() )
 {}
 
+// Method to read data from a filename
 void
 DataSet::
 readData( const std::string & filename)
@@ -91,6 +111,7 @@ readData( const std::string & filename)
    return;
 }
 
+// Method to write data to some output destination
 void
 DataSet::
 writeData( std::ostream & output ) const
@@ -109,8 +130,9 @@ writeData( std::ostream & output ) const
   return;
 }
 
+// Method to access elements of the data set
 inline
-DataSet::Real
+Real
 DataSet::
 operator()( const UInt & row, const UInt & col ) const
 {    
@@ -119,6 +141,7 @@ operator()( const UInt & row, const UInt & col ) const
   return (*this->M_data)( row, col );
 }
 
+// Showme method writing the current status to some destination
 void
 DataSet::
 showMe( std::ostream & output  ) const
@@ -142,6 +165,7 @@ showMe( std::ostream & output  ) const
   return;
 }
 
+// Setter of data from raw array of data, number of samples, number of points.
 void
 DataSet::
 setData( const Real * data, const UInt & nbSamples, const UInt & nbPts )
@@ -165,6 +189,7 @@ setData( const Real * data, const UInt & nbSamples, const UInt & nbPts )
     return;
 }
 
+// Setter of data from std::vector array of data, number of samples, number of points.
 void
 DataSet::
 setData( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts )
@@ -189,6 +214,7 @@ setData( const std::vector< Real > & data, const UInt & nbSamples, const UInt & 
     
 }
 
+// Setter of data from a boost::numric::ublas::matrix object.
 void
 DataSet::
 setData( const data_Type & data )
@@ -205,6 +231,7 @@ setData( const data_Type & data )
  
 }
 
+// Setter of data from a shared pointer to a boost::numric::ublas::matrix object.
 void
 DataSet::
 setData( const dataPtr_Type & dataPtr )
@@ -220,21 +247,7 @@ setData( const dataPtr_Type & dataPtr )
  return;
 }
 
-/*
-DataSet::dataPtr_Type
-DataSet::
-getSubSet( const slice_Type & sampleSlice ) const
-{
-  using namespace boost::numeric::ublas;
-  
-  typedef matrix_slice< data_Type > dataSlice_Type;
-  
-  dataSlice_Type temp( *this->M_data, sampleSlice, slice( 0, 1, this->M_nbPts ) );
-  
-  //TODO FINISH THIS!
-  return dataPtr_Type( new data_Type( )  );
-}*/
-
+// Getter of a subset of the dataset indexed by rows IDs.
 DataSet::dataPtr_Type
 DataSet::
 getRowSubSet( const std::vector< UInt > & IDs ) const
@@ -253,6 +266,7 @@ getRowSubSet( const std::vector< UInt > & IDs ) const
   return dataPtr;
 }
 
+// Setter of the offset variables
 void
 DataSet::
 setOffset( const UInt & leftOffset, const UInt & rightOffset )
@@ -266,15 +280,24 @@ setOffset( const UInt & leftOffset, const UInt & rightOffset )
     return;
 }
 
+/////////////////////////////////////////////////////////////////
 
-////////////////////////
-// DATA SET LEVELLED
-////////////////////////
 
+//////////////////////////////////////////
+//					//
+//					//
+// 	   DATA SET LEVELLED		//
+//					//
+//					//
+//////////////////////////////////////////
+
+
+// Default contructor
 DataSetLevelled::
 ~DataSetLevelled()
 {}
 
+// Constructor from the number of samples, the number of points and the number of levels
 DataSetLevelled::
 DataSetLevelled( const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
 :
@@ -282,6 +305,7 @@ DataSet( nbSamples, nbPts ),
 M_nbLevels( nbLevels )
 {}
 
+// Constructor from a raw array data, the number of samples, the number of points and the number of levels.
 DataSetLevelled::
 DataSetLevelled( const Real * data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
 :
@@ -289,6 +313,7 @@ DataSet( data, nbSamples, nbPts ),
 M_nbLevels( nbLevels )
 {}
 
+// Constructor from a std::vector array of data, the number of samples, the number of points and the number of levels.
 DataSetLevelled::
 DataSetLevelled( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts, const UInt & nbLevels )
 :
@@ -296,6 +321,7 @@ DataSet( data, nbSamples, nbPts ),
 M_nbLevels( nbLevels )
 {}
 
+// Constructor from a base DataSet object and the number of levels
 DataSetLevelled::
 DataSetLevelled( const data_Type & data, const UInt & nbLevels )
 :
@@ -303,6 +329,7 @@ DataSet( data ),
 M_nbLevels( nbLevels )
 {}
 
+// Constructo from a shared pointer to a base DataSet object and the number of levels.
 DataSetLevelled::
 DataSetLevelled( const dataPtr_Type & dataPtr, const UInt & nbLevels )
 :
@@ -310,6 +337,7 @@ DataSet( dataPtr ),
 M_nbLevels( nbLevels )
 {}
 
+// Getter of the IDContainer objcet corresponding to the specified level ID
 DataSetLevelled::IDContainer_Type & 
 DataSetLevelled::
 levelIDs( const UInt lev ) const
@@ -320,7 +348,7 @@ levelIDs( const UInt lev ) const
   
 }
 
-
+// Setter of the levels from a levels container object.
 void
 DataSetLevelled::
 setLevels( const levelsContainerPtr_Type & levelsPtr )
@@ -330,6 +358,7 @@ setLevels( const levelsContainerPtr_Type & levelsPtr )
     return;
 }
 
+// Setter of levels from linear extrema
 void
 DataSetLevelled::
 setLevels( const std::vector< UInt > & linearExtrema )
@@ -355,8 +384,8 @@ setLevels( const std::vector< UInt > & linearExtrema )
     return;
 }
 
-
-DataSetLevelled::UInt
+// Getter of the cardinality of the specified levelID
+UInt
 DataSetLevelled::
 cardinality( const UInt & levelID )
 {
@@ -375,6 +404,7 @@ cardinality( const UInt & levelID )
     return this->M_cardinality[ levelID ];
 }
 
+// Showme method to print to some destination the current status of the object.
 void
 DataSetLevelled::
 showMe( std::ostream & output ) const
@@ -399,6 +429,7 @@ showMe( std::ostream & output ) const
     return;
 }
 
+// Setter of levels from linear extrema contained inside a specified file
 void
 DataSetLevelled::
 setLevelsFromExtrema( const std::string & filename)
@@ -415,12 +446,7 @@ setLevelsFromExtrema( const std::string & filename)
    input.close();
    
    this->setLevels( linearExtrema );
-/*   
-    for ( UInt iLevel(0); iLevel < this->M_nbLevels; ++iLevel )
-    {	
- 	printf( " cardinality( %d ) = %d\n", iLevel, this->cardinality( iLevel ) );
-    }
-  */ 
+ 
    return;
 }
 

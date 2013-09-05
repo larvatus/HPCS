@@ -1,11 +1,5 @@
 
 
-#ifndef __BANDDEPTH_DATA_HPP__
-#define __BANDDEPTH_DATA_HPP__
-
-#include <dataSet.hpp>
-
-#include <HPCSDefs.hpp>
 
 /*!
  *   @file BandDepthData.hpp
@@ -15,6 +9,15 @@
      @author Nicholas Tarabelloni  <nicholas.tarabelloni@gmail.com>
      @maintainer Nicholas Tarabelloni  <nicholas.tarabelloni@gmail.com>
 */
+
+
+
+#ifndef __BANDDEPTH_DATA_HPP__
+#define __BANDDEPTH_DATA_HPP__
+
+#include <dataSet.hpp>
+
+#include <HPCSDefs.hpp>
 
 
 namespace HPCS

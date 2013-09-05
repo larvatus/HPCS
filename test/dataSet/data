@@ -1,0 +1,9 @@
+[DATASET]
+
+	nbSamples = 10
+
+	nbPts = 100
+
+	inputFile = dataSet.dat
+
+[../]
