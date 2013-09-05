@@ -3,7 +3,7 @@
 #ifndef __MPI_UTILITY_HPP__
 #define __MPI_UTILITY_HPP__
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 namespace HPCS
 {

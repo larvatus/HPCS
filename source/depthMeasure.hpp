@@ -3,15 +3,13 @@
 #ifndef __DEPTH_MEASURE_HPP__
 #define __DEPTH_MEASURE_HPP__
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
-
-
-#include <bandDepth.hpp>
-#include <bandDepthFactory.hpp>
-#include <bandDepthData.hpp>
-#include <extendedSort.hpp>
-#include <mpi_utility.hpp>
+#include <source/bandDepth.hpp>
+#include <source/bandDepthFactory.hpp>
+#include <source/bandDepthData.hpp>
+#include <source/extendedSort.hpp>
+#include <source/mpi_utility.hpp>
 
 
 namespace HPCS

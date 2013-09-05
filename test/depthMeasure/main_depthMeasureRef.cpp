@@ -1,10 +1,10 @@
 
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
-#include <depthMeasure.hpp>
-#include <depthMeasureFactory.hpp>
-#include <bandDepthData.hpp>
+#include <source/depthMeasure.hpp>
+#include <source/depthMeasureFactory.hpp>
+#include <source/bandDepthData.hpp>
 
 using namespace std;
 using namespace HPCS;

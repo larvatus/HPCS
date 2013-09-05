@@ -3,9 +3,9 @@
 #ifndef __BDFACTORY_HPP__
 #define __BDFACTORY_HPP__
 
-#include <factory.hpp>
-#include <bandDepth.hpp>
-#include <bandDepthRef.hpp>
+#include <source/factory.hpp>
+#include <source/bandDepth.hpp>
+#include <source/bandDepthRef.hpp>
 
 namespace HPCS
 {  

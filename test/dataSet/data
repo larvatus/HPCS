@@ -7,3 +7,15 @@
 	inputFile = dataSet.dat
 
 [../]
+
+[DATASETLEVELLED]
+
+      nbSamples = 10
+
+      nbPts = 100
+
+      levelsFilename = levels.dataSet
+
+      inputFile = dataSet.dat
+
+[../]

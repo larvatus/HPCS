@@ -2,10 +2,10 @@
 #ifndef __MULTI_DEPTH_MEASURE_HPP__
 #define __MULTI_DEPTH_MEASURE_HPP__
 
-#include <HPCSDefs.hpp>
-#include <depthMeasureFactory.hpp>
-#include <depthMeasure.hpp>
-#include <extendedSort.hpp>
+#include <source/HPCSDefs.hpp>
+#include <source/depthMeasureFactory.hpp>
+#include <source/depthMeasure.hpp>
+#include <source/extendedSort.hpp>
 
 namespace HPCS
 {

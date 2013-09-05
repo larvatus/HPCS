@@ -1,12 +1,14 @@
 
 
-#include <bandDepthRef.hpp>
-#include <bandDepthData.hpp>
-#include <bandDepthFactory.hpp>
+#include <source/bandDepthRef.hpp>
+#include <source/bandDepthData.hpp>
+#include <source/bandDepthFactory.hpp>
+
+#include <source/HPCSDefs.hpp>
 
 #include "user_fun.hpp"
 
-#include <HPCSDefs.hpp>
+
 
 
 using namespace std;

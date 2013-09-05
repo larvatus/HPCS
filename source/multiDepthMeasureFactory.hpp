@@ -1,8 +1,8 @@
 #ifndef __MULTIDMFACTORY_HPP__
 #define __MULTIDMFACTORY_HPP__
 
-#include <factory.hpp>
-#include <multiDepthMeasure.hpp>
+#include <source/factory.hpp>
+#include <source/multiDepthMeasure.hpp>
 
 
 namespace HPCS

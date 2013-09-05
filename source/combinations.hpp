@@ -2,7 +2,7 @@
 # ifndef __COMBINATIONS_HPP__
 # define __COMBINATIONS_HPP__
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 namespace HPCS
 {

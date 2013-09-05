@@ -35,7 +35,7 @@
 #include "mpi.h"
 
 // GETPOT
-#include <GetPot>
+#include <source/GetPot>
 
 
 // DEFINITION OF MASTER PROC

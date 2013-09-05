@@ -3,12 +3,12 @@
 #ifndef __USER_FUN_HPP__
 #define __USER_FUN_HPP__
 
-#include <combinations.hpp>
-#include <mpi_utility.hpp>
-#include <dataSet.hpp>
-#include <bandDepthData.hpp>
+#include <source/combinations.hpp>
+#include <source/mpi_utility.hpp>
+#include <source/dataSet.hpp>
+#include <source/bandDepthData.hpp>
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 namespace HPCS
 {    

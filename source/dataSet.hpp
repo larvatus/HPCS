@@ -15,7 +15,7 @@
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 namespace HPCS
 {

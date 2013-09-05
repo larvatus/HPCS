@@ -3,14 +3,14 @@
 #ifndef __BANDDEPTH_REF_HPP__
 #define __BANDDEPTH_REF_HPP__
 
-#include <dataSet.hpp>
-#include <mpi_utility.hpp>
-#include <bandDepthData.hpp>
-#include <bandDepth.hpp>
-#include <extendedSort.hpp>
-#include <combinations.hpp>
+#include <source/dataSet.hpp>
+#include <source/mpi_utility.hpp>
+#include <source/bandDepthData.hpp>
+#include <source/bandDepth.hpp>
+#include <source/extendedSort.hpp>
+#include <source/combinations.hpp>
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 namespace HPCS
 {

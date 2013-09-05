@@ -15,9 +15,9 @@
 #ifndef __BANDDEPTH_DATA_HPP__
 #define __BANDDEPTH_DATA_HPP__
 
-#include <dataSet.hpp>
+#include <source/dataSet.hpp>
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 
 namespace HPCS

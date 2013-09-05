@@ -1,10 +1,10 @@
 
 #include "user_fun.hpp"
 
-#include <bandDepth.hpp>
-#include <bandDepthFactory.hpp>
+#include <source/bandDepth.hpp>
+#include <source/bandDepthFactory.hpp>
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 
 using namespace std;

@@ -29,8 +29,8 @@ ADD_CUSTOM_TARGET(doc DEPENDS ${DOXYGEN_OUTPUT})
 ENDIF (DOXYGEN_FOUND)
 
 
-ADD_LIBRARY( mbd bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet )
+
 
 # Adding test subdirectory
-
+ADD_SUBDIRECTORY(source)
 ADD_SUBDIRECTORY(test)

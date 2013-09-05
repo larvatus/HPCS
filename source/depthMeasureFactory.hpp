@@ -1,8 +1,8 @@
 #ifndef __DMFACTORY_HPP__
 #define __DMFACTORY_HPP__
 
-#include <factory.hpp>
-#include <depthMeasure.hpp>
+#include <source/factory.hpp>
+#include <source/depthMeasure.hpp>
 
 
 namespace HPCS

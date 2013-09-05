@@ -2,7 +2,7 @@
 #ifndef __FACTORY_HPP__
 #define __FACTORY_HPP__
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 namespace HPCS
 {

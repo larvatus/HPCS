@@ -1,8 +1,8 @@
 
 
-#include <HPCSDefs.hpp>
-#include <multiDepthMeasure.hpp>
-#include <multiDepthMeasureFactory.hpp>
+#include <source/HPCSDefs.hpp>
+#include <source/multiDepthMeasure.hpp>
+#include <source/multiDepthMeasureFactory.hpp>
 
 using namespace std;
 using namespace HPCS;

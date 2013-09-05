@@ -3,7 +3,7 @@
 #ifndef __EXTENDED_SORT_HPP__
 #define __EXTENDED_SORT_HPP__
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 namespace HPCS
 {

@@ -1,7 +1,7 @@
 
-#include <dataSet.hpp>
+#include <source/dataSet.hpp>
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 using namespace std;
 

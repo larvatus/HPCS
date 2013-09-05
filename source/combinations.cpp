@@ -1,5 +1,5 @@
 
-#include <combinations.hpp>
+#include <source/combinations.hpp>
 
 namespace HPCS
 {

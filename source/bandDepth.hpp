@@ -2,12 +2,12 @@
 #ifndef __BANDDEPTH_HPP__
 #define __BANDDEPTH_HPP__
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
-#include <dataSet.hpp>
-#include <bandDepthData.hpp>
-#include <combinations.hpp>
-#include <mpi_utility.hpp>
+#include <source/dataSet.hpp>
+#include <source/bandDepthData.hpp>
+#include <source/combinations.hpp>
+#include <source/mpi_utility.hpp>
 
 
 /*!

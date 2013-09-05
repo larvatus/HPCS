@@ -1,10 +1,10 @@
 
-#include <bandDepthRef.hpp>
-#include <bandDepthData.hpp>
-#include <bandDepthFactory.hpp>
-#include <dataSet.hpp>
+#include <source/bandDepthRef.hpp>
+#include <source/bandDepthData.hpp>
+#include <source/bandDepthFactory.hpp>
+#include <source/dataSet.hpp>
 
-#include <HPCSDefs.hpp>
+#include <source/HPCSDefs.hpp>
 
 using namespace std;
 using namespace HPCS;

@@ -8,7 +8,7 @@
      @maintainer Nicholas Tarabelloni  <nicholas.tarabelloni@gmail.com>
 */
 
-#include <dataSet.hpp>
+#include <source/dataSet.hpp>
 
 namespace HPCS
 {
