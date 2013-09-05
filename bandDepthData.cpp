@@ -4,6 +4,16 @@
 namespace HPCS
 {
 
+ /*!
+ *   @file BandDepthData.cpp
+     @brief Definition of BandDepthData classes.
+
+     @date 08/2013
+     @author Nicholas Tarabelloni  <nicholas.tarabelloni@gmail.com>
+     @maintainer Nicholas Tarabelloni  <nicholas.tarabelloni@gmail.com>
+*/
+  
+  
  ///////////////////////////
  //	BD DATA
  //////////////////////////
@@ -214,7 +224,7 @@ namespace HPCS
     this->M_readLevelsExtremaFromFile = bdRefData.readLevelsExtremaFromFile();
  }
  
- 
+ // Redefinition of the showMe method for this derived class.
  void
  BandDepthRefData::
  showMe( std::ostream & output ) const
