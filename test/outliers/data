@@ -16,7 +16,7 @@
 	leftOffset = 0
 	rightOffset = 0
 
-	inputFilename = ../../../synthetic/outliers/I.txt
+	inputFilename = ../../../synthetic/outliersSine/I.txt
 
 	outputFilename = bd.first.I.outliers.dat
 
@@ -33,7 +33,7 @@
 	leftOffset = 0
 	rightOffset = 0
 
-	inputFilename = ../../../synthetic/outliers/II.txt
+	inputFilename = ../../../synthetic/outliersSine/II.txt
 
 	outputFilename = bd.first.II.outliers.dat
 
@@ -61,7 +61,7 @@
 	leftOffset = 0
 	rightOffset = 0
 
-	inputFilename = ../../../synthetic/outliers/I.txt
+	inputFilename = ../../../synthetic/outliersSine/I.txt
 
 	outputFilename = bd.second.I.outliers.dat
 
@@ -78,7 +78,7 @@
 	leftOffset = 0
 	rightOffset = 0
 
-	inputFilename = ../../../synthetic/outliers/II.txt
+	inputFilename = ../../../synthetic/outliersSine/II.txt
 
 	outputFilename = bd.second.II.outliers.dat
 
@@ -114,9 +114,9 @@
 
 	nbReferenceSamples = 30 
 
-	inputFilename = ../../../synthetic/outliers/I.txt
+	inputFilename = ../../../synthetic/outliersSine/I.txt
 
-	levelsExtremaFilename = ../../../synthetic/outliers/levels.dat
+	levelsExtremaFilename = ../../../synthetic/outliersSine/levels.dat
 	
 	outputFilename = bd.first.ref.I.outliers.dat
 
@@ -135,9 +135,9 @@
 
 	nbReferenceSamples = 30 
 
-	inputFilename = ../../../synthetic/outliers/II.txt
+	inputFilename = ../../../synthetic/outliersSine/II.txt
 
-	levelsExtremaFilename = ../../../synthetic/outliers/levels.dat
+	levelsExtremaFilename = ../../../synthetic/outliersSine/levels.dat
 
 	outputFilename = bd.first.ref.II.outliers.dat
 
@@ -167,9 +167,9 @@
 
 	nbReferenceSamples = 30 
 
-	inputFilename = ../../../synthetic/outliers/I.txt
+	inputFilename = ../../../synthetic/outliersSine/I.txt
 
-	levelsExtremaFilename = ../../../synthetic/outliers/levels.dat
+	levelsExtremaFilename = ../../../synthetic/outliersSine/levels.dat
 
 	outputFilename = bd.second.ref.I.outliers.dat
 
@@ -188,9 +188,9 @@
 
 	nbReferenceSamples = 30 
 
-	inputFilename = ../../../synthetic/outliers/II.txt
+	inputFilename = ../../../synthetic/outliersSine/II.txt
 
-	levelsExtremaFilename = ../../../synthetic/outliers/levels.dat
+	levelsExtremaFilename = ../../../synthetic/outliersSine/levels.dat
 
 	outputFilename = bd.second.ref.II.outliers.dat
 

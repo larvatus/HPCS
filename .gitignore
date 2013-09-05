@@ -13,6 +13,7 @@
 
 # Target folders #
 ##################
+doc/
 html/
 latex/
 build/

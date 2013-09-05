@@ -8,7 +8,7 @@ namespace HPCS
   // MPIUTILITY
   /////////////////
   
-  
+  // Default constructor
   mpiUtility::
   mpiUtility()
   :
@@ -21,11 +21,13 @@ namespace HPCS
       MPI_Comm_rank( MPI_COMM_WORLD, & (this->M_myRank) );
   }
   
+  // Default destructor
   mpiUtility::
   ~mpiUtility()
   {
   }
   
+  // Getter of the number of threads
   mpiUtility::UInt
   mpiUtility::
   nbThreads() const
@@ -33,6 +35,7 @@ namespace HPCS
       return this->M_nbThreads; 
   }
   
+  // Getter of the current rank
   mpiUtility::UInt
   mpiUtility::
   myRank() const
@@ -40,6 +43,7 @@ namespace HPCS
       return this->M_myRank;
   }
   
+  // Getter of the current master ID
   mpiUtility::UInt
   mpiUtility::
   master() const
@@ -47,6 +51,7 @@ namespace HPCS
       return mpiUtility::S_MASTER;
   }
   
+  // Am I the master?
   bool
   mpiUtility::
   isMaster() const
@@ -54,6 +59,7 @@ namespace HPCS
       return mpiUtility::S_MASTER == this->M_myRank;
   }
   
+  // Master processor prints specified string to specified output
   void
   mpiUtility::
   leaderPrint( const std::string & string, std::ostream & output ) const
@@ -66,7 +72,8 @@ namespace HPCS
     return;
   }
   
-  void
+ // Master processor prints specified string to specified output
+ void
   mpiUtility::
   leaderPrint( const char * string, std::ostream & output ) const
   {
@@ -78,6 +85,7 @@ namespace HPCS
     return;
   }
   
+  // Method to start the timer
   void
   mpiUtility::
   startTimer()
@@ -87,7 +95,7 @@ namespace HPCS
      return;
   }
 
-  
+  // Method to stop the timer
   void
   mpiUtility::
   stopTimer()
@@ -99,6 +107,7 @@ namespace HPCS
       return;
   }
 
+  // Method to reset the timer
   void
   mpiUtility::
   resetTimer()
@@ -112,6 +121,7 @@ namespace HPCS
       return;
   }
   
+  // Getter of the elapsed time
   Real
   mpiUtility::
   elapsedTime() const
