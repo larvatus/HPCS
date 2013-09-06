@@ -20,29 +20,29 @@ namespace HPCS
   {
     
   public:
-    
-    typedef GetPot data_Type;
-    
-    typedef BandDepthRefData bdRefData_Type;
-    
-    typedef boost::shared_ptr< bdRefData_Type > bdRefDataPtr_Type;
-    
-    typedef DataSetLevelled dataSet_Type;
-    
-    typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
-    
-    typedef mpiUtility mpiUtility_Type;
-    
-    typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
-    
-    typedef std::set< UInt > IDContainer_Type;
-    
-    typedef boost::shared_ptr< IDContainer_Type > IDContainerPtr_Type;
-    
-    typedef CombinationsID combinationsID_Type;
-    
-    typedef CombinationsID::tuple_Type tuple_Type;
-    
+    //!@name Public Types
+    //@{
+      
+      typedef BandDepthRefData bdRefData_Type;
+      
+      typedef boost::shared_ptr< bdRefData_Type > bdRefDataPtr_Type;
+      
+      typedef DataSetLevelled dataSet_Type;
+      
+      typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
+      
+      typedef mpiUtility mpiUtility_Type;
+      
+      typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
+      
+      typedef std::set< UInt > IDContainer_Type;
+      
+      typedef boost::shared_ptr< IDContainer_Type > IDContainerPtr_Type;
+      
+      typedef CombinationsID combinationsID_Type;
+      
+      typedef CombinationsID::tuple_Type tuple_Type;
+      
     //! Default constructor
     BandDepthRef();
     

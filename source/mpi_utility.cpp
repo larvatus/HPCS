@@ -28,7 +28,7 @@ namespace HPCS
   }
   
   // Getter of the number of threads
-  mpiUtility::UInt
+  UInt
   mpiUtility::
   nbThreads() const
   {
@@ -36,7 +36,7 @@ namespace HPCS
   }
   
   // Getter of the current rank
-  mpiUtility::UInt
+  UInt
   mpiUtility::
   myRank() const
   {
@@ -44,7 +44,7 @@ namespace HPCS
   }
   
   // Getter of the current master ID
-  mpiUtility::UInt
+  UInt
   mpiUtility::
   master() const
   {
