@@ -15,54 +15,80 @@
 namespace HPCS
 {
   
+  
+//! @class BandDepthRef this class Implements an interface for the fast computation of Band Depths for functional data in the Reference case.
+/*!
+ *  This class implements an interface for the actual, fast computation of the band depths of a given dataset.
+ *  It benefits from built in, parallel implementation exploting MPI. The corresponding band depths are computed
+ *  testing each sample in the dataset with a subset of reference samples belonging to the dataset, i.e. in a "Reference" fashio, which is expressed
+ *  deriving this class from BandDepthBase< Reference >.
+ *  The value _J used as a template parameter stands for the corresponding J value in the definition of the band depth
+ *  (see the report, for details). It controls the size of the tuple constituting the envelope used to compute the depth
+ *  of the current signal. 
+ */  
   template < UInt _J >
   class BandDepthRef : public BandDepthBase< Reference >
   {
     
   public:
+    
     //!@name Public Types
     //@{
       
+      //! Typedef for the data type
       typedef BandDepthRefData bdRefData_Type;
       
+      //! Typedef for a shared pointer to the band depth ref data type
       typedef boost::shared_ptr< bdRefData_Type > bdRefDataPtr_Type;
       
+      //! Typedef for the dataset with levels
       typedef DataSetLevelled dataSet_Type;
       
+      //! Typedef for the shared pointer to the data set type
       typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
       
+      //! Typedef for the object containing MPI information
       typedef mpiUtility mpiUtility_Type;
       
+      //! Typedef for the shared pointer to the mpi utility type
       typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
       
+      //! Typedef for the container of signals' IDs
       typedef std::set< UInt > IDContainer_Type;
       
+      //! Tyepdef for the shared pointer to the container of IDs
       typedef boost::shared_ptr< IDContainer_Type > IDContainerPtr_Type;
       
+      //! Typedef for the object computing combinations
       typedef CombinationsID combinationsID_Type;
       
+      //! Typedef for the tuple type inside the combination computer
       typedef CombinationsID::tuple_Type tuple_Type;
-      
-    //! Default constructor
-    BandDepthRef();
+    //@}
     
-    BandDepthRef( const bdRefData_Type & bdRefData );
+    //! @name Constructors & Destructor  
+    //@{
+      
+      //! Default constructor
+      BandDepthRef();
+    
+      //! Constructor from data type
+      BandDepthRef( const bdRefData_Type & bdRefData );
 	
-    virtual ~BandDepthRef();
+      //! Standard virtual destructor
+      virtual ~BandDepthRef();
   
-    virtual void computeBDs();
+   //@}   
+      
 
+      
     void setBandDepthData( const bdRefData_Type & bdRefData );
     
     void setBandDepthData( const bdDataPtr_Type & bdDataPtr );
   
     void setDataSet( const dataSetPtr_Type & dataPtr ); 
-    
-    void addToReferenceSet( const UInt & levelID, const UInt & size, const UInt & seed = 1 );
-    
-    void setTestSet();
-    
-    void clearReferenceSet();
+
+        void setTestSet();
     
     template < typename _containerType >
       void getReferenceSetIDs( _containerType & idCont ) const;
@@ -90,34 +116,65 @@ namespace HPCS
     
     //! The method writing the BDs to an output file.
     void writeBDs( std::ostream & output ) const;
+	
+
+    //!@name Misc. Public Methods
+    //@{
+      
+      virtual void computeBDs();
+
+      //! Method to add signals to the group of reference samples
+      /*!
+       *  This method allows to increases the reference set by adding a number of elements equal to "size",
+       *  taken from the level specified by levelID. If size is less than the cardinality of the specified
+       *  levelID they are extracted randomly with a pseudo-random number generator, initialised by "seed".
+       *  This method can be called in sequence, thus allowing to add to the reference set elements from different levels
+       *  (up to a maximum number of nbReferenceSamples, contained inside the bdRefData object received during
+       *  the setup of the present object. Once the reference set is full, the method "setTestset()" can be called
+       *  to finalize the setup and fills the test-set with ALL the remaining samples. Depending on the use of this
+       *  method, it may also contain elements from the levelID used to draw reference elements.
+       * 
+       * @param levelID is the level ID from which to take the samples added to the reference set.
+       * @param size is the number of elements to add to the reference set.
+       * @param seed is the seed to initialise the pseudo-random number generator
+       * 
+       */
+      void addToReferenceSet( const UInt & levelID, const UInt & size, const UInt & seed = 1 );
+      
+      //! Method to clear the reference set
+      /*!
+       * This method clears the reference set from the previously added elements.
+       */
+      void clearReferenceSet();
     
     //@}
      
   protected:
 
-    //@{
-    //! @name Protected members
-    
-    //! Shared pointer to a BandDepthData type object
-    bdRefDataPtr_Type M_bdRefDataPtr;
-    
-    //! Shared pointer to a dataSet type object, containing data.
-    dataSetPtr_Type M_dataSetPtr;
-    
-    //! Computed band depths
-    std::vector< Real > M_BDs;
-    
-    //! MPI utility pointer object
-    mpiUtilityPtr_Type M_mpiUtilPtr;
 
-    //! Vector containing the IDs of the test set
-    IDContainer_Type M_testSetIDs;
-    
-    //! Vector containing the IDs of the reference set
-    IDContainer_Type M_referenceSetIDs;
-    
-    //! Number of levels
-    static const UInt S_nbLevels = 2 ;
+    //! @name Protected members
+    //@{
+      
+      //! Shared pointer to a BandDepthData type object
+      bdRefDataPtr_Type M_bdRefDataPtr;
+      
+      //! Shared pointer to a dataSet type object, containing data.
+      dataSetPtr_Type M_dataSetPtr;
+      
+      //! Computed band depths
+      std::vector< Real > M_BDs;
+      
+      //! MPI utility pointer object
+      mpiUtilityPtr_Type M_mpiUtilPtr;
+
+      //! Vector containing the IDs of the test set
+      IDContainer_Type M_testSetIDs;
+      
+      //! Vector containing the IDs of the reference set
+      IDContainer_Type M_referenceSetIDs;
+      
+      //! Number of levels
+      static const UInt S_nbLevels = 2 ;
 
     //@}
     
@@ -126,11 +183,11 @@ namespace HPCS
     //! @name Private methods
     //@{
 
-    //! Each thread reads data from data file.
-    void readData();
-    
-    //! Each thread reads levels from levels file.
-    void readLevels();
+      //! Each thread reads data from data file.
+      void readData();
+      
+      //! Each thread reads levels from levels file.
+      void readLevels();
 
     //@}
     
@@ -249,64 +306,52 @@ namespace HPCS
     
  }
  
-  template < UInt _J >
-  void
-  BandDepthRef< _J >::
-  addToReferenceSet ( const UInt & levelID, const UInt & size, const UInt & seed )
-  {
-      assert( size <= this->M_dataSetPtr->cardinality( levelID ) );
+ // Method to add elements to the reference set
+ template < UInt _J >
+ void
+ BandDepthRef< _J >::
+ addToReferenceSet ( const UInt & levelID, const UInt & size, const UInt & seed )
+ {
+     assert( size <= this->M_dataSetPtr->cardinality( levelID ) );
 
-      srand48( seed );
-            
-      for ( UInt iInsert(0); iInsert < size; )
-      {	
+     srand48( seed );
+           
+     for ( UInt iInsert(0); iInsert < size; )
+     {	
 	UInt temp = static_cast< UInt >( this->M_dataSetPtr->cardinality( levelID ) * drand48() );
 	
 	if ( temp != this->M_dataSetPtr->cardinality( levelID ) )
 	{
 	
-	    for ( UInt iLevel(0); iLevel < levelID; ++iLevel )
-	    {
-		temp += this->M_dataSetPtr->cardinality( levelID );
-	    }
+	   for ( UInt iLevel(0); iLevel < levelID; ++iLevel )
+	   {
+	      temp += this->M_dataSetPtr->cardinality( levelID );
+	   }
 	    
-	    if ( this->M_referenceSetIDs.insert( temp ).second == true )
-	    {
-		++iInsert;
-	    }
+	   if ( this->M_referenceSetIDs.insert( temp ).second == true )
+	   {
+	      ++iInsert;
+	   }
 	}
       }
- /*     
-      //! @TODO REMOVE ME!!
-      if ( this->M_mpiUtilPtr->isMaster() )
-      {
-	  std::cout << " REFERENCE SET " << std::endl;
-	
-	  for ( IDContainer_Type::const_iterator it = this->M_referenceSetIDs.begin(); it != this->M_referenceSetIDs.end(); ++it )
-	  {
-	      std::cout << *it << " ";
-	  }
-	
-	  std::cout << std::endl;
-      }
-  */  
-      return;
-  }
-  
-  template < UInt _J >
-  void
-  BandDepthRef< _J >::
-  clearReferenceSet ()
-  {
-      this->M_referenceSetIDs.clear();
-      
-      this->M_testSetIDs.clear();
-      
-      return;
-  }
+
+    return;
+ }
+ 
+ // Method to clear the reference set
+ template < UInt _J >
+ void
+ BandDepthRef< _J >::
+ clearReferenceSet ()
+ {
+     this->M_referenceSetIDs.clear();
+     
+     this->M_testSetIDs.clear();
+     
+     return;
+ }
     
-    
- //! @TODO CIOÒ CHE NON È REFERENCE SET!!   
+ // Method to finalize the setup of the refernece and test set.
  template < UInt _J >
  void
  BandDepthRef< _J >::
@@ -319,36 +364,23 @@ namespace HPCS
 	this->M_testSetIDs.insert( iSample );	
       }
     }
-/*    
-    //! @TODO REMOVE ME!!
-    if ( this->M_mpiUtilPtr->isMaster() )
-      {	
-	  std::cout << " TEST SET " << std::endl;
-	
-	  for ( IDContainer_Type::const_iterator it = this->M_testSetIDs.begin(); it != this->M_testSetIDs.end(); ++it )
-	  {
-	      std::cout << *it << " ";
-	  }
-	
-	  std::cout << std::endl;
-      }
 
- */   return;
+    return;
  }
  
-  // Getter of the reference set IDs.
-  template < UInt _J >
-   template < typename _containerType >
-   inline
-   void
-   BandDepthRef< _J >::
-   getReferenceSetIDs( _containerType & idCont ) 
-   const
-   {    
-      idCont.assign( this->M_referenceSetIDs.begin(), this->M_referenceSetIDs.end() );
-   }
+ // Getter of the reference set IDs.
+ template < UInt _J >
+ template < typename _containerType >
+ inline
+ void
+ BandDepthRef< _J >::
+ getReferenceSetIDs( _containerType & idCont ) 
+ const
+ {    
+     idCont.assign( this->M_referenceSetIDs.begin(), this->M_referenceSetIDs.end() );
+ }
     
-    // Getter of the reference set IDs.
+ // Getter of the reference set IDs.
   template < UInt _J >
    template < typename _containerType >
    inline
@@ -450,17 +482,11 @@ namespace HPCS
 	    ++iBD;
 	}
 	
-   	//!@todo MODIFY ME!
-//     	iBD = 0;
-	
 	bdList.sort( LessThanPairFirst< UInt, Real >() );	
 	
 	for ( listIt_Type it = bdList.begin(); it != bdList.end(); ++it )
 	{
 	  
-// 	  //! @todo replace me with it->first!!
-//    	    output << iBD << "\t" << it->second << std::endl;
-//    	    ++iBD;
    	    output << it->first << "\t" << it->second << std::endl;
 
 	}
@@ -470,7 +496,8 @@ namespace HPCS
       
       return;
   }
- 
+
+ // The method to compute the band depths, in the general case (i.e. for _J > 2 ). 
  template < UInt _J >
  void
  BandDepthRef< _J >::
@@ -589,7 +616,7 @@ namespace HPCS
     return;
  }
   
- 
+ // The method to compute the band depths in the case of J=2
  template <>
  void
  BandDepthRef< 2 >::
@@ -696,7 +723,6 @@ namespace HPCS
    return;   
    
   }
-
 }
 
 

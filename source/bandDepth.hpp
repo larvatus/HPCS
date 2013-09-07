@@ -154,7 +154,7 @@ public:
 
 
 
-//! @class BandDepth this class Implements an interface for the fast computation of Band Depths for functional data.
+//! @class BandDepth this class Implements an interface for the fast computation of Band Depths for functional data in the All case.
 /*!
  *  This class implements an interface for the actual, fast computation of the band depths of a given dataset.
  *  It benefits from built in, parallel implementation exploting MPI. The corresponding band depths are computed
