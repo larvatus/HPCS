@@ -9,7 +9,7 @@
 
     outputFilename = bd.I.amplitudeSine.dat
 
-    J = 3
+    J = 2
 
     verbosity = 3
 

@@ -2,7 +2,7 @@
   
   [./GENTON]
 
-    nbPz = 30
+    nbPz = 100
     nbPts = 500
     leftOffset = 0
     rightOffset = 0
@@ -19,7 +19,7 @@
 
   [./DIRECT]
 
-    nbSamples = 30
+    nbSamples = 100
     nbPts = 500
     leftOffset = 0
     rightOffset = 0
@@ -42,9 +42,9 @@
 
   [./GENTON]
 
-    nbPz = 30
+    nbPz = 100
     nbPts = 500
-    nbReferenceSamples = 20
+    nbReferenceSamples = 30
     leftOffset = 0
     rightOffset = 0
 
@@ -54,7 +54,7 @@
 
     outputFilename = bd_I_ref.dat
 
-    J = 3
+    J = 2
 
     verbosity = 3
 
@@ -63,9 +63,9 @@
   [./DIRECT]
 
 
-    nbSamples = 30
+    nbSamples = 100
     nbPts = 500
-    nbReferenceSamples = 20
+    nbReferenceSamples = 30
     leftOffset = 0
     rightOffset = 0
 
@@ -77,7 +77,7 @@
 
     outputFilename = bd_I_ref_direct.dat
 
-    J = 3
+    J = 2
 
     verbosity = 3
 

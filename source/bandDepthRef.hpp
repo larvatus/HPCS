@@ -80,15 +80,17 @@ namespace HPCS
   
    //@}   
       
+   //! @name Setters & Getters   
+   //@{
 
-      
+    //! Setter of the data object
     void setBandDepthData( const bdRefData_Type & bdRefData );
     
+    //! Setter of the data objcet from shared pointer
     void setBandDepthData( const bdDataPtr_Type & bdDataPtr );
   
-    void setDataSet( const dataSetPtr_Type & dataPtr ); 
-
-        void setTestSet();
+    //! Setter of the dataset
+    void setDataSet( const dataSetPtr_Type & dataPtr );
     
     template < typename _containerType >
       void getReferenceSetIDs( _containerType & idCont ) const;
@@ -146,6 +148,14 @@ namespace HPCS
        * This method clears the reference set from the previously added elements.
        */
       void clearReferenceSet();
+      
+      //! Method for the setup of the test setBandDepthData
+      /*!
+       *  This method ideally finalizes the creation of reference set and builds the test set by drawing from the dataset
+       *  all the elements not assigned to the reference set (also from the levels to which its data belong) and adds them 
+       *  to the test set.
+       */
+      void setTestSet();
     
     //@}
      

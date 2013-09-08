@@ -1,4 +1,4 @@
-set title "MBD"
+set title "BD"
 set grid
 set termoption dash
 set style line 1 lt 3 lw 2 lc rgb "red" pt 11 ps 2

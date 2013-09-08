@@ -78,24 +78,6 @@ MPI_Init( &argc, &argv );
    bdDirect.writeBDs( outputFilenameDirect );
 
    if ( myRank == MASTER ) printf( " ***** FINISHED COMPUTATION IN DIRECT WAY \n" );
-   
-    /////////////////////////////////////////////////////////
-    /////
-    /////	GRAPHICAL COMPARISON SECTION VIA GNUPLOT
-    ////
-    /////////////////////////////////////////////////////////
-
-    if ( myRank == MASTER  )
-    {
-      const std::string outputGenton( bdDataGenton.outputFilename() ); 
-      
-      const std::string outputReference( outputFilenameDirect ); 
-    
-      std::string commandString = "gnuplot -p -e \"bdGen=\'" + outputGenton + "\'; bdDir=\'" + outputReference + "\'\" genton.plot";
-      
-      system( commandString.data() );
-
-    }
   
 MPI_Finalize();
 

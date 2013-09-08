@@ -586,7 +586,7 @@ computeBDs()
      
        this->M_mpiUtilPtr->isMaster() ? globalPtID = iPt : globalPtID = masterProcNbPts  + ( myRank - 1 ) * slaveProcNbPts + iPt;
        
-       // MODIFY THIS with a view
+       // MODIFY THIS with a view + extendedSort
        
        std::multimap< Real, int > map;
        

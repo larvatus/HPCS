@@ -33,8 +33,6 @@ MPI_Init( &argc, &argv );
    bdBasePtr_Type bdPtr( factory.create( bdData.J() ) );
    
    bdPtr->setBandDepthData( bdData );
-   
-//    const UInt nbReferenceSamples( dataFile( ( section + "/nbReferenceSamples"  ).data(), 0 ) );
   
    bdPtr->addToReferenceSet( 0, bdData.nbReferenceSamples() );
    

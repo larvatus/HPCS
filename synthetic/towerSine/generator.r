@@ -47,11 +47,11 @@ matplot( t(dataI[ 1:4,]), type = 'l');
 matplot( t(dataII[ 1:4, ]), type = 'l');
 
 ### SAVING IMAGES
-postscript('I_tower.ps');
-matplot( t(dataI), type = 'l');
+pdf('I_tower.pdf');
+matplot( t(dataI), type = 'l', xlab = F, ylab = F);
 dev.off();
 postscript('II_tower.ps');
-matplot( t(dataII), type = 'l' );
+matplot( t(dataII), type = 'l', xlab = F, ylab = F);
 dev.off();
 
 ### SAVING DATA
