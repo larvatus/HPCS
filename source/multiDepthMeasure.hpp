@@ -9,101 +9,158 @@
 
 namespace HPCS
 {
+  
+  //! @class MultiDepthMeasureBase this class implements a base class from which to derive the actual classes mean to compute the multivariate depths measure of a functional dataset.
   template < BDPolicy _policy >
   class MultiDepthMeasureBase
   {
   public:
     
+    //! Typedef for the GetPot type
     typedef GetPot getPot_Type;
      
+    //! @name Misc. Public Types
+    //@{
+
+    //! Default constructor
     MultiDepthMeasureBase();
     
+    //! Default destructor
     virtual ~MultiDepthMeasureBase(){};
     
+    //! Method to add dimension to the current object.
     virtual void addDimension( const getPot_Type & dataFile, const std::string & section ){};
     
+    //! Method to compute the depths
     virtual void computeMultiDepths(){};
     
+    //! Method to compute the ranks
     virtual void computeRanks(){};
     
+    //! Method to write the depths to the specified filename
     virtual void writeMultiDepths(){};
     
+    //! Method to write ranks to some output
     virtual void writeRanks( std::ostream & output = std::cout ){};
       
+    //! Method to write the ranks to some output file
     virtual void writeRanks( const std::string & outputFilename ){};
+
+    //@}
     
-    virtual void setWeights( const getPot_Type & dataFile, const std::string & section ){};
-    
-    //! SETTA PRINCIPALMENTE L'OUTPUT FILENAME
-    virtual void setData( const getPot_Type & dataFile, const std::string & section ){};
-    
-    template < typename _containerType >
-      void setWeights( const boost::shared_ptr< _containerType > &  containerPtr );
 
-    template < typename _containerType >
-      void setWeights( const _containerType &  container );
-
-    template < typename _iteratorType >
-      void setWeights( const _iteratorType begin, _iteratorType end );
-    
-     template < typename _containerType >
-      void getMultiDepths( boost::shared_ptr< _containerType > & containerPtr  ) const;
-
-    template < typename _containerType >
-      void getMultiDepths( _containerType & container ) const;
-
-    template < typename _iteratorType >
-      void getMultiDepths( _iteratorType begin, _iteratorType end ) const;    
-    
-    template < typename _containerType >
-      void getMultiRanks( boost::shared_ptr< _containerType > &  containerPtr ) const;
-
-    template < typename _containerType >
-      void getMultiRanks( _containerType &  container ) const;
-
-    template < typename _iteratorType >
-      void getMultiRanks( _iteratorType begin, _iteratorType end ) const;
+    //! @name Setters & Getters
+    //@{
       
-    template < typename _containerType >
-      void getWeights( boost::shared_ptr< _containerType > &  containerPtr ) const;
+      //! Setter of the weights from a getpot variable
+      virtual void setWeights( const getPot_Type & dataFile, const std::string & section ){};
+    
+      //! Setter of the data from a getpot file
+      virtual void setData( const getPot_Type & dataFile, const std::string & section ){};
 
-    template < typename _containerType >
-      void getWeights( _containerType &  container ) const;
+      //! Setter of the weights from a shared pointer to a container    
+      template < typename _containerType >
+	void setWeights( const boost::shared_ptr< _containerType > &  containerPtr );
 
-    template < typename _iteratorType >
-      void getWeights( _iteratorType begin, _iteratorType end ) const;
+      //! Setter of the weights from a container
+      template < typename _containerType >
+	void setWeights( const _containerType &  container );
+
+      //! Setter of the weights from a container in terms of iterators
+      template < typename _iteratorType >
+	void setWeights( const _iteratorType begin, _iteratorType end );
+    
+      //! Getter of depths from a shared pointer to a container
+      template < typename _containerType >
+	void getMultiDepths( boost::shared_ptr< _containerType > & containerPtr  ) const;
+
+      //! Getter of depths from a container
+      template < typename _containerType >
+	void getMultiDepths( _containerType & container ) const;
+
+      //! Getter of depths into a structure given by iterators
+      template < typename _iteratorType >
+	void getMultiDepths( _iteratorType begin, _iteratorType end ) const;    
+    
+      //! Getter of the ranks from a shared pointer to a container
+      template < typename _containerType >
+	void getMultiRanks( boost::shared_ptr< _containerType > &  containerPtr ) const;
+
+      //! Getter of the ranks from the container
+      template < typename _containerType >
+	void getMultiRanks( _containerType &  container ) const;
+
+      //! Getter of the ranks into a structure given by iterators
+      template < typename _iteratorType >
+	void getMultiRanks( _iteratorType begin, _iteratorType end ) const;
+      
+      //! Getter of weights from shared pointer to a container
+      template < typename _containerType >
+	void getWeights( boost::shared_ptr< _containerType > &  containerPtr ) const;
+
+      //! Getter of weights from a container
+      template < typename _containerType >
+	void getWeights( _containerType &  container ) const;
+
+      //! Getter of weights into a structure given by iterators
+      template < typename _iteratorType >
+	void getWeights( _iteratorType begin, _iteratorType end ) const;
+      
+    //@}
     
   protected:
     
-    typedef std::vector< Real > depths_Type;
+    //!@name Protected Types
+    //@{
+
+      //! Typedef of the depths container
+      typedef std::vector< Real > depths_Type;
+      
+      //! Typedef of the shared pointer to the depths type
+      typedef boost::shared_ptr< depths_Type > depthsPtr_Type;
+      
+      //! Typedef of the ranks container
+      typedef std::vector< UInt > ranks_Type;
+      
+      //! Typedef of the shared pointer to the ranks container
+      typedef boost::shared_ptr< ranks_Type > ranksPtr_Type;
+      
+      //! Typedef ot the mpi utility type
+      typedef mpiUtility mpiUtility_Type;
     
-    typedef boost::shared_ptr< depths_Type > depthsPtr_Type;
+      //! Typedef of the shared pointer to the mpi utility type
+      typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
+      
+      //! Typedef of the weights container
+      typedef std::vector< Real > weights_Type;
+      
+      //! Typedef of the shared pointer to the weights container
+      typedef boost::shared_ptr< weights_Type > weightsPtr_Type;
+            
+    //@}
     
-    typedef std::vector< UInt > ranks_Type;
+    //!@name Protected Members
+    //@{
+ 
+      //! Object for the mpi utility
+      mpiUtilityPtr_Type M_mpiUtilPtr;
     
-    typedef boost::shared_ptr< ranks_Type > ranksPtr_Type;
+      //! Object for the depths container
+      depthsPtr_Type M_depthsPtr;
+      
+      //! Objects for the ranks container
+      ranksPtr_Type M_ranksPtr;
     
-    typedef mpiUtility mpiUtility_Type;
-  
-    typedef boost::shared_ptr< mpiUtility_Type > mpiUtilityPtr_Type;
-    
-    typedef std::vector< Real > weights_Type;
-    
-    typedef boost::shared_ptr< weights_Type > weightsPtr_Type;
-    
-    mpiUtilityPtr_Type M_mpiUtilPtr;
-    
-    depthsPtr_Type M_depthsPtr;
-    
-    ranksPtr_Type M_ranksPtr;
-    
-    weightsPtr_Type M_weightsPtr;
+      //! Objects for the weights container
+      weightsPtr_Type M_weightsPtr;
+      
+    //@}
     
   private:
     
   };
   
-  
+  // Definition of the default constructor
   template < BDPolicy _policy >
   MultiDepthMeasureBase< _policy >::
   MultiDepthMeasureBase()
@@ -114,7 +171,8 @@ namespace HPCS
   M_weightsPtr( new weights_Type() )
   {
   } 
-  
+
+  // Definition of a setter of the weights
   template < BDPolicy _policy >
     template < typename _containerType >
     void 
@@ -128,6 +186,7 @@ namespace HPCS
 	return;
     }
   
+  // Definition of a setter of the weights
   template < BDPolicy _policy >
     template < typename _containerType >
     void 
@@ -141,6 +200,7 @@ namespace HPCS
 	return;
     }
    
+    // Definition of a setter of the weights
     template < BDPolicy _policy >
       template < typename _iteratorType >
       void
@@ -154,6 +214,7 @@ namespace HPCS
 	  return;
       }
     
+    // Definition of a getter of the depths
     template < BDPolicy _policy >
       template < typename _containerType >
       void
@@ -167,6 +228,7 @@ namespace HPCS
 	  return;
       }
     
+    // Definition of a getter of the depths
     template < BDPolicy _policy >
       template < typename _containerType >
       void
@@ -180,7 +242,8 @@ namespace HPCS
 	  return;
 	  
       }
-
+      
+    // Definition of a getter of the depths
     template < BDPolicy _policy >
       template < typename _iteratorType >
       void
@@ -197,6 +260,7 @@ namespace HPCS
 	
       }
       
+    // Definition of a getter of the ranks
     template < BDPolicy _policy >
       template < typename _containerType >
       void
@@ -210,6 +274,7 @@ namespace HPCS
 	  return;
       }
     
+    // Definition of a getter of the ranks    
     template < BDPolicy _policy >
       template < typename _containerType >
       void
@@ -224,6 +289,7 @@ namespace HPCS
 	  
       }
 
+    // Definition of a getter of the ranks
     template < BDPolicy _policy >
       template < typename _iteratorType >
       void
@@ -240,6 +306,7 @@ namespace HPCS
 	
       }
       
+    // Definition of a getter of the weights
     template < BDPolicy _policy >
       template < typename _containerType >
       void
@@ -253,6 +320,7 @@ namespace HPCS
 	  return;
       }
     
+    // Definition of a getter of the weights
     template < BDPolicy _policy >
       template < typename _containerType >
       void
@@ -267,6 +335,7 @@ namespace HPCS
 	  
       }
 
+    // Definition of a getter of the weights
     template < BDPolicy _policy >
       template < typename _iteratorType >
       void
@@ -284,79 +353,135 @@ namespace HPCS
       }
 
   
+  
+  //! @class MultiDepthMeasure this class implements the computation of multivariate depths measure of a functional dataset.
+  /*!
+   * The class is derived from the base class MultiDepthMeasureBase and implements the computation of the functional depths in the
+   * multivariate case. The different dimensions are set up via addDimension method, and by using external GetPot data.
+   */
   template < UInt _J, BDPolicy _policy >
   class MultiDepthMeasure : public MultiDepthMeasureBase< _policy >
   {
   public:
     
-    typedef typename MultiDepthMeasureBase< _policy >::getPot_Type getPot_Type;
+    //!@name Public Types
+    //@{
+
+      //! Typedef of the base class
+      typedef typename MultiDepthMeasureBase< _policy >::getPot_Type getPot_Type;
     
-    typedef DepthMeasureBase< _policy > DMBase_Type;
-   
-    typedef boost::shared_ptr< DMBase_Type > DMBasePtr_Type;
+      //! Typedef of the base depth measure class
+      typedef DepthMeasureBase< _policy > DMBase_Type;
     
-    typedef typename DMBase_Type::bdData_Type bdData_Type;
-    
-    typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
-    
-    typedef std::list< bdDataPtr_Type > dataContainer_Type;
-    
-    typedef boost::shared_ptr< dataContainer_Type > dataContainerPtr_Type;
-    
-    typedef typename MultiDepthMeasureBase< _policy >::weights_Type weights_Type;
-    
-    typedef typename MultiDepthMeasureBase< _policy >::weightsPtr_Type weightsPtr_Type;
-    
+      //! Typedef of the shared pointer to the base depth class
+      typedef boost::shared_ptr< DMBase_Type > DMBasePtr_Type;
+      
+      //! Typedef for the data object
+      typedef typename DMBase_Type::bdData_Type bdData_Type;
+      
+      //! Typedef for the shared pointer to the data object
+      typedef boost::shared_ptr< bdData_Type > bdDataPtr_Type;
+      
+      //! Typedef of the list to data pointer objects
+      typedef std::list< bdDataPtr_Type > dataContainer_Type;
+      
+      //! Typedef of the shared pointer to the data container
+      typedef boost::shared_ptr< dataContainer_Type > dataContainerPtr_Type;
+      
+      //! Typedef of the wegihts type
+      typedef typename MultiDepthMeasureBase< _policy >::weights_Type weights_Type;
+      
+      //! Typedef of the weights pointer type
+      typedef typename MultiDepthMeasureBase< _policy >::weightsPtr_Type weightsPtr_Type;
+      
+    //@}
+
+       
+    //! Default constructor  
     MultiDepthMeasure();
     
+    //! Default destructor
     virtual ~MultiDepthMeasure(){};
     
+    //! Method to add a dimension to the object
+    /*!
+     * Diensions are treated indipendntly as single dataset of which to compute the marginal depths. Dimensions can be added to
+     * the object by calling this method, which need a GetPot file to build a data object type, pushed back to the container list.
+     * When needed the data object can serve as initializer of the corresponding depthMeasure object.
+     * 
+     * @param dataFile is the GetPot variable
+     * @param sectio is the section where information lie.
+     */
     void addDimension( const getPot_Type & dataFile, const std::string & section );
     
+    //! Setter of weights from data coming through getpot variable
     void setWeights( const getPot_Type & dataFile, const std::string & section  );
     
+    //! Method to compute the depths
     void computeMultiDepths();
     
+    //! Method to compute the ranks
     void computeRanks();
     
+    //! Method to write the depths to the specified filename
     void writeMultiDepths();
     
+    //! Method to write ranks to some output
     void writeRanks( std::ostream & output = std::cout );
       
+    //! Method to write the ranks to a given filename
     void writeRanks( const std::string & outputFilename );
     
-    //! SETTA PRINCIPALMENTE L'OUTPUT FILENAME
+    //! Setter of some data useful for the class, packed inside a getpot variable
     void setData( const getPot_Type & dataFile, const std::string & section );
     
   protected:
-    
-    typedef typename MultiDepthMeasureBase< _policy >::ranks_Type ranks_Type;
 
-    typedef typename MultiDepthMeasureBase< _policy >::ranksPtr_Type ranksPtr_Type;
+    //!@name Protected Types
+    //@{
+
+       //! Typedef of the ranks type
+       typedef typename MultiDepthMeasureBase< _policy >::ranks_Type ranks_Type;
+
+       //! Typedef of the ranks pointer type
+       typedef typename MultiDepthMeasureBase< _policy >::ranksPtr_Type ranksPtr_Type;
     
-    typedef typename MultiDepthMeasureBase< _policy >::depthsPtr_Type depthsPtr_Type;
-	    
-    typedef typename MultiDepthMeasureBase< _policy >::depths_Type depths_Type;
+       //! Typedef of the depths type
+       typedef typename MultiDepthMeasureBase< _policy >::depths_Type depths_Type;
+
+       //! Typedef of the depths pointer type
+       typedef typename MultiDepthMeasureBase< _policy >::depthsPtr_Type depthsPtr_Type;
+       
+    //@}
     
-    
-    
+    //! Number of dimensions
     UInt M_nbDimensions;
     
+    //! Data container type
     dataContainerPtr_Type M_dataContainerPtr;   
     
+    //! Output filename in which to print the results
     std::string M_outputFilename;
     
   private:
+
+    //!@name Private Types
+    //@{
+      
+      //! Typedef of the sorted
+      typedef ExtendedSort< Real > sort_Type;
     
-    typedef ExtendedSort< Real > sort_Type;
-    
-    typedef boost::shared_ptr< sort_Type > sortPtr_Type;
-    
+      //! Typedef of the sorter pointer
+      typedef boost::shared_ptr< sort_Type > sortPtr_Type;
+
+    //@}
+
+    //! Sorter pointer object
     sortPtr_Type M_sortPtr;
     
   };
   
-  
+  // Definition of the standard constructor
   template < UInt _J, BDPolicy _policy >
   MultiDepthMeasure< _J, _policy >::
   MultiDepthMeasure()
@@ -366,6 +491,7 @@ namespace HPCS
   M_nbDimensions( 0 )
   {}
  
+  // Definition of the method to add dimensions
   template < UInt _J, BDPolicy _policy >
   void
   MultiDepthMeasure< _J, _policy >::
@@ -393,6 +519,7 @@ namespace HPCS
     
   }  
   
+  // Definition of the method to set weights
   template < UInt _J, BDPolicy _policy >
   void
   MultiDepthMeasure< _J, _policy >::
@@ -420,6 +547,7 @@ namespace HPCS
       
   }
   
+  // Definition of the method to set data
   template < UInt _J, BDPolicy _policy >
   void
   MultiDepthMeasure< _J, _policy >::
@@ -434,6 +562,7 @@ namespace HPCS
       return;
   }
   
+  // Definition of the method to write depths
   template < UInt _J, BDPolicy _policy >
   void
   MultiDepthMeasure< _J, _policy >::
@@ -461,6 +590,7 @@ namespace HPCS
     return;
   }
 
+  // Definition of the methods to write ranks to some output
   template < UInt _J, BDPolicy _policy >
   void
   MultiDepthMeasure< _J, _policy >::
@@ -484,6 +614,7 @@ namespace HPCS
     return;
   } 
   
+  // Definition of the method to write ranks to some output file
   template < UInt _J, BDPolicy _policy >
   void
   MultiDepthMeasure< _J, _policy >::
@@ -511,6 +642,7 @@ namespace HPCS
     return;
   } 
   
+  // Definition of the method to compute the depths
   template < UInt _J, BDPolicy _policy >
   void
   MultiDepthMeasure< _J, _policy >::
@@ -556,6 +688,7 @@ namespace HPCS
      return;
   }
   
+  // Definition of the method to comute the ranks
   template < UInt _J, BDPolicy _policy >
   void
   MultiDepthMeasure< _J, _policy >::

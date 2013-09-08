@@ -20,10 +20,7 @@ namespace HPCS
     return static_cast< UInt >( num/denom );
   }
   
-  /////////////////////////
-  /// 
-  /////////////////////////
-  
+  // Constructor from specified variables
   CombinationsID::
   CombinationsID( const UInt & N, const UInt & K, const bool & storeFlag  )
   :
@@ -43,11 +40,13 @@ namespace HPCS
   }
 
 
+  // Default destructor
   CombinationsID::
   ~CombinationsID()
   {
   }
   
+  // Definition of the method to reset the class
   void
   CombinationsID::
   reset( const UInt & N, const UInt & K, const bool & storeFlag)
@@ -74,6 +73,7 @@ namespace HPCS
     return;
   }
   
+  // Definition of the method to initialise the combination sequence
   void
   CombinationsID::
   initialise()
@@ -93,6 +93,7 @@ namespace HPCS
       return;
   }
   
+  // Definition of the method to write the combinations to some output
   void
   CombinationsID::
   writeCombinationsID( std::ostream & output ) const
@@ -113,6 +114,7 @@ namespace HPCS
       return;
   }
 
+  // Definition of the method to ask if the iterator sweeping the list of computed combinations has traversed the whole list
   bool
   CombinationsID::
   hasTraversedAll() const
@@ -120,6 +122,7 @@ namespace HPCS
       return ( this->M_currTupleIt == this->M_tupleList.end() );
   }
 
+  // Definition of the method to ask if all the combinations have already been computed.
   bool
   CombinationsID::
   hasGeneratedAll() const
@@ -127,6 +130,7 @@ namespace HPCS
       return ( this->M_generatedCombinations == this->M_totalNumberOfCombinations );
   }
 
+  // Definition of the method to reset the iterator to the head of the combination list
   void
   CombinationsID::
   resetPointerToHeadCombination()
@@ -134,6 +138,7 @@ namespace HPCS
       this->M_currTupleIt = this->M_tupleList.begin();
   }
   
+  // Definition of the method to get the next combination (in terms of IDs)
   void
   CombinationsID::
   getNextCombinationID( tuple_Type & tuple  )
@@ -198,6 +203,7 @@ namespace HPCS
       return;
   }
   
+  // Definition of the method to generate all the combinations of IDs
   void
   CombinationsID::
   generateCombinationsID()
@@ -209,7 +215,6 @@ namespace HPCS
     assert( this->M_generatedCombinations == 0 );
     
     assert( this->M_seed.size() == this->M_K );  
-  //   std::cout << " M_N = " << M_N << "  M_K = " << M_K << std::endl;
     
     while( M_seed[ 0 ] < M_N - M_K )
     {
@@ -220,16 +225,12 @@ namespace HPCS
 	for ( ; iK > 0; --iK )
 	{
 	    if( M_seed[ iK ] > M_N - ( M_K - iK ) )
-	    {
-  // 	      std::cout << " IK = " << iK << std::endl;
-		
+	    {		
 		M_seed[ iK - 1 ]++;
 		M_seed[ iK ] = M_seed[ iK - 1] + 1;
 		
 		for ( UInt iJ( iK + 1); iJ < M_K; ++iJ )
-		{
-  // 		  std::cout << " IJ = " << iJ << std::endl;
-		  
+		{		  
 		    M_seed[ iJ ] = M_seed[ iJ - 1 ] + 1;
 		}
 	    }
@@ -246,9 +247,7 @@ namespace HPCS
     this->M_storedCombinations++;
     
     }
-    
-  //   printf( " Number of combinations: stored %d | total expected %d\n", this->M_storedCombinations, this->M_totalNumberOfCombinations ); 
-    
+        
     assert( this->M_storedCombinations == this->M_totalNumberOfCombinations );
     
     this->M_generatedCombinations = this->M_storedCombinations;
@@ -258,8 +257,8 @@ namespace HPCS
     return;  
   }
 
-  
-  CombinationsID::UInt
+  // Definition of the method to compute the factorial
+  UInt
   CombinationsID::
   factorial( const UInt & K ) const
   {
@@ -273,7 +272,8 @@ namespace HPCS
       return factorial;
   }
 
-  CombinationsID::UInt
+  // Definition of the method to compute the binomial coefficient N choose k
+  UInt
   CombinationsID::
   NChooseK( const UInt & N, const UInt & K ) const
   {
@@ -289,6 +289,4 @@ namespace HPCS
     return static_cast< UInt >( num/denom );
   }
 
-
-  
 }
