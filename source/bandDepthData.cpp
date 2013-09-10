@@ -140,10 +140,11 @@ namespace HPCS
  BandDepthRefData::
  BandDepthRefData( const UInt & nbPz, const UInt & nbPts, const UInt & leftOffset, 
 	 const UInt & rightOffset, const UInt & J, const UInt & verbosity,
-	 const bool & readDataFromFile, const bool & readLevelsExtremaFromFile )
+	 const bool & readDataFromFile, const bool & readLevelsExtremaFromFile, const UInt & seed )
  :
  BandDepthData(nbPz, nbPts, leftOffset, rightOffset, J, verbosity, readDataFromFile),
- M_readLevelsExtremaFromFile( readLevelsExtremaFromFile )
+ M_readLevelsExtremaFromFile( readLevelsExtremaFromFile ),
+ M_seed( seed )
  {}
   
  // Constructor from Get Pot type object
@@ -157,6 +158,8 @@ namespace HPCS
     this->M_levelsExtremaFilename =  dataFile( ( baseName + "/levelsExtremaFilename"  ).data(), "levels.dat" );
     
     this->M_nbRefSamples = dataFile( ( baseName + "/nbReferenceSamples" ).data(), 0 );
+    
+    this->M_seed = dataFile( ( baseName + "/seed" ).data(), 1 );
     
     this->M_readLevelsExtremaFromFile = true;
       
@@ -182,30 +185,6 @@ namespace HPCS
     this->M_nbRefSamples = nbRefSamples;
     
     return;
- }
-
- // Getter for the number of reference samples
- UInt
- BandDepthRefData::
- nbReferenceSamples() const
- {
-    return this->M_nbRefSamples;
- }
- 
- // Getter for the number of test samples (i.e. all the non-reference samples )
- UInt 
- BandDepthRefData::
- nbTestSamples() const
- {
-    return ( this->M_nbPz - this->M_nbRefSamples); 
- }
- 
- // Getter of the levels filename
- std::string
- BandDepthRefData::
- levelsExtremaFilename() const
- { 
-   return this->M_levelsExtremaFilename; 
  }
 
  // Copy constructor

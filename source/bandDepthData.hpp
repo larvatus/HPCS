@@ -197,7 +197,7 @@ public:
    */
   BandDepthRefData( const UInt & nbPz, const UInt & nbPts, const UInt & leftOffset, const UInt & rightOffset, 
 		    const UInt & J, const UInt & verbosity, const bool & readDataFromFile = false, 
-		    const bool & readLevelsFromFile = false  );
+		    const bool & readLevelsFromFile = false, const UInt & seed = 1  );
   
   //! Constructor from a Get Pot variable
   /*!
@@ -224,16 +224,19 @@ public:
   void setNbReferenceSamples( const UInt & nbRefSamples );
   
   //! Getter of the levels filename
-  std::string levelsExtremaFilename() const;
+  std::string levelsExtremaFilename() const { return this->M_levelsExtremaFilename;  }
   
   //! Getter of the flag specifying whether levels are to be read from an external file.
   bool readLevelsExtremaFromFile() const { return this->M_readLevelsExtremaFromFile; }
   
   //! Getter for the number of reference samples
-  UInt nbReferenceSamples() const;
+  UInt nbReferenceSamples() const {  return this->M_nbRefSamples; } 
+  
+  //! Getter of the seed
+  UInt seed() const { return this->M_seed; }
   
   //! Getter for the number of test samples (i.e. all the non-reference samples )
-  virtual UInt nbTestSamples() const;
+  virtual UInt nbTestSamples() const { return ( this->M_nbPz - this->M_nbRefSamples); }
   
   //@}
   
@@ -252,6 +255,9 @@ protected:
   
   //! Number of samples constituting the reference set
   UInt M_nbRefSamples;
+  
+  //! Seed for the sampling of reference elements from the reference level of dataset.
+  UInt M_seed;
   
   //! Variable containing the filename specifying the extrema IDs of the levels in the file.
   std::string M_levelsExtremaFilename;

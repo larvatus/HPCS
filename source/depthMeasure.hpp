@@ -840,7 +840,7 @@ namespace HPCS
        
 	 bdBasePtr->setBandDepthData( this->M_bdDataPtr );
 	 
-	 bdBasePtr->addToReferenceSet( 0, this->M_bdDataPtr->nbReferenceSamples() );
+	 bdBasePtr->addToReferenceSet( 0, this->M_bdDataPtr->nbReferenceSamples(), this->M_bdDataPtr->seed() );
    
 	 bdBasePtr->setTestSet();    
 	  
