@@ -38,61 +38,66 @@ MPI_Init( & argc, & argv );
      
    GetPot dataFile( data_file_name.data() );
    
-   std::string baseName = "MBDREF";
+   std::vector< std::string > baseNames(2);
+   
+   baseNames[ 0 ] = "MBDREF/primitive";
+   baseNames[ 1 ] = "MBDREF/derivative";
    
    if ( myRank == MASTER )
    {
       printf( " *** DATA SETUP *** \n" );  
    }
-      
-   const UInt J( dataFile( ( baseName + "/J" ).data(), 2 ) );
-      
-   mdmFactory_Type factory;
-      
-   mdmBasePtr_Type mdmPtr( factory.create( J ) );
-      
-   mdmPtr->setData( dataFile, baseName );
-
-   if ( myRank == MASTER )
+   
+   for ( UInt iCase(0); iCase < 2; ++iCase )
    {
-      printf( " *** ADDING ALL DIMENSIONS *** \n" );  
-   }
+        const UInt J( dataFile( ( baseNames[ iCase ] + "/J" ).data(), 2 ) );
+      
+	mdmFactory_Type factory;
+	    
+	mdmBasePtr_Type mdmPtr( factory.create( J ) );
+	    
+	mdmPtr->setData( dataFile, baseNames[ iCase ] );
+
+	if ( myRank == MASTER )
+	{
+	    printf( " *** ADDING ALL DIMENSIONS *** \n" );  
+	}
+	      
+	mdmPtr->addDimension( dataFile, baseNames[ iCase ] + "/I" );
 	
-   mdmPtr->addDimension( dataFile, baseName + "/I" );
+	mdmPtr->addDimension( dataFile, baseNames[ iCase ] + "/II" );
+	
+	mdmPtr->addDimension( dataFile, baseNames[ iCase ] + "/V1" );
+	
+	mdmPtr->addDimension( dataFile, baseNames[ iCase ] + "/V2" );
+	
+	mdmPtr->addDimension( dataFile, baseNames[ iCase ] + "/V3" );
+	
+	mdmPtr->addDimension( dataFile, baseNames[ iCase ] + "/V4" );
+	
+	mdmPtr->addDimension( dataFile, baseNames[ iCase ] + "/V5" );
+	
+	mdmPtr->addDimension( dataFile, baseNames[ iCase ] + "/V6" );
+	   
+	
+	mdmPtr->setWeights( dataFile, baseNames[ iCase ] );
 
-   std::cout << baseName + "/I" << std::endl;
-   
-   mdmPtr->addDimension( dataFile, baseName + "/II" );
-   
-   mdmPtr->addDimension( dataFile, baseName + "/V1" );
-   
-   mdmPtr->addDimension( dataFile, baseName + "/V2" );
-   
-   mdmPtr->addDimension( dataFile, baseName + "/V3" );
-   
-   mdmPtr->addDimension( dataFile, baseName + "/V4" );
-   
-   mdmPtr->addDimension( dataFile, baseName + "/V5" );
-   
-   mdmPtr->addDimension( dataFile, baseName + "/V6" );
+	if ( myRank == MASTER )
+	{
+	    printf( " *** COMPUTATION OF DEPTHS *** \n" );
+	}
+	    
+	  mdmPtr->computeMultiDepths();
+	    
+	  mdmPtr->writeMultiDepths();
+	
+	  mdmPtr->computeRanks();
+	
+	const std::string ranksFilename = dataFile( ( baseNames[ iCase ] + "/ranksFilename" ).data(), "ranks.dat" );
+	
+	  mdmPtr->writeRanks( ranksFilename );     
+    }
       
-   
-   mdmPtr->setWeights( dataFile, baseName );
-
-   if ( myRank == MASTER )
-   {
-      printf( " *** COMPUTATION OF DEPTHS *** \n" );
-   }
-      
-    mdmPtr->computeMultiDepths();
-      
-    mdmPtr->writeMultiDepths();
-   
-    mdmPtr->computeRanks();
-   
-   const std::string ranksFilename = dataFile( ( baseName + "/ranksFilename" ).data(), "ranks.dat" );
-   
-    mdmPtr->writeRanks( ranksFilename );
    
    /////////////////////////////////////////////////////////
    /////
@@ -102,14 +107,21 @@ MPI_Init( & argc, & argv );
 
    if ( myRank == MASTER  )
    {      
-     const std::string outputMBD( dataFile( ( baseName + "/outputFilename" ).data(), "mbd.dat" ) );
+     const std::string outputMBD1( dataFile( ( baseNames[ 0 ] + "/outputFilename" ).data(), "mbd.dat" ) );
+
+     const std::string outputMBD2( dataFile( ( baseNames[ 1 ] + "/outputFilename" ).data(), "mbd.dat" ) );
      
-     const std::string outputRKS( dataFile( ( baseName + "/ranksFilename" ).data(), "rks.dat" ) );
+//      const std::string outputRKS( dataFile( ( baseName + "/ranksFilename" ).data(), "rks.dat" ) );
           
-     std::string commandString = "gnuplot -p -e \"mbd1=\'" + outputMBD + "\'; rks1=\'" + outputRKS + "\'\" logistic.plot";
+     std::string commandString = "gnuplot -p -e \"mbd1=\'" + outputMBD1 + "\'; mbd2=\'" + outputMBD2 + "\'\" logistic.plot";
       
      system( commandString.data() );
     
+   }
+   
+   if ( myRank == MASTER )
+   {
+      printf( "=======================================\n" );
    }
    
   

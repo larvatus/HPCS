@@ -14,25 +14,19 @@ J = 2;
 
 nbPz = 99;
 
+distance = 'uniform';
+
 # Every patient with ID (strictly) less than saneThresholdID is Sane, the others are not.
 saneThresholdID = 52;
 # Cutting probability for the conversion of the logistic model to a classifier.
 probThreshold = 0.5;
 
-distance = 'frobenius';
-
 ####################################
 ## READING FILES
 ###################################
 
-pathPri = paste( 'res/ref/mbd/J', J, '/mbd_primitive_', distance, '_weights.dat', sep = '');
-pathDer = paste( 'res/ref/mbd/J', J, '/mbd_derivative_', distance, '_weights.dat', sep = '');
-
-print( paste( '***Reading ', 'res/ref/mbd/J', J, '/mbd_primitive_', distance, '_weights.dat', sep = '') );
-print( paste( '***Reading ', 'res/ref/mbd/J', J, '/mbd_derivatives_', distance, '_weights.dat', sep = '') );
-
-MBDPri = read.csv( pathPri, sep = ' ', header = FALSE );
-MBDDer = read.csv( pathDer, sep = ' ', header = FALSE );
+MBDPri = read.csv( './mbd.dat', sep = '', header = FALSE );
+MBDDer = read.csv( './mbd_der.dat', sep = '', header = FALSE );
 
 stopifnot( dim(MBDPri)[1] == nbPz && dim(MBDDer)[2] == nbPz )
   
