@@ -62,7 +62,7 @@ MPI_Init( & argc, & argv );
     mdmPtr->addDimension( dataFile, baseName + "/I" );
 	
     mdmPtr->addDimension( dataFile, baseName + "/II" );
-	
+/*	
     mdmPtr->addDimension( dataFile, baseName + "/V1" );
 	
     mdmPtr->addDimension( dataFile, baseName + "/V2" );
@@ -74,7 +74,7 @@ MPI_Init( & argc, & argv );
     mdmPtr->addDimension( dataFile, baseName + "/V5" );
 	
     mdmPtr->addDimension( dataFile, baseName + "/V6" );
-	   
+	   */
 	
     mdmPtr->setWeights( dataFile, baseName );
 

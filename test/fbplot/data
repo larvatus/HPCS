@@ -11,13 +11,13 @@
 
       [./I]
 	
-	nbPz = 149
-	nbPts = 700
+	nbPz = 60
+	nbPts = 500
 
 	leftOffset = 0
 	rightOffset = 0
 
-	inputFilename = ../../../../leads/I.txt
+	inputFilename = ../../../synthetic/outliersSine/I.txt
 
 	outputFilename = bd.I.dat
 
@@ -29,123 +29,15 @@
 
       [./II]
 	
-	nbPz = 149
-	nbPts = 700
+	nbPz = 60
+	nbPts = 500
 
 	leftOffset = 0
 	rightOffset = 0
 
-	inputFilename = ../../../../leads/II.txt
+	inputFilename = ../../../../synthetic/outliersSine/II.txt
 
 	outputFilename = bd.II..dat
-
-	J = 2
-
-	verbosity = 0
-
-      [../]
-
-      [./V1]
-	
-	nbPz = 149
-	nbPts = 700
-
-	leftOffset = 0
-	rightOffset = 0
-
-	inputFilename = ../../../../leads/V1.txt
-
-	outputFilename = bd.V1.dat
-
-	J = 2
-
-	verbosity = 0
-
-      [../]
-
-      [./V2]
-	
-	nbPz = 149
-	nbPts = 700
-
-	leftOffset = 0
-	rightOffset = 0
-
-	inputFilename = ../../../../leads/V2.txt
-
-	outputFilename = bd.V2.dat
-
-	J = 2
-
-	verbosity = 0
-
-      [../]
-
-      [./V3]
-	
-	nbPz = 149
-	nbPts = 700
-
-	leftOffset = 0
-	rightOffset = 0
-
-	inputFilename = ../../../../leads/V3.txt
-
-	outputFilename = bd.V3.dat
-
-	J = 2
-
-	verbosity = 0
-
-      [../]
-
-      [./V4]
-	
-	nbPz = 149
-	nbPts = 700
-
-	leftOffset = 0
-	rightOffset = 0
-
-	inputFilename = ../../../../leads/V4.txt
-
-	outputFilename = bd.V4.dat
-
-	J = 2
-
-	verbosity = 0
-
-      [../]
-
-      [./V5]
-	
-	nbPz = 149
-	nbPts = 700
-
-	leftOffset = 0
-	rightOffset = 0
-
-	inputFilename = ../../../../leads/V5.txt
-
-	outputFilename = bd.V5.dat
-
-	J = 2
-
-	verbosity = 0
-
-      [../]
-
-      [./V6]
-	
-	nbPz = 149
-	nbPts = 700
-
-	leftOffset = 0
-	rightOffset = 0
-
-	inputFilename = ../../../../leads/V6.txt
-
-	outputFilename = bd.V6.dat
 
 	J = 2
 
