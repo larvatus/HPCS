@@ -1,0 +1,195 @@
+
+[MBDALL]
+
+  [./first]
+
+      outputFilename = mbd.first.all.dat
+
+      weightsFilename = weights.w
+
+      ranksFilename = rks.first.all.dat
+
+      J = 2
+
+      [./I]
+	
+	nbPz = 50
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/phaseAmplitudeSine/I.txt
+
+	outputFilename = bd.first.I.all.dat
+
+	J = 2
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 50
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/phaseAmplitudeSine/II.txt
+
+	outputFilename = bd.first.II.all.dat
+
+	J = 2
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+  [./second]
+
+      outputFilename = mbd.second.all.dat
+
+      weightsFilename = weights.w
+
+      ranksFilename = rks.second.all.dat
+
+      J = 3
+
+      [./I]
+	
+	nbPz = 50
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/phaseAmplitudeSine/I.txt
+
+	outputFilename = bd.second.I.all.dat
+
+	J = 3
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 50
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/phaseAmplitudeSine/II.txt
+
+	outputFilename = bd.second.II.all.dat
+
+	J = 3
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+  [./third]
+
+      outputFilename = mbd.third.all.dat
+
+      weightsFilename = weights.w
+
+      ranksFilename = rks.third.all.dat
+
+      J = 4
+
+      [./I]
+	
+	nbPz = 50
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/phaseAmplitudeSine/I.txt
+
+	outputFilename = bd.third.I.all.dat
+
+	J = 4
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 50
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/phaseAmplitudeSine/II.txt
+
+	outputFilename = bd.third.II.all.dat
+
+	J = 4
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+
+  [./fourth]
+
+      outputFilename = mbd.fourth.all.dat
+
+      weightsFilename = weights.w
+
+      J = 5
+
+      ranksFilename = rks.fourth.all.dat
+
+      [./I]
+	
+	nbPz = 50
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/phaseAmplitudeSine/I.txt
+
+	outputFilename = bd.fourth.I.all.dat
+
+	J = 5
+
+	verbosity = 3
+
+      [../]
+
+      [./II]
+
+	nbPz = 50
+	nbPts = 500
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../synthetic/phaseAmplitudeSine/II.txt
+
+	outputFilename = bd.fourth.II.all.dat
+
+	J = 5
+
+	verbosity = 3
+
+
+      [../]
+
+  [../]
+
+
+[../]
+

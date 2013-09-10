@@ -11,7 +11,7 @@ library(mvtnorm)
 
 ### PARAMETERS ###
 
-N = 100;
+N = 50;
 
 S = 2;
 
@@ -59,9 +59,9 @@ dataII = matrix( NaN, nrow = N, ncol = nTimeSamples, byrow = TRUE );
 
 for( iN in 1 : N )
 {
-  dataI[ iN, ] =  widthNoise * t(noisePerturbation[ ,1 ]) +  ( 1. + 0.5 * ampliPerturbation[ iN, 1 ] ) * sin( 2 * pi * times + phasePerturbation[ iN, 1 ] );
+  dataI[ iN, ] =  widthNoise * t(noisePerturbation[ ,1 ]) +  ( 1. + 0.5 * ampliPerturbation[ iN, 1 ] ) * sin( 2 * pi * times + 0.5 * phasePerturbation[ iN, 1 ] );
 
-  dataII[ iN, ] =  widthNoise * t(noisePerturbation[ ,2 ]) +  ( 1. + 0.5 * ampliPerturbation[ iN, 2 ] ) * sin( 2 * pi * times + phasePerturbation[ iN, 2 ] );
+  dataII[ iN, ] =  widthNoise * t(noisePerturbation[ ,2 ]) +  ( 1. + 0.5 * ampliPerturbation[ iN, 2 ] ) * sin( 2 * pi * times + 0.5 * phasePerturbation[ iN, 2 ] );
 
 }
 

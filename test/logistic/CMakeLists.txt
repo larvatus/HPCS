@@ -1,0 +1,10 @@
+
+
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/data ${CMAKE_CURRENT_BINARY_DIR}/data  )
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/logistic.plot ${CMAKE_CURRENT_BINARY_DIR}/logistic.plot )
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/weights.w ${CMAKE_CURRENT_BINARY_DIR}/weights.w )
+
+# A first executable
+
+ADD_EXECUTABLE(main_logistic.exe main_logistic.cpp )
+TARGET_LINK_LIBRARIES(main_logistic.exe ${MPI_LIBRARIES} mbd)

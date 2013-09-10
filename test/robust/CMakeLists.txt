@@ -1,0 +1,13 @@
+
+
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/data ${CMAKE_CURRENT_BINARY_DIR}/data  )
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/robust.plot ${CMAKE_CURRENT_BINARY_DIR}/robust.plot )
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/weights.w ${CMAKE_CURRENT_BINARY_DIR}/weights.w )
+
+# A first executable
+
+ADD_EXECUTABLE(main_robustAll.exe main_robustAll.cpp )
+TARGET_LINK_LIBRARIES(main_robustAll.exe ${MPI_LIBRARIES} mbd)
+
+ADD_EXECUTABLE(main_robustRef.exe main_robustRef )
+TARGET_LINK_LIBRARIES(main_robustRef.exe ${MPI_LIBRARIES} mbd)
