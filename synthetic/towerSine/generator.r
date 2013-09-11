@@ -48,10 +48,10 @@ matplot( t(dataII[ 1:4, ]), type = 'l');
 
 ### SAVING IMAGES
 pdf('I_tower.pdf');
-matplot( t(dataI), type = 'l', xlab = F, ylab = F);
+matplot( t(dataI), type = 'l', xlab = 'sampling time', ylab = '');
 dev.off();
-postscript('II_tower.ps');
-matplot( t(dataII), type = 'l', xlab = F, ylab = F);
+pdf('II_tower.pdf');
+matplot( t(dataII), type = 'l', xlab = 'sampling time', ylab = '');
 dev.off();
 
 ### SAVING DATA

@@ -25,10 +25,10 @@ probThreshold = 0.5;
 ## READING FILES
 ###################################
 
-MBDPri = read.csv( './mbd.dat', sep = '', header = FALSE );
-MBDDer = read.csv( './mbd_der.dat', sep = '', header = FALSE );
+MBDPri = read.csv( './mbd.1.dat', sep = '', header = FALSE );
+MBDDer = read.csv( './mbd.der.1.dat', sep = '', header = FALSE );
 
-stopifnot( dim(MBDPri)[1] == nbPz && dim(MBDDer)[2] == nbPz )
+stopifnot( dim(MBDPri)[1] == nbPz && dim(MBDDer)[1] == nbPz )
   
 isSick = ifelse( MBDPri[,1] < saneThresholdID, 0, 1) 
 
@@ -76,7 +76,9 @@ fittedMbdRed = fitMbdRed$fitted.values;
 
 labelsMbdRed = ifelse( fittedMbdRed > probThreshold, 1., 0 );
 
-plot( fittedMbdRed, main = paste( 'Red. Log MBD - ', distance,' wghts', sep = ''), xlab = 'patients' )
+pdf('logistic.pdf')
+#plot( fittedMbdRed, main = paste( 'Red. Log MBD - ', distance,' wghts', sep = ''), xlab = 'patients' )
+plot( fittedMbdRed, main = 'Log MBD - pesi uniformi', xlab = 'Soggetti', ylab = 'Valori predetti' )
 points( isSick, pch = 21, col = 'black', bg = 'cyan' )
 
 miscIDsMbdRed = which( isSick != labelsMbdRed )
@@ -88,7 +90,7 @@ miscSickAsSaneMbdRed = length( which( labelsMbdRed[ saneThresholdID : nbPz ] != 
 points( x = miscIDsMbdRed, y = fittedMbdRed[ miscIDsMbdRed ], type = 'p', pch = 21, col = 'black', bg = 'red' )
 points( x = matchIDsMbdRed, y = fittedMbdRed[ matchIDsMbdRed ], type = 'p', pch = 21, col = 'black', bg = 'green' )
 abline(0.5, 0, col = 'blue', lty = 'dashed', lwd = 2)
-#dev.off();
+dev.off();
 
 ##################################################
 ## REGRESSION WITH RANKS

@@ -21,11 +21,11 @@ T0 = 0.;
 T1 = 2.;
 
 meanPhase = c(0.,0.);
-rhoPhase = 0.9;
+rhoPhase = 0.4;
 covPhase = matrix( c(1., rhoPhase, rhoPhase, 1.), ncol = 2, byrow = TRUE ); 
 
 meanAmplitude = c(0., 0.);
-rhoAmpli = 0.9;
+rhoAmpli = 0.4;
 covAmplitude = matrix( c(1., rhoAmpli, rhoAmpli, 1.), ncol = 2, byrow = TRUE );
 
 meanNoise = c(0.,0.);
@@ -91,6 +91,13 @@ plot( ampliPerturbation, xlim = c(-D,D), ylim = c(-D,D) );
 plot( phasePerturbation, xlim = c(-D,D), ylim = c(-D,D) );
 plot( noisePerturbation, xlim = c(-D,D), ylim = c(-D,D) );
 dev.off();
+
+pdf('phase_ampli_both.pdf')
+par( mfrow = c(2,1) )
+matplot( t(dataI), type = 'l', xlab = '', ylab = '');
+matplot( t(dataII), type = 'l', xlab = 'sampling time', ylab = '')
+dev.off()
+
 
 ### SAVING DATA
 write.table( dataI, file = "I.txt", sep = " ", eol = "\n", row.names = FALSE, col.names = FALSE );
