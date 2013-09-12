@@ -16,8 +16,8 @@ V6 = read.table( paste( pathToData, "V6.txt", sep = ''), header = F )
 
 time = seq(1,700);
 
-pdf('preproc_ecg.pdf', width = 7, height = 12 )
-par( mfrow = c(4,2) )
+pdf('preproc_ecg.pdf', width = 12, height = 7 )
+par( mfrow = c(2,4) )
 matplot( time, t(I),  type = 'l', xlab = 'sampl. time [ms]', ylab = 'I' )
 matplot( time, t(II), type = 'l', xlab ='sampl. time [ms]', ylab = 'II' )
 matplot( time, t(V1), type = 'l',  xlab = 'sampl. time [ms]', ylab = 'V1' )
@@ -38,8 +38,8 @@ factnum = as.numeric(fact);
 factnum[saneIDs] = factnum[saneIDs]+3;
 factnum[illIDs] = factnum[illIDs]+1;
 
-pdf('sani_malati_ECG.pdf', width = 7, height = 12 )
-par( mfrow = c(4,2) )
+pdf('sani_malati_ECG.pdf', width = 12, height = 7 )
+par( mfrow = c(2,4) )
 matplot( time, t(I),  type = 'l', col = factnum, xlab = 'sampl. time [ms]', ylab = 'I' )
 matplot( time, t(II),  type = 'l', col = factnum, xlab ='sampl. time [ms]', ylab = 'II' )
 matplot( time, t(V1),  type = 'l', col = factnum, xlab = 'sampl. time [ms]', ylab = 'V1' )
