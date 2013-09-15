@@ -1,0 +1,366 @@
+
+[WILCOXON]
+
+  [./SAMPLE]
+
+      seed = 10
+
+      nbPz = 131
+      nbPts = 361
+      nbReferenceSamples = 70
+	
+      pathToData = ../../../../../Synthetic/res/new/leads/
+
+  [../]
+
+  [./REFERENCE]
+
+      outputFilename = mbd.10.refset.dat
+
+      weightsFilename = weights.w
+
+      J = 2
+
+      [./I]
+	
+	nbPz = 70
+	nbPts = 361
+
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/I.ref.txt
+
+	outputFilename = bd.I.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./II]
+	
+	nbPz = 70
+	nbPts = 361
+
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/II.ref.txt
+
+	outputFilename = bd.II.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V1]
+	
+	nbPz = 70
+	nbPts = 361
+
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V1.ref.txt
+
+	outputFilename = bd.V1.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V2]
+	
+	nbPz = 70
+	nbPts = 361
+
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V2.ref.txt
+
+	outputFilename = bd.V2.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V3]
+	
+	nbPz = 70
+	nbPts = 361
+
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V3.ref.txt
+
+	outputFilename = bd.V3.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V4]
+	
+	nbPz = 70
+	nbPts = 361
+
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V4.ref.txt
+
+	outputFilename = bd.V4.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V5]
+	
+	nbPz = 70
+	nbPts = 361
+
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V5.ref.txt
+
+	outputFilename = bd.V5.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V6]
+	
+	nbPz = 70
+	nbPts = 361
+
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V6.ref.txt
+
+	outputFilename = bd.V6.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+  [../]
+
+
+  [./TEST]
+
+      outputFilename = mbd.10.testset.dat
+
+      weightsFilename = weights.w
+
+      J = 2
+
+      [./I]
+	
+	nbPz = 131
+	nbPts = 361
+	nbReferenceSamples = 70
+
+	seed = 10
+
+	leftOffset = 0
+	rightOffset = 0
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/I.txt
+
+	levelsExtremaFilename = ../../../../../Synthetic/res/new/leads/levels.dat
+
+	outputFilename = bd.I.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./II]
+	
+	nbPz = 131
+	nbPts = 361
+	nbReferenceSamples = 70
+
+	leftOffset = 0
+	rightOffset = 0
+
+	seed = 10
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/II.txt
+
+	levelsExtremaFilename = ../../../../../Synthetic/res/new/leads/levels.dat
+
+	outputFilename = bd.II.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V1]
+	
+	nbPz = 131
+	nbPts = 361
+	nbReferenceSamples = 70
+
+	leftOffset = 0
+	rightOffset = 0
+
+	seed = 10
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V1.txt
+
+	levelsExtremaFilename = ../../../../../Synthetic/res/new/leads/levels.dat
+
+	outputFilename = bd.V1.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V2]
+	
+	nbPz = 131
+	nbPts = 361
+	nbReferenceSamples = 70
+
+	leftOffset = 0
+	rightOffset = 0
+
+  	seed = 10
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V2.txt
+
+	levelsExtremaFilename = ../../../../../Synthetic/res/new/leads/levels.dat
+
+	outputFilename = bd.V2.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V3]
+	
+	nbPz = 131
+	nbPts = 361
+	nbReferenceSamples = 70
+
+	leftOffset = 0
+	rightOffset = 0
+
+	seed = 10
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V3.txt
+
+	levelsExtremaFilename = ../../../../../Synthetic/res/new/leads/levels.dat
+
+	outputFilename = bd.V3.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V4]
+	
+	nbPz = 131
+	nbPts = 361
+	nbReferenceSamples = 70
+
+	leftOffset = 0
+	rightOffset = 0
+
+	seed = 10
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V4.txt
+
+	levelsExtremaFilename = ../../../../../Synthetic/res/new/leads/levels.dat
+
+	outputFilename = bd.V4.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V5]
+	
+	nbPz = 131
+	nbPts = 361
+	nbReferenceSamples = 70
+
+	leftOffset = 0
+	rightOffset = 0
+
+	seed = 10
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V5.txt
+
+	levelsExtremaFilename = ../../../../../Synthetic/res/new/leads/levels.dat
+
+	outputFilename = bd.V5.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+      [./V6]
+	
+	nbPz = 131
+	nbPts = 361
+	nbReferenceSamples = 70
+
+	leftOffset = 0
+	rightOffset = 0
+
+	seed = 10
+
+	inputFilename = ../../../../../Synthetic/res/new/leads/V6.txt
+
+	levelsExtremaFilename = ../../../../../Synthetic/res/new/leads/levels.dat
+
+	outputFilename = bd.V6.dat
+
+	J = 2
+
+	verbosity = 0
+
+      [../]
+
+  [../]
+
+[../]
+
