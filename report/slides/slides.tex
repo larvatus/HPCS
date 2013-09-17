@@ -224,16 +224,16 @@ Serve un'implementazone efficiente, flessibile e robusta per rendere il calcolo 
 In fase di design si \`e data enfasi a:
 \begin{itemize}
 \item \textbf{robustezza}: l'implementazione \`e in \texttt{C++}, sfrutta smart pointers e strutture dati delle \href{http://www.boost.org}{\texttt{boost}} e gli algoritmi della standard library.
-\pause
+%\pause
 \item \textbf{efficienza}: il calcolo delle MBD viene svolto applicando il protocollo di parallelizzazione di \href{http://www.open-mpi.org}{\texttt{MPI}} a livello nativo negli oggetti che calcolano le profondit\`a.
-\pause
+%\pause
 \item \textbf{flessibilit\`a}: raggiunta posticipando a run-time il setup degli oggetti attraverso il parser \href{http://getpot.sourceforge.net}{\texttt{GetPot}} e opportuni files \texttt{data};
 					     l'istanziazione di oggetti in gerarchie polimorfiche \`e controllabile a run-time sfruttando i files \texttt{data} e opportune factories.
-\pause
+%\pause
 \item \textbf{collaborazione}: il codice \`e sviluppato con \href{http://git-scm.com}{\texttt{git}} e la branch master \`e clonabile dal repository \href{https://github.com/larvatus/HPCS}{ \texttt{Github}}.
 						  La compilazione avviene attraverso Makefile nativi generati attraverso lo strumento cross-platform \href{http://www.cmake.org}{\texttt{CMake}}, che individua automaticamente le
 						  librerie terze delle dipendenze.
-\pause
+%\pause
 \item \textbf{documentazione}: la documentazione, con descrizione di classi, metodi e diagrammi di collaborazione, viene creata in \texttt{html} e \texttt{latex} con  \href{http://www.doxygen.org}{\texttt{Doxygen}}.
 \end{itemize}
 
@@ -262,7 +262,7 @@ Il calcolo delle profondit\`a viene suddiviso in moduli, incapsulati in opportun
 \smallskip
 \end{tabular}
 
-\pause
+%\pause
 \begin{block}{Nota}
 \`E possibile calcolare le MBD anche suddividendo il dataset in due parti: una di riferimento (\textbf{reference-set}), rispetto a cui 
 calcolare le profondità, e un’altra di test (\textbf{test-set}), di cui calcolare la profondità rispetto al reference set.\\
@@ -282,26 +282,26 @@ $\Longrightarrow$   Misura non-parametrica efficace della dissimilarità tra seg
 Le classe \texttt{DataSet} \`e la struttura base che rappresenta il dataset funzionale standard.\\
 
 \begin{itemize}
- \item \textbf{Struttura dati}: \texttt{boost::numeric::ublas::matrix< Real >}, possibilit\`a di estrarre sottoinsiemi di righe
+ \item \textbf{Struttura dati} \`e \texttt{boost::numeric::ublas::matrix< Real >}, con la possibilit\`a di estrarre sottoinsiemi di righe
 						  sfruttando le proxies delle \texttt{boost}.
-% \pause
- \item \textbf{Costruttori}: accettano dimensioni e dati sotto forma di diversi contenitori.
-% \pause
- \item \textbf{Lettura}: possibilit\`a di leggere i dati da file.
-% \pause
- \item \textbf{Accesso}: avviene tramite l'overload di \texttt{operator()}.
-% \pause
- \item \textbf{Stato}: stampabile attraverso il metodo \texttt{ShowMe()} .
+% %\pause
+ \item \textbf{Costruttori} accettano dimensioni e dati sotto forma di diversi contenitori.
+% %\pause
+ \item \textbf{Acquisizione} dei dati \`e possibile tramite files esterni.
+% %\pause
+ \item \textbf{Accesso} avviene tramite l'overload di \texttt{operator()}.
+% %\pause
+ \item \textbf{Stato} interno stampabile attraverso il metodo \texttt{ShowMe()} .
 \end{itemize}
-\pause
+%\pause
 \texttt{DataSetLevelled}, classe derivata di \texttt{DataSet}, implementa il concetto di data set
 con livelli, utile per calcolare le profondit\`a con riferimento.\\
 \begin{itemize}
-% \pause
+% %\pause
  \item Gestione di un numero arbitrario di livelli.
-% \pause
+% %\pause
  \item \textbf{std::set} di ID (\texttt{UInt}) memorizzano ogni livello (ricerca facilitata).
-% \pause
+% %\pause
  \item \textbf{Setters} permettono di impostare i livelli. Possibilit\`a di impostare sottoinsiemi contigui di ID specificando gli estremi, direttamente o tramite lettura da file.
 \end{itemize}
 
@@ -318,13 +318,13 @@ con livelli, utile per calcolare le profondit\`a con riferimento.\\
 \texttt{BandDepth< UInt \_J >} \`e deputata al calcolo di $\text{BD}^J_N(f)$ nel modo standard, \texttt{BandDepthRef< UInt \_J >} rispetto ad un reference-set.
 \begin{itemize}
  \item \textbf{Template} rispetto al parametro \texttt{\_J}: controllo a compile-time sul suo valore, specializzazione per diversi valori di \texttt{\_J} dei metodi di calcolo.
-% \pause
+% %\pause
  \item \textbf{Derivano} dalla classe \texttt{BandDepthBase<BDPolicy \_policy>}, completamente specializzata per \texttt{\_policy=\texttt{All}, \texttt{Reference}}: 
 	   differenti policies per diverse interfacce pubbliche da usare in modo polimorfico attraverso la factory \texttt{BDFactory}. 
-% \pause
+% %\pause
   \item \textbf{Calcolo} svolto attraverso il metodo \texttt{computeBDs()}, specializzato per \texttt{\_J=2} sfruttando un algoritmo semplificato.
 \end{itemize}
-\pause
+%\pause
 \begin{block}{Setup esterno}
 Il \textbf{setup} \`e delegato alle strutture esterne \texttt{BandDepthData} e \texttt{BandDepthRefData} (derivata dalla prima), costruibili con \texttt{GetPot}, 
 che raccolgono numero di segnali, punti, files di input e output, nel primo caso, e anche  il file esterno dei livelli e il numero di elementi del reference-set nel secondo. 
@@ -349,17 +349,17 @@ differente a seconda del valore di J.\\
 \smallskip
 Il calcolo di $\text{BD}^{(j)}_N(f)$ segue la definizione: 
 \[
- \text{BD}^{(j)}_N(f_k) = {N \choose j}^{-1} \sum_{i} \lambda_r \left( A(f; f_{i_1}, f_{i_2}, \ldots, f_{i_j} \right)
+ \text{BD}^{(j)}_N(f_k) = {N \choose j}^{-1} \sum_{i} \lambda_r \left( A(f; f_{i_1}, f_{i_2}, \ldots, f_{i_j} \right).
 \]
 % \end{block}
-\pause
+%\pause
 % \vspace{0.7cm}
 % \begin{block}{$J=2$}
 \textbf{J=2}\\
 \smallskip
 Il metodo \`e specializzato per J=2, sfruttando un algoritmo pi\`u veloce, basato sull'ordinamento dei segnali:
 \[
-  \text{BD}^{2}_{N}(f) = { N \choose 2 } \int_{I} \frac{n (t ) \cdot m (t)}{\lambda \left(I\right)} \text{d}t = { N \choose 2 } \sum_{i=0}^M \frac{n (t_i ) \cdot m (t_i)}{\lambda \left(I\right)}
+  \text{BD}^{2}_{N}(f) = { N \choose 2 } \int_{I} \frac{n (t ) \cdot m (t)}{\lambda \left(I\right)} \text{d}t = { N \choose 2 } \sum_{i=0}^M \frac{n (t_i ) \cdot m (t_i)}{\lambda \left(I\right)},
 \]
 dove $n(t)$ \`e il numero di segnali con valore superiore a $f(t)$ e $m(t)$ il numero di quelli inferiori. 
 % \end{block}
@@ -379,18 +379,18 @@ dove $n(t)$ \`e il numero di segnali con valore superiore a $f(t)$ e $m(t)$ il n
 L’istanziazione di un oggetto BandDepth<\_J> o BandDepthRef<\_J> richiede la conoscenza di \_J a compile-time, ma \`e preferibile specificarlo a run-time,
 impostandolo esternamente attraverso \texttt{GetPot}. 
 \end{alertblock}
-\pause
+%\pause
 \begin{block}{Soluzione}
  Creazione della factory \texttt{BDFactory< BDPolicy \_policy>}.
 \end{block}
-\pause
+%\pause
 \begin{itemize}
  \item \textbf{Deriva} da una factory base generica, template rispetto a prodotto, chiave e regola di creazione.
-% \pause
+% %\pause
 \item \textbf{Regola di creazione} \`e un wrapper a uno \texttt{shared\_pointer} di un oggetto \texttt{CreationRule} (funtore), da cui derivano le regole di creazione. Il wrapper 
 		    rende conforme l'interfaccia del puntatore a quella richiesta dal metodo \texttt{create} della factory. Lo \texttt{shared\_ptr} \`e usato per permettere l'uso polimorfico
 		    delle regole di creazione.
-% \pause
+% %\pause
 \item \textbf{Costruttore} specializzato nei casi \texttt{\_policy=All} e \texttt{Reference}. Registra le regole di creazione fino a \texttt{\_J=5}.
 \end{itemize}
 
@@ -406,14 +406,23 @@ impostandolo esternamente attraverso \texttt{GetPot}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{\ttfamily DepthMeasure<UInt \_J,BDPolicy \_policy>}
- Il calcolo delle misure di profondità univariate $\text{BD}^J_N\left( f \right) = \sum_{j=2}^J \text{BD}^{(j)}_N\left(f\right)$ \`e incapsulato in \texttt{DepthMeasure<UInt \_J, BDPolicy _J >}.\\
+ Il calcolo delle misure di profondità univariate 
+\[
+\text{BD}^J_N\left( f \right) = \sum_{j=2}^J \text{BD}^{(j)}_N\left(f\right)
+\]
+\`e incapsulato in \texttt{DepthMeasure<UInt \_J, BDPolicy \_J >}.\\
 
 \begin{itemize}
  \item \textbf{Template} rispetto alla policy e al valore di $J$.
- \item \textbf{Deriva} da \texttt{DepthMeasureBase< _policy >}.
- \item \textbf{Costruibile} 
+ \item \textbf{Deriva} da \texttt{DepthMeasureBase<BDPolicy \_policy >}, sfruttata per implementare la factory \texttt{DMFactory<BDPolicy \_policy>}
+ \item \textbf{Inizializza} oggetti \texttt{BandDepth<\_J>} o \texttt{BandDepthRef<\_J>} con \texttt{\_J} progressivi per il calcolo dei contributi.
+ \item \textbf{Costruibile} via \texttt{shared\_pointer} a \texttt{BandDepthData}, usati in modo polimorfico. Il check sul tipo ricevuto \`e fatto acquisendo i tipi pubblici degli oggetti \texttt{BandDepth*}.
 \end{itemize}
-
+%\pause
+\begin{block}{\ttfamily computeDepths()}
+ Il metodo \texttt{computeDepths()} agisce diversamente a seconda di \texttt{\_policy}. Dato che non \`e possibile dare specializzazioni parziali di metodi di classi con multipli parametri template,
+viene racchiuso in una classe strumentale \texttt{computeImplement<\_J,\_policy>}.
+\end{block}
 
 \end{frame}
 
@@ -425,9 +434,28 @@ impostandolo esternamente attraverso \texttt{GetPot}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{\ttfamily MultiDepthMeasure}
+\frametitle{\ttfamily MultiDepthMeasure<\_J,\_policy>}
+  Il calcolo delle misure di profondità multivariate 
+ \[
+\text{MBD}^J_N\left( \mathbf{f} \right) = \sum_{k=1}^s p_k \text{BD}^{J}_N   \left(f_{k}\right),
+ \]
+ \`e incapsulato in \texttt{MultiDepthMeasure<UInt \_J, BDPolicy \_J >}.\\
  
-\end{frame}
+  \begin{itemize}
+   \item \textbf{Template} rispetto alla policy e al valore di $J$.
+   \item \textbf{Deriva} da \texttt{MultiDepthMeasureBase<BDPolicy \_policy >}, sfruttata per implementare la factory \texttt{MDMFactory<BDPolicy \_policy>}
+   \item \textbf{Inizializza} oggetti \texttt{DepthMeasure< \_J, \_policy >} per il calcolo delle profondit\`a unviariate sfruttando gli oggetti di dati contenuti in una lista.
+   \item \textbf{Pesi} impostabili attraverso contenitori o un oggetto \texttt{GetPot} da cui leggere il file esterno che li contiene.
+   \item \textbf{Costruttore} \`e void.
+   \end{itemize}
+  %\pause
+  
+\begin{block}{Dimensioni}
+ Le dimensioni vengono aggiunte in numero arbitrario con il metodo \texttt{addDimension}, che riceve un oggetto \texttt{GetPot} con cui costruire il \texttt{BandDepthData} o \texttt{BandDepthRefData}
+corrispondente (salvato in una lista di \texttt{shared\_ptr}) a quella dimensione.
+\end{block}
+
+ \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -435,12 +463,28 @@ impostandolo esternamente attraverso \texttt{GetPot}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Genton}
+\subsection{Genton $\&$ DepthMeasure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Esempio: Genton} 
+\frametitle{Test: Genton $\&$ DepthMeasure} 
+Scopo del primo test \`e assicurarsi che le profondit\`a calcolate per $J=2$ con la definizione e con l'algoritmo esatto (Genton) siano le stesse.
+Il calcolo secondo definizione per $J=2$ viene implementato in opportune strutture in un file \texttt{user\_fun}, sia nel caso \texttt{All} che \texttt{Reference}.
+Nel secondo test vengono calcolate le profondit\`a di un dataset bivariato con pesi uniformi.
+\begin{figure}
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=1.\textwidth,height=0.45\textheight]{img/genton.pdf}  
+\end{minipage}
+\hspace{0.2cm}
+\begin{minipage}{0.45\textwidth}
+ \centering
+ \includegraphics[width=1\textwidth,height=0.45\textheight]{img/depthMeasure.pdf}
+\end{minipage}
+\end{figure}
 
+\textbf{Nota}:
+Il dataset usato per i test \`e \texttt{synthetic/amplitudeSine}.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -450,9 +494,55 @@ impostandolo esternamente attraverso \texttt{GetPot}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Esempio: Tower}
+Con questo esempio si vuole testare il comportamento delle profondit\`a in un caso in cui esse sono
+prevedibili a priori.\\
+Si usa un dataset formato da funzioni sinusoidali traslate uniformemente verso l'alto; quelle estreme
+avranno profondit\`a nulla, quelle centrali profondit\`a massima.
+
+\begin{figure}
+ \begin{minipage}{0.4\textwidth}
+  \centering
+  \includegraphics[scale=0.25]{img/I_tower.pdf}
+ \end{minipage}
+ \hspace{0.3cm}
+ \begin{minipage}{0.55\textwidth}
+  \centering 
+  \includegraphics[scale=0.5]{img/tower.pdf}
+ \end{minipage}
+\end{figure}
+
+\textbf{Nota}:
+Il dataset usato per il test \`e \texttt{synthetic/towerSine}.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Outlier}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+ \frametitle{Esempio: Outlier}
+Con questo esempio si studia la capacit\`a delle profondit\`a di cogliere le curve \emph{outlier} di un dataset.
+Il dataset artificiale usato presenta 10 outliers di ampiezza, le cui profondit\`a sono minori di quelle degli altri dati.
+
+\begin{figure}
+ \begin{minipage}{0.4\textwidth}
+  \centering
+  \includegraphics[scale=0.25]{img/I_outlier.pdf}
+ \end{minipage}
+\hspace{0.3cm}
+  \begin{minipage}{0.55\textwidth}
+   \centering
+  \includegraphics[scale=0.5]{img/outlier.pdf}
+  \end{minipage}
+\end{figure}
+
+\textbf{Nota}:
+Il dataset usato per il test \`e \texttt{synthetic/outlierSine}.
 
 
- 
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -462,9 +552,27 @@ impostandolo esternamente attraverso \texttt{GetPot}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Esempio: Boxplot Funzionale}
+Con le profondit\`a appena calcolate \`e possibile costruire dei boxplot funzionali, generalizzazione di quelli del caso standard numerico unidimensionale.\\
+La determinazione di outliers \`e importante per irrobustire un dataset o determinare delle anormalit\`a morfologiche.
+
+\begin{figure}
+ \centering
+\includegraphics[scale=0.2]{img/fbplot.pdf}
+\end{figure}
+Vengono marcati come outliers i segnali che eccedono, in almeno una delle dimensioni e in almeno un istante $t \in I$, da $1.5$-volte l'inviluppo della \emph{regione centrale}, cio\`e il
+$50\%$ dei dati pi\`u profondi.
 
 \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
 
+\begin{center}
+\rule{5cm}{2pt}\\
+\Large Grazie per l'attenzione.\\
+\rule{5cm}{2pt}\\
+\end{center}
+ 
+\end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
