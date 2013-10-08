@@ -17,6 +17,7 @@ doc/
 html/
 latex/
 build/
+report/slides
 
 # Latex files #
 *.pdf
