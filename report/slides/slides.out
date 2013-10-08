@@ -5,14 +5,15 @@
 \BOOKMARK [3][]{Outline0.2.3.5}{Caso Multivariato}{Outline0.2}
 \BOOKMARK [3][]{Outline0.2.4.6}{Problema}{Outline0.2}
 \BOOKMARK [2][]{Outline0.3}{HPCS}{}
-\BOOKMARK [3][]{Outline0.3.1.12}{Strategia Implementativa}{Outline0.3}
-\BOOKMARK [3][]{Outline0.3.2.14}{DataSet}{Outline0.3}
-\BOOKMARK [3][]{Outline0.3.3.16}{BandDepth}{Outline0.3}
-\BOOKMARK [3][]{Outline0.3.4.18}{computeBDs\(\)}{Outline0.3}
-\BOOKMARK [3][]{Outline0.3.5.20}{Factory}{Outline0.3}
-\BOOKMARK [3][]{Outline0.3.6.23}{DepthMeasure}{Outline0.3}
-\BOOKMARK [3][]{Outline0.3.7.24}{MultiDepthMeasure}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.1.8}{Strategia Implementativa}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.2.9}{DataSet}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.3.10}{BandDepth}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.4.11}{computeBDs\(\)}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.5.12}{Factory}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.6.13}{DepthMeasure}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.7.14}{MultiDepthMeasure}{Outline0.3}
 \BOOKMARK [2][]{Outline0.4}{Esempi}{}
-\BOOKMARK [3][]{Outline0.4.1.25}{Genton}{Outline0.4}
-\BOOKMARK [3][]{Outline0.4.2.26}{Tower}{Outline0.4}
-\BOOKMARK [3][]{Outline0.4.3.27}{Boxplot}{Outline0.4}
+\BOOKMARK [3][]{Outline0.4.1.15}{Genton \046 DepthMeasure}{Outline0.4}
+\BOOKMARK [3][]{Outline0.4.2.16}{Tower}{Outline0.4}
+\BOOKMARK [3][]{Outline0.4.3.17}{Outlier}{Outline0.4}
+\BOOKMARK [3][]{Outline0.4.4.18}{Boxplot}{Outline0.4}

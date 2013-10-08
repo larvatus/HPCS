@@ -79,7 +79,7 @@ labelsMbdRed = ifelse( fittedMbdRed > probThreshold, 1., 0 );
 pdf('logistic.pdf')
 #plot( fittedMbdRed, main = paste( 'Red. Log MBD - ', distance,' wghts', sep = ''), xlab = 'patients' )
 plot( fittedMbdRed, main = 'Log MBD - pesi uniformi', xlab = 'Soggetti', ylab = 'Valori predetti' )
-points( isSick, pch = 21, col = 'black', bg = 'cyan' )
+points( isSick, pch = 21, col = 'black', bg = 'cyan', cex =2 )
 
 miscIDsMbdRed = which( isSick != labelsMbdRed )
 matchIDsMbdRed = which( isSick == labelsMbdRed );
@@ -87,8 +87,8 @@ matchIDsMbdRed = which( isSick == labelsMbdRed );
 miscSaneAsSickMbdRed = length( which( labelsMbdRed[ 1 : (saneThresholdID-1) ] != isSick[ 1 : (saneThresholdID-1)] ) );
 miscSickAsSaneMbdRed = length( which( labelsMbdRed[ saneThresholdID : nbPz ] != isSick[ saneThresholdID : nbPz ] ) ); 
 
-points( x = miscIDsMbdRed, y = fittedMbdRed[ miscIDsMbdRed ], type = 'p', pch = 21, col = 'black', bg = 'red' )
-points( x = matchIDsMbdRed, y = fittedMbdRed[ matchIDsMbdRed ], type = 'p', pch = 21, col = 'black', bg = 'green' )
+points( x = miscIDsMbdRed, y = fittedMbdRed[ miscIDsMbdRed ], type = 'p', cex =2, pch = 21, col = 'black', bg = 'red' )
+points( x = matchIDsMbdRed, y = fittedMbdRed[ matchIDsMbdRed ], type = 'p', cex =2, pch = 21, col = 'black', bg = 'green' )
 abline(0.5, 0, col = 'blue', lty = 'dashed', lwd = 2)
 dev.off();
 

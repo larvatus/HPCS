@@ -282,16 +282,16 @@ $\Longrightarrow$   Misura non-parametrica efficace della dissimilarità tra seg
 Le classe \texttt{DataSet} \`e la struttura base che rappresenta il dataset funzionale standard.\\
 
 \begin{itemize}
- \item \textbf{Struttura dati}: \texttt{boost::numeric::ublas::matrix< Real >}, possibilit\`a di estrarre sottoinsiemi di righe
+ \item \textbf{Struttura dati} \`e \texttt{boost::numeric::ublas::matrix< Real >}, con la possibilit\`a di estrarre sottoinsiemi di righe
 						  sfruttando le proxies delle \texttt{boost}.
 % \pause
- \item \textbf{Costruttori}: accettano dimensioni e dati sotto forma di diversi contenitori.
+ \item \textbf{Costruttori} accettano dimensioni e dati sotto forma di diversi contenitori.
 % \pause
- \item \textbf{Lettura}: possibilit\`a di leggere i dati da file.
+ \item \textbf{Acquisizione} dei dati \`e possibile tramite files esterni.
 % \pause
- \item \textbf{Accesso}: avviene tramite l'overload di \texttt{operator()}.
+ \item \textbf{Accesso} avviene tramite l'overload di \texttt{operator()}.
 % \pause
- \item \textbf{Stato}: stampabile attraverso il metodo \texttt{ShowMe()} .
+ \item \textbf{Stato} interno stampabile attraverso il metodo \texttt{ShowMe()} .
 \end{itemize}
 \pause
 \texttt{DataSetLevelled}, classe derivata di \texttt{DataSet}, implementa il concetto di data set
@@ -349,7 +349,7 @@ differente a seconda del valore di J.\\
 \smallskip
 Il calcolo di $\text{BD}^{(j)}_N(f)$ segue la definizione: 
 \[
- \text{BD}^{(j)}_N(f_k) = {N \choose j}^{-1} \sum_{i} \lambda_r \left( A(f; f_{i_1}, f_{i_2}, \ldots, f_{i_j} \right)
+ \text{BD}^{(j)}_N(f_k) = {N \choose j}^{-1} \sum_{i} \lambda_r \left( A(f; f_{i_1}, f_{i_2}, \ldots, f_{i_j} \right).
 \]
 % \end{block}
 \pause
@@ -359,7 +359,7 @@ Il calcolo di $\text{BD}^{(j)}_N(f)$ segue la definizione:
 \smallskip
 Il metodo \`e specializzato per J=2, sfruttando un algoritmo pi\`u veloce, basato sull'ordinamento dei segnali:
 \[
-  \text{BD}^{2}_{N}(f) = { N \choose 2 } \int_{I} \frac{n (t ) \cdot m (t)}{\lambda \left(I\right)} \text{d}t = { N \choose 2 } \sum_{i=0}^M \frac{n (t_i ) \cdot m (t_i)}{\lambda \left(I\right)}
+  \text{BD}^{2}_{N}(f) = { N \choose 2 } \int_{I} \frac{n (t ) \cdot m (t)}{\lambda \left(I\right)} \text{d}t = { N \choose 2 } \sum_{i=0}^M \frac{n (t_i ) \cdot m (t_i)}{\lambda \left(I\right)},
 \]
 dove $n(t)$ \`e il numero di segnali con valore superiore a $f(t)$ e $m(t)$ il numero di quelli inferiori. 
 % \end{block}
@@ -406,12 +406,23 @@ impostandolo esternamente attraverso \texttt{GetPot}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{\ttfamily DepthMeasure<UInt \_J,BDPolicy \_policy>}
- Il calcolo delle misure di profondità univariate $\text{BD}^J_N\left( f \right) = \sum_{j=2}^J \text{BD}^{(j)}_N\left(f\right)$ \`e incapsulato in \texttt{DepthMeasure<UInt \_J, BDPolicy _J >}.\\
+ Il calcolo delle misure di profondità univariate 
+\[
+\text{BD}^J_N\left( f \right) = \sum_{j=2}^J \text{BD}^{(j)}_N\left(f\right)
+\]
+\`e incapsulato in \texttt{DepthMeasure<UInt \_J, BDPolicy \_J >}.\\
 
 \begin{itemize}
- \item 
+ \item \textbf{Template} rispetto alla policy e al valore di $J$.
+ \item \textbf{Deriva} da \texttt{DepthMeasureBase<BDPolicy \_policy >}, sfruttata per implementare la factory \texttt{DMFactory<BDPolicy \_policy>}
+ \item \textbf{Inizializza} oggetti \texttt{BandDepth<\_J>} o \texttt{BandDepthRef<\_J>} con \texttt{\_J} progressivi per il calcolo dei contributi.
+ \item \textbf{Costruibile} via \texttt{shared\_pointer} a \texttt{BandDepthData}, usati in modo polimorfico. Il check sul tipo ricevuto \`e fatto acquisendo i tipi pubblici degli oggetti \texttt{BandDepth*}.
 \end{itemize}
-
+\pause
+\begin{block}{\ttfamily computeDepths()}
+ Il metodo \texttt{computeDepths()} agisce diversamente a seconda di \texttt{\_policy}. Dato che non \`e possibile dare specializzazioni parziali di metodi di classi con multipli parametri template,
+viene racchiuso in una classe strumentale \texttt{computeImplement<\_J,\_policy>}.
+\end{block}
 
 \end{frame}
 
@@ -423,9 +434,28 @@ impostandolo esternamente attraverso \texttt{GetPot}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{\ttfamily MultiDepthMeasure}
+\frametitle{\ttfamily MultiDepthMeasure<\_J,\_policy>}
+  Il calcolo delle misure di profondità multivariate 
+ \[
+\text{MBD}^J_N\left( \mathbf{f} \right) = \sum_{k=1}^s p_k \text{BD}^{J}_N   \left(f_{k}\right),
+ \]
+ \`e incapsulato in \texttt{MultiDepthMeasure<UInt \_J, BDPolicy \_J >}.\\
  
-\end{frame}
+  \begin{itemize}
+   \item \textbf{Template} rispetto alla policy e al valore di $J$.
+   \item \textbf{Deriva} da \texttt{MultiDepthMeasureBase<BDPolicy \_policy >}, sfruttata per implementare la factory \texttt{MDMFactory<BDPolicy \_policy>}
+   \item \textbf{Inizializza} oggetti \texttt{DepthMeasure< \_J, \_policy >} per il calcolo delle profondit\`a unviariate sfruttando gli oggetti di dati contenuti in una lista.
+   \item \textbf{Pesi} impostabili attraverso contenitori o un oggetto \texttt{GetPot} da cui leggere il file esterno che li contiene.
+   \item \textbf{Costruttore} \`e void.
+   \end{itemize}
+  \pause
+  
+\begin{block}{Dimensioni}
+ Le dimensioni vengono aggiunte in numero arbitrario con il metodo \texttt{addDimension}, che riceve un oggetto \texttt{GetPot} con cui costruire il \texttt{BandDepthData} o \texttt{BandDepthRefData}
+corrispondente (salvato in una lista di \texttt{shared\_ptr}) a quella dimensione.
+\end{block}
+
+ \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
