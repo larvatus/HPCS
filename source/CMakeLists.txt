@@ -1,1 +1,1 @@
-ADD_LIBRARY( mbd bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet )
+ADD_LIBRARY( mbd bandDepth bandDepthData bandDepthRef combinations mpi_utility dataSet varCovStructure )

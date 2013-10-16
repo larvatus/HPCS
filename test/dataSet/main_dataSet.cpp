@@ -1,19 +1,24 @@
 
 #include <source/dataSet.hpp>
+#include <source/varCovStructure.hpp>
 
 #include <source/HPCSDefs.hpp>
+
 
 using namespace std;
 
 using namespace HPCS;
 
 typedef DataSet dataSet_Type;
+typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
 
 typedef DataSet::data_Type data_Type;
 typedef DataSet::dataPtr_Type dataPtr_Type;
 
 typedef DataSet::matrix_Type matrix_Type;
 typedef DataSet::matrixPtr_Type matrixPtr_Type;
+
+typedef VarCovStructure varCovStructure_Type;
 
 int main( int argc, char * argv[] )
 { 
@@ -37,7 +42,7 @@ int main( int argc, char * argv[] )
     
     std::cout << " *** HILBERT MATRIX : " << std::endl << std::endl;
     
-    dataSet_Type dataSet1( nbSamples, nbPts );
+    dataSetPtr_Type dataSetPtr1( new dataSet_Type( nbSamples, nbPts ) );
     
     dataPtr_Type dataPtr( new data_Type( nbSamples, nbPts) );
     
@@ -49,15 +54,17 @@ int main( int argc, char * argv[] )
 	}
     }
     
-    dataSet1.setData( dataPtr );
+    dataSetPtr1->setData( dataPtr );
     
-    dataSet1.showMe();
+    dataSetPtr1->showMe();
+    
+    varCovStructure_Type varCov1( dataSetPtr1 );
     
     matrixPtr_Type varMatrixPtr;
     matrixPtr_Type corMatrixPtr;
 
-    dataSet1.varMatrix( varMatrixPtr );
-    dataSet1.corMatrix( corMatrixPtr );
+    varCov1.varCovMatrix( varMatrixPtr );
+    varCov1.corMatrix( corMatrixPtr );
     
     std::cout << "*** VARIANCE MATRIX ***" << std::endl;
     
@@ -75,16 +82,18 @@ int main( int argc, char * argv[] )
     
     std::cout << " *** DATASET MATRIX *** " << std::endl << std::endl;
     
-    dataSet_Type dataSet2( nbSamples, nbPts );
+    dataSetPtr_Type dataSetPtr2( new dataSet_Type( nbSamples, nbPts ) );
     
     const std::string inputFile = dataFile( ( baseName + "/inputFile" ).data(), "dataSet.dat" );
     
-    dataSet2.readData( "dataSet.dat" );
+    dataSetPtr2->readData( "dataSet.dat" );
         
-    dataSet2.showMe();
+    dataSetPtr2->showMe();
 
-    dataSet2.varMatrix( varMatrixPtr );
-    dataSet2.corMatrix( corMatrixPtr );
+    varCovStructure_Type varCov2( dataSetPtr2 );
+    
+    varCov2.varCovMatrix( varMatrixPtr );
+    varCov2.corMatrix( corMatrixPtr );
     
     std::cout << "*** VARIANCE MATRIX ***" << std::endl;
     
@@ -117,7 +126,7 @@ int main( int argc, char * argv[] )
     
     std::cout << std::endl << std::endl;
     
-    dataPtr_Type dataSubSet( dataSet2.getRowSubSet( IDs ) );
+    dataPtr_Type dataSubSet( dataSetPtr2->getRowSubSet( IDs ) );
     
     std::cout << *dataSubSet << std::endl;
     

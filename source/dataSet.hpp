@@ -205,25 +205,6 @@ public:
 	Real operator()( const UInt & sample, const UInt & pt ) const;
 	
       //@}
-	
-	
-      //! @name Public methods for functional statistical computations
-      //@{
-	
-	//! Method to get the variance matrix (via shared pointer)
-	/*!
-	 * @todo Implement a parallel version for distributed computation of variance, maybe exploiting a distributed storage of dataset
-	 */
-	void varMatrix( matrixPtr_Type & matrixPtr );
-	
-	//! Method to get the correlation matrix (via shared pointer)
-	/*!
-	 * @todo Implement a parallel version for distributed computation of correlation, maybe exploiting a distributed storage of dataset
-	 */
-	void corMatrix( matrixPtr_Type & matrixPtr );
-	
-      //@}
-    
     
 protected:
   
@@ -244,48 +225,13 @@ protected:
 	
 	//! Number of character offsets from right when reading data from file 
 	UInt M_rightOffset;
-	
-	//! Correlation matrix
-	matrixPtr_Type M_corMatrixPtr;
-	
-	//! Variance matrix
-	matrixPtr_Type M_varMatrixPtr;
   
     //@}
 	
 	
 private:
   
-  //! @name Private members
   
-  //@{
-
-    //! Flag indicating wether the variance matrix has been already computed or not.
-    bool M_varMatrixComputedFlag;
-    
-    //! Flag indicating wether the correlation matrix has been already computed or not.
-    bool M_corMatrixComputedFlag;
-    
-  //@}
-    
-  //! @name Private methods
-  
-  //@{
-    
-    //! Method to compute the variance matrix.
-    /*!
-     * @todo Implement a parallel version for distributed computation of variance, maybe exploiting a distributed storage of dataset
-     */
-    void computeVarMatrix();
-	
-    //! Method to compute the correlation matrix.
-    /*!
-     * @todo Implement a parallel version for distributed computation of correlation, maybe exploiting a distributed storage of dataset
-     */
-    void computeCorMatrix();
-  
-  //@}
-    
 };
 
 //! @class DataSetLevelled This class Implements an object representing a dataset of functional data with different levels. 
