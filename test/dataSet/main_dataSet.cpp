@@ -7,11 +7,13 @@ using namespace std;
 
 using namespace HPCS;
 
-typedef double Real;
-typedef unsigned int UInt;
 typedef DataSet dataSet_Type;
+
 typedef DataSet::data_Type data_Type;
-typedef boost::shared_ptr< data_Type > dataPtr_Type;
+typedef DataSet::dataPtr_Type dataPtr_Type;
+
+typedef DataSet::matrix_Type matrix_Type;
+typedef DataSet::matrixPtr_Type matrixPtr_Type;
 
 int main( int argc, char * argv[] )
 { 
@@ -33,7 +35,7 @@ int main( int argc, char * argv[] )
     
     std::cout << "===============================================" << std::endl;
     
-    std::cout << "		HILBERT MATRIX : " << std::endl << std::endl;
+    std::cout << " *** HILBERT MATRIX : " << std::endl << std::endl;
     
     dataSet_Type dataSet1( nbSamples, nbPts );
     
@@ -50,23 +52,76 @@ int main( int argc, char * argv[] )
     dataSet1.setData( dataPtr );
     
     dataSet1.showMe();
+    
+    matrixPtr_Type varMatrixPtr;
+    matrixPtr_Type corMatrixPtr;
+
+    dataSet1.varMatrix( varMatrixPtr );
+    dataSet1.corMatrix( corMatrixPtr );
+    
+    std::cout << "*** VARIANCE MATRIX ***" << std::endl;
+    
+    std::cout << *varMatrixPtr << std::endl << std::endl;
+    
+    std::cout << "*** CORRELATION MATRIX ***" << std::endl;
   
+    std::cout << *corMatrixPtr << std::endl;
+    
     std::cout << "===============================================" << std::endl << std::endl;
     
     // SECOND WAY TO INITIALIZE A DATASET OBJECT
     
     std::cout << "===============================================" << std::endl;
     
-    std::cout << "		DATASET MATRIX : " << std::endl << std::endl;
+    std::cout << " *** DATASET MATRIX *** " << std::endl << std::endl;
     
     dataSet_Type dataSet2( nbSamples, nbPts );
+    
+    const std::string inputFile = dataFile( ( baseName + "/inputFile" ).data(), "dataSet.dat" );
     
     dataSet2.readData( "dataSet.dat" );
         
     dataSet2.showMe();
-  
-    std::cout << "===============================================" << std::endl << std::endl;
 
+    dataSet2.varMatrix( varMatrixPtr );
+    dataSet2.corMatrix( corMatrixPtr );
+    
+    std::cout << "*** VARIANCE MATRIX ***" << std::endl;
+    
+    std::cout << *varMatrixPtr << std::endl << std::endl;
+    
+    std::cout << "*** CORRELATION MATRIX ***" << std::endl;
+  
+    std::cout << *corMatrixPtr << std::endl;
+    
+    std::cout << "===============================================" << std::endl << std::endl;
+    
+    std::cout << "===============================================" << std::endl;
+    
+    std::cout << " *** RANDOM SELECTION OF DATASET ROWS *** " << std::endl << std::endl;
+    
+    srand48(505);
+    
+    const UInt nbIDs( static_cast< UInt > (nbSamples/3) );
+    
+    std::vector< UInt > IDs( nbIDs );
+    
+    std::cout << " Sorted IDs: " << std::endl;
+    
+    for ( UInt iRand(0); iRand < IDs.size(); ++iRand )
+    {
+      IDs[ iRand ] = 1 + static_cast< UInt > ( ( nbSamples -1 )* drand48() );
+      
+      std::cout << IDs[ iRand ] << "\t";
+    }
+    
+    std::cout << std::endl << std::endl;
+    
+    dataPtr_Type dataSubSet( dataSet2.getRowSubSet( IDs ) );
+    
+    std::cout << *dataSubSet << std::endl;
+    
+    std::cout << "===============================================" << std::endl;   
     
     return EXIT_SUCCESS;
 }

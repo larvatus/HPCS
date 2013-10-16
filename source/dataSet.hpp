@@ -11,9 +11,7 @@
 #ifndef _DATASET_HPP__
 #define _DATASET_HPP__
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <Eigen/Dense>
 
 #include <source/HPCSDefs.hpp>
 
@@ -34,11 +32,17 @@ public:
      //! @name Public Types
      //@{
        
+       //! Typedef fot the matrix type (variance or correlation matrix)
+       typedef Eigen::Matrix< Real, Eigen::Dynamic, Eigen::Dynamic> matrix_Type;
+       
+       //! Shared pointer to the matrix type
+       typedef boost::shared_ptr< matrix_Type > matrixPtr_Type;
+       
        //! Typedef for the current matrix type consituting the data structure
-       typedef boost::numeric::ublas::matrix< Real > data_Type;
-    
+       typedef matrix_Type data_Type;
+       
        //! Typedef for the shared_ptr to the data structure
-       typedef boost::shared_ptr< data_Type > dataPtr_Type;
+       typedef matrixPtr_Type dataPtr_Type;
         
     //@}
     
@@ -74,19 +78,19 @@ public:
        */
       DataSet( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts );
  
-      //! Constructor from boost::numeric::ublas matrix type object
+      //! Constructor from matrix type object
       /*!
        * This constructor initialize this data set from the data object received.
        * 
-       * @param data is a boost::numeric::ublas::matrix type representing the data set from which this object is built.
+       * @param data is a matrix type representing the data set from which this object is built.
        */
       DataSet( const data_Type & data );
  
-      //! Constructor from a shared pointer to a boost::numeric::ublas matrix type object
+      //! Constructor from a shared pointer to a matrix type object
       /*!
        *  This constructor initialize this data set from the pointer received.
        * 
-       * @param dataPtr is a shared pointer to a boost::numeri::ublas::matrix type object used to build this data set.
+       * @param dataPtr is a shared pointer to a matrix type object used to build this data set.
        */
       DataSet( const dataPtr_Type & dataPtr );
     
@@ -121,17 +125,17 @@ public:
 	
 	//! Setter of data in the data set 
 	/*!
-	 * Setter of data in the data set from a boost::numeric::ublas::matrix variable.
+	 * Setter of data in the data set from a matrix variable.
 	 * 
-	 * @param data  is a boost::numeric::ublas::matrix variable containing the data to be stored in this object.
+	 * @param data  is a matrix variable containing the data to be stored in this object.
 	 */
 	void setData( const data_Type & data);
 
 	//! Setter of data in the data set 
 	/*!
-	 * Setter of data in the data set from a shared pointer to a boost::numeric::ublas::matrix variable.
+	 * Setter of data in the data set from a shared pointer to a matrix variable.
 	 * 
-	 * @param dataPtr is a shared pointer to  a boost::numeric::ublas::matrix variable containing the data to be stored in this object.
+	 * @param dataPtr is a shared pointer to  a matrix variable containing the data to be stored in this object.
 	 */
 	void setData( const dataPtr_Type & dataPtr );
 
@@ -153,7 +157,7 @@ public:
 	 * 
 	 * @param IDs is a std::vector containing the IDs of the desired rows to be returned as a subset of the current data set.
 	 */
-	dataPtr_Type getRowSubSet( const std::vector< UInt > & IDs ) const;
+ 	dataPtr_Type getRowSubSet( const std::vector< UInt > & IDs ) const;
      
 	//! Getter of the number of samples
 	UInt nbSamples() const { return this->M_nbSamples; }
@@ -201,6 +205,24 @@ public:
 	Real operator()( const UInt & sample, const UInt & pt ) const;
 	
       //@}
+	
+	
+      //! @name Public methods for functional statistical computations
+      //@{
+	
+	//! Method to get the variance matrix (via shared pointer)
+	/*!
+	 * @todo Implement a parallel version for distributed computation of variance, maybe exploiting a distributed storage of dataset
+	 */
+	void varMatrix( matrixPtr_Type & matrixPtr );
+	
+	//! Method to get the correlation matrix (via shared pointer)
+	/*!
+	 * @todo Implement a parallel version for distributed computation of correlation, maybe exploiting a distributed storage of dataset
+	 */
+	void corMatrix( matrixPtr_Type & matrixPtr );
+	
+      //@}
     
     
 protected:
@@ -208,7 +230,7 @@ protected:
       //! @name Protected Members
       //@{
 
-	//! Shared pointer to a boost::numeric::ublas::matrix object containing the dataset.
+	//! Shared pointer to a matrix object containing the dataset.
 	dataPtr_Type M_data;
 
 	//! Number of samples (i.e. rows)
@@ -222,9 +244,48 @@ protected:
 	
 	//! Number of character offsets from right when reading data from file 
 	UInt M_rightOffset;
+	
+	//! Correlation matrix
+	matrixPtr_Type M_corMatrixPtr;
+	
+	//! Variance matrix
+	matrixPtr_Type M_varMatrixPtr;
   
     //@}
+	
+	
+private:
   
+  //! @name Private members
+  
+  //@{
+
+    //! Flag indicating wether the variance matrix has been already computed or not.
+    bool M_varMatrixComputedFlag;
+    
+    //! Flag indicating wether the correlation matrix has been already computed or not.
+    bool M_corMatrixComputedFlag;
+    
+  //@}
+    
+  //! @name Private methods
+  
+  //@{
+    
+    //! Method to compute the variance matrix.
+    /*!
+     * @todo Implement a parallel version for distributed computation of variance, maybe exploiting a distributed storage of dataset
+     */
+    void computeVarMatrix();
+	
+    //! Method to compute the correlation matrix.
+    /*!
+     * @todo Implement a parallel version for distributed computation of correlation, maybe exploiting a distributed storage of dataset
+     */
+    void computeCorMatrix();
+  
+  //@}
+    
 };
 
 //! @class DataSetLevelled This class Implements an object representing a dataset of functional data with different levels. 
@@ -393,8 +454,6 @@ private:
   //@}
   
 };
-
-
 
 
 }

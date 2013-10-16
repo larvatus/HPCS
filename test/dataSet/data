@@ -2,7 +2,7 @@
 
 	nbSamples = 10
 
-	nbPts = 100
+	nbPts = 10
 
 	inputFile = dataSet.dat
 
@@ -12,7 +12,7 @@
 
       nbSamples = 10
 
-      nbPts = 100
+      nbPts = 10
 
       levelsFilename = levels.dataSet
 

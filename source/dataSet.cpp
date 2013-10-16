@@ -35,7 +35,11 @@ M_nbSamples( nbSamples),
 M_nbPts( nbPts ),
 M_leftOffset( 0 ),
 M_rightOffset( 0 ),
-M_data( new data_Type( nbSamples, nbPts ) )
+M_data( new data_Type( nbSamples, nbPts ) ),
+M_corMatrixPtr( new matrix_Type() ),
+M_varMatrixPtr( new matrix_Type() ),
+M_varMatrixComputedFlag( false ),
+M_corMatrixComputedFlag( false )
 {
 }
 
@@ -44,7 +48,11 @@ DataSet::
 DataSet( const Real * data, const UInt & nbSamples, const UInt & nbPts )
 :
 M_leftOffset( 0 ),
-M_rightOffset( 0 )
+M_rightOffset( 0 ),
+M_corMatrixPtr( new matrix_Type() ),
+M_varMatrixPtr( new matrix_Type() ),
+M_varMatrixComputedFlag( false ),
+M_corMatrixComputedFlag( false )
 {
   this->setData( data, nbSamples, nbPts ) ;
 }
@@ -54,31 +62,47 @@ DataSet::
 DataSet( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts )
 :
 M_leftOffset( 0 ),
-M_rightOffset( 0 )
+M_rightOffset( 0 ),
+M_corMatrixPtr( new matrix_Type() ),
+M_varMatrixPtr( new matrix_Type() ),
+M_varMatrixComputedFlag( false ),
+M_corMatrixComputedFlag( false )
 {
-  this->setData( data, nbSamples, nbPts ) ;
+  this->setData( data, nbSamples, nbPts );
 }
 
-// Constructor from a boost::numeric::ublas::matrix object
+// Constructor from a matrix object
 DataSet::
 DataSet( const data_Type & data )
 :
 M_leftOffset( 0 ),
 M_rightOffset( 0 ),
 M_data( new data_Type( data ) ),
-M_nbSamples( data.size1() ),
-M_nbPts( data.size2() )
+// M_nbSamples( data.size1() ),
+M_nbSamples( data.rows() ),
+// M_nbPts( data.size2() ),
+M_nbPts( data.cols() ),
+M_corMatrixPtr( new matrix_Type() ),
+M_varMatrixPtr( new matrix_Type() ),
+M_varMatrixComputedFlag( false ),
+M_corMatrixComputedFlag( false )
 {}
 
-// Constructor from a shared pointer to a boost::numeric::ublas::matrix object
+// Constructor from a shared pointer to a matrix object
 DataSet::
 DataSet( const dataPtr_Type & dataPtr )
 :
 M_leftOffset( 0 ),
 M_rightOffset( 0 ),
 M_data( dataPtr ),
-M_nbSamples( dataPtr->size1() ),
-M_nbPts( dataPtr->size2() )
+// M_nbSamples( dataPtr->size1() ),
+M_nbSamples( dataPtr->rows() ),
+// M_nbPts( dataPtr->size2() ),
+M_nbPts( dataPtr->cols() ),
+M_corMatrixPtr( new matrix_Type() ),
+M_varMatrixPtr( new matrix_Type() ),
+M_varMatrixComputedFlag( false ),
+M_corMatrixComputedFlag( false )
 {}
 
 // Method to read data from a filename
@@ -219,9 +243,13 @@ void
 DataSet::
 setData( const data_Type & data )
 {
- this->M_nbSamples = data.size1();
+//  this->M_nbSamples = data.size1();
+
+ this->M_nbSamples = data.rows();
  
- this->M_nbPts = data.size2();
+//  this->M_nbPts = data.size2();
+ 
+ this->M_nbPts = data.cols();
  
  this->M_data.reset( new data_Type( data ) );
  
@@ -236,9 +264,13 @@ void
 DataSet::
 setData( const dataPtr_Type & dataPtr )
 {
-  this->M_nbSamples = dataPtr->size1();
+//   this->M_nbSamples = dataPtr->size1();
+  
+ this->M_nbSamples = dataPtr->rows();
  
- this->M_nbPts = dataPtr->size2();
+//  this->M_nbPts = dataPtr->size2();
+ 
+ this->M_nbPts = dataPtr->cols();
  
  this->M_data = dataPtr;
  
@@ -252,17 +284,13 @@ DataSet::dataPtr_Type
 DataSet::
 getRowSubSet( const std::vector< UInt > & IDs ) const
 {
-  using namespace boost::numeric::ublas;
-  
-  typedef matrix_row< data_Type > matrixRow_Type;
-  
   dataPtr_Type dataPtr( new data_Type( IDs.size(), this->M_nbPts ) );
-  
-  for ( UInt iID(0); iID < IDs.size(); ++iID )
-  {
-      row( *dataPtr, iID ) = row( *this->M_data, IDs[ iID ] );
-  }
 
+  for ( UInt i(0); i < IDs.size(); ++i )
+  {
+    dataPtr->row( i ) = this->M_data->row( IDs[i] );
+  }
+  
   return dataPtr;
 }
 
@@ -279,6 +307,132 @@ setOffset( const UInt & leftOffset, const UInt & rightOffset )
     
     return;
 }
+
+
+// Method to compute the variance matrix
+void 
+DataSet::
+computeVarMatrix()
+{
+  if ( this->M_varMatrixComputedFlag == true )
+  {
+      return;
+  }  
+  
+  this->M_varMatrixPtr->resize( this->M_nbPts, this->M_nbPts );  
+  
+  Real iPtAve, jPtAve;
+  
+  for ( UInt iPt(0); iPt < this->M_nbPts; ++iPt )
+  {
+    iPtAve = 0;
+    
+    for ( UInt iSample(0); iSample < this->M_nbSamples; ++iSample )
+    {
+      iPtAve += (*this->M_data)( iSample, iPt );	   
+    }
+    
+    iPtAve /= this->M_nbSamples;
+    
+    for ( UInt jPt(iPt); jPt < this->M_nbPts; ++jPt )
+    {
+      jPtAve = 0;
+      
+      (*this->M_varMatrixPtr)( iPt, jPt ) = 0;
+      
+      for ( UInt iSample(0); iSample < this->M_nbSamples; ++iSample )
+      {
+	jPtAve += (*this->M_data)( iSample, jPt );
+      }      
+      
+      jPtAve /= this->M_nbSamples;
+      
+      for ( UInt iSample(0); iSample < this->M_nbSamples; ++iSample )
+      {
+	(*this->M_varMatrixPtr)( iPt, jPt ) += ( iPtAve - ( *this->M_data )( iSample, iPt ) ) 
+						* 
+					       ( jPtAve - ( *this->M_data )( iSample, jPt )  ) ;
+      }
+	
+      (*this->M_varMatrixPtr)( iPt, jPt ) /= ( this->M_nbSamples - 1 ); 
+	
+      (*this->M_varMatrixPtr)( jPt, iPt ) = (*this->M_varMatrixPtr)( iPt, jPt );
+      
+      }
+  }  
+  
+  this->M_varMatrixComputedFlag = true;
+  
+  return;
+}
+
+// Method to compute the correlation matrix
+void 
+DataSet::
+computeCorMatrix()
+{
+  if ( this->M_corMatrixComputedFlag == true )
+  {
+      return;
+  }
+  else if ( this->M_varMatrixComputedFlag == false )
+  {
+      this->computeVarMatrix();
+  }
+  
+  this->M_corMatrixPtr.reset( new matrix_Type( *(this->M_varMatrixPtr) ) );  
+
+  for ( UInt iPt(0); iPt < this->M_nbPts; ++iPt )
+  {
+    (*this->M_corMatrixPtr)( iPt, iPt ) = 1;
+    
+    for ( UInt jPt(iPt+1); jPt < this->M_nbPts; ++jPt )
+    {	
+      (*this->M_corMatrixPtr)( iPt, jPt ) /= std::sqrt( (*this->M_varMatrixPtr)( iPt, iPt )
+							 *
+							(*this->M_varMatrixPtr)( jPt, jPt )
+						      );
+      (*this->M_corMatrixPtr)( jPt, iPt ) = (*this->M_corMatrixPtr)( iPt, jPt ); 
+      
+      }
+  }  
+
+  this->M_corMatrixComputedFlag = true;
+  
+  return;
+  
+}
+
+// Method to get the variance matrix
+void 
+DataSet::
+varMatrix( matrixPtr_Type & matrixPtr )
+{
+  
+   if ( this->M_varMatrixComputedFlag == false )
+     
+     this->computeVarMatrix();
+  
+   matrixPtr = this->M_varMatrixPtr;
+   
+   return;
+}
+
+// Method to get the correlation matrix
+void 
+DataSet::
+corMatrix( matrixPtr_Type & matrixPtr )
+{
+    if ( this->M_corMatrixComputedFlag == false )
+      
+      this->computeCorMatrix();
+  
+    matrixPtr = this->M_corMatrixPtr;
+    
+    return;
+}
+	
+
 
 /////////////////////////////////////////////////////////////////
 
