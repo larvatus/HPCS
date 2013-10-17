@@ -19,3 +19,13 @@
       inputFile = dataSet.dat
 
 [../]
+
+[EIGEN]
+
+  nbSamples = 15
+
+  nbPts = 10
+
+  inputFile = dataSet.eigen.dat
+
+[../]

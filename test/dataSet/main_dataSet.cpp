@@ -33,8 +33,6 @@ int main( int argc, char * argv[] )
     const UInt nbSamples = dataFile( ( baseName + "/nbSamples" ).data(), 1 );
     
     const UInt nbPts = dataFile( ( baseName + "/nbPts" ).data(), 1 );
-   
-    const std::string inputFilename = dataFile( ( baseName + "/inputFilename" ).data(), "dataSet.dat" );
     
     // FIRST WAY TO INITIALIZE A DATASET OBJECT
     
@@ -86,7 +84,7 @@ int main( int argc, char * argv[] )
     
     const std::string inputFile = dataFile( ( baseName + "/inputFile" ).data(), "dataSet.dat" );
     
-    dataSetPtr2->readData( "dataSet.dat" );
+    dataSetPtr2->readData( inputFile );
         
     dataSetPtr2->showMe();
 

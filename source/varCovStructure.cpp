@@ -18,7 +18,8 @@ namespace HPCS
   M_varCovMatrixComputedFlag( false ),
   M_corMatrixComputedFlag( false ),
   M_varCovMatrixPtr( new matrix_Type() ),
-  M_corMatrixPtr( new matrix_Type() )
+  M_corMatrixPtr( new matrix_Type() ),
+  M_eigenSolverPtr( new eigenSolver_Type() )
   {}
   
   
@@ -26,9 +27,7 @@ namespace HPCS
   void 
   VarCovStructure::
   computeVarCovMatrix()
-  {
-    std::cout << " ECCOMI! " << std::endl;
-    
+  {    
     const UInt nbSamples( this->M_dataSetPtr->nbSamples() );
 
     const UInt nbPts( this->M_dataSetPtr->nbPts() );
@@ -154,7 +153,32 @@ namespace HPCS
       return;
   }
 	
-
-
+  // Method to compute the spectral decomposition of the var-cov/correlation matrix
+  void
+  VarCovStructure::
+  performSpectralDecomposition( const bool & varCov )
+  {
+    if ( varCov == true )
+    {
+      this->M_eigenSolverPtr.reset( new eigenSolver_Type( *this->M_varCovMatrixPtr ) );
+    }
+    else
+    {
+      this->M_eigenSolverPtr.reset( new eigenSolver_Type( *this->M_corMatrixPtr ) );
+    }
+    
+    return;
+  }
+  
+  // Method to get the shared pointer to the matrix of eigenvectors
+  void
+  VarCovStructure::
+  eigenVectors( matrixPtr_Type & matrixPtr )
+  const
+  {
+      matrixPtr.reset( new matrix_Type( this->M_eigenSolverPtr->eigenvectors() ) );
+      
+      return;
+  }
   
 }

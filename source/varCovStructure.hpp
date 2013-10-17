@@ -4,6 +4,9 @@
 
 #include <source/dataSet.hpp>
 
+#include <source/HPCSDefs.hpp>
+#include <Eigen/Eigenvalues>
+
 namespace HPCS
 {
 
@@ -40,28 +43,65 @@ public:
     /*!
      * @todo Implement a parallel version for distributed computation of variance, maybe exploiting a distributed storage of dataset
      */
-    void varCovMatrix( matrixPtr_Type & matrixPtr );
+     void varCovMatrix( matrixPtr_Type & matrixPtr );
 
     //! Method to get the correlation matrix (via shared pointer)
     /*!
      * @todo Implement a parallel version for distributed computation of correlation, maybe exploiting a distributed storage of dataset
       */
-    void corMatrix( matrixPtr_Type & matrixPtr );
+     void corMatrix( matrixPtr_Type & matrixPtr );
     
+    
+    //! Method to perform the spectral decomposition of the var-cov or correlation matrix
+    /*!
+     * This method instantiates a proper SelfAdjointEigenSolver from the Eigen libraries from
+     * either the var-cov matrix or the correlation matrix, depending on the value of the flag varCov.
+     * 
+     * @param varCov is the parameter specifying wegther the variance-covariance or the correlation matrix has to be used
+     * 		     for the spectral decomposition.
+     */
+     void performSpectralDecomposition( const bool & varCov = true );
+    
+    
+    //! Method to get the eigenvectors computed during the spectral decomposition
+     void eigenVectors( matrixPtr_Type & matrixPtr ) const;
+    
+    //! Method to get the eigenvalues computed during the spectral decomposition
+    template < typename _containerType > 
+       void eigenValues( boost::shared_ptr< _containerType > & contPtr ) const;
+      
+    template < typename _containerType >
+       void eigenValues( _containerType & container ) const;
+      
+    template < typename _iteratorType >
+       void eigenValues( const _iteratorType & begin, const _iteratorType & end ) const;
+
     //@}
 	
     
-protected:
+ protected:
    
+     //! @name Protected types definition
+     //@{
+       
+        typedef Eigen::SelfAdjointEigenSolver< matrix_Type > eigenSolver_Type;
+	
+	typedef boost::shared_ptr< eigenSolver_Type > eigenSolverPtr_Type;
+       
+     //@}
+  
       //! @name Protected members
 
       //@{
 
-	//! Variance-Covariance matrix
+	//! Shared pointer to the variance-covariance matrix
 	matrixPtr_Type M_varCovMatrixPtr;
 	
-	//! Correlation matrix
+	//! Shared pointer to the correlation matrix
 	matrixPtr_Type M_corMatrixPtr;
+	
+	//! Shared pointer to the eigensolver object
+ 	eigenSolverPtr_Type M_eigenSolverPtr;
 	
       //@}
 	
@@ -90,18 +130,74 @@ private:
     /*!
      * @todo Implement a parallel version for distributed computation of variance, maybe exploiting a distributed storage of dataset
      */
-    void computeVarCovMatrix();
+     void computeVarCovMatrix();
 	
     //! Method to compute the correlation matrix.
     /*!
      * @todo Implement a parallel version for distributed computation of correlation, maybe exploiting a distributed storage of dataset
      */
-    void computeCorMatrix();
+     void computeCorMatrix();
   
   //@}
     
 };
 
+
+   template < typename _containerType >
+     void
+     VarCovStructure::
+     eigenValues( boost::shared_ptr< _containerType > & contPtr ) 
+     const
+     {
+       
+ 	contPtr->clear();
+       
+ 	contPtr->reserve( this->M_varCovMatrixPtr->rows() );
+ 	
+ 	for ( UInt iValue(0); iValue < this->M_varCovMatrixPtr->rows(); ++iValue )
+ 	{
+ 	    contPtr->push_back( this->M_eigenSolverPtr->eigenvalues()( iValue ) );
+ 	}
+ 	
+ 	return;
+     }
+
+  template < typename _containerType >
+    void
+    VarCovStructure::
+    eigenValues( _containerType & container )
+    const
+    {
+      container.clear();
+      
+      container.reserve( this->M_varCovMatrixPtr->rows() );
+      
+      for ( UInt iValue(0); iValue < this->M_varCovMatrixPtr->rows(); ++iValue )
+      {
+	  container.push_back( this->M_eigenSolverPtr->eigenvalues()( iValue )  );
+      }
+      
+      return;
+    }
+    
+   template < typename _iteratorType >
+     void
+     VarCovStructure::
+     eigenValues( const _iteratorType & begin, const _iteratorType & end )
+     const
+     {
+ 	_iteratorType it( begin );
+ 	
+ 	for ( UInt iValue(0); iValue < this->M_varCovMatrixPtr->rows(); ++iValue )
+ 	{
+ 	    (*it) = ( this->M_eigenSolverPtr->eigenvalues() )( iValue );
+ 	    
+ 	    ++it;
+ 	}
+ 	
+ 	return;
+     }
+
 }
 
-#endif
+#endif /* __VARCOVSTRUCTURE_HPP__ */
