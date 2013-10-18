@@ -17,7 +17,7 @@ typedef VarCovStructure varCovStructure_Type;
 typedef MatrixDistanceBase::matrix_Type matrix_Type;
 typedef MatrixDistanceBase::matrixPtr_Type matrixPtr_Type;
 
-typedef FrobeniusDistance frobeniusDist_Type;
+typedef ProcrustesDistance dist_Type;
 
 int main( int argc, char * argv[] )
 {
@@ -61,9 +61,9 @@ int main( int argc, char * argv[] )
     
     varCovStructure_Type varCovStructure2( dataSetPtr2 );
        
-    matrixPtr_Type varPtr1;//( new matrix_Type( nbPts, nbPts ) );
-    matrixPtr_Type varPtr2;//( new matrix_Type( nbPts, nbPts ) );
-/*    
+    matrixPtr_Type varPtr1( new matrix_Type( nbPts, nbPts ) );
+    matrixPtr_Type varPtr2( new matrix_Type( nbPts, nbPts ) );
+/*   
       for ( UInt iPt(0); iPt < nbPts; ++iPt )
       {
 	for ( UInt jPt(0); jPt < nbPts; ++jPt )
@@ -72,9 +72,9 @@ int main( int argc, char * argv[] )
 	    
 	    (*varPtr2)( iPt, jPt ) = 2;
 	}
-      }
-*/
-      std::cout << " ### Var-Cov matrix 1 " << std::endl;
+      }*/
+
+    std::cout << " ### Var-Cov matrix 1 " << std::endl;
     
     varCovStructure1.varCovMatrix( varPtr1 );
     
@@ -84,7 +84,7 @@ int main( int argc, char * argv[] )
     
     std::cout << " ### Var-Cov matrix 2 " << std::endl;
     
-    varCovStructure2.varCovMatrix( varPtr2 );
+   varCovStructure2.varCovMatrix( varPtr2 );
     
     std::cout << *varPtr2 << std::endl;
     
@@ -92,7 +92,7 @@ int main( int argc, char * argv[] )
     
     std::cout << " *** COMPUTING THE DISTANCE " << std::endl;
     
-    frobeniusDist_Type varCovDistance( varPtr1, varPtr2 );
+    dist_Type varCovDistance( varPtr1, varPtr2 );
     
     std::cout << " #### DISTANCE is " << varCovDistance.compute() << std::endl;
     
