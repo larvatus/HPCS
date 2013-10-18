@@ -5,6 +5,7 @@
 #include <source/dataSet.hpp>
 
 #include <source/HPCSDefs.hpp>
+
 #include <Eigen/Eigenvalues>
 
 namespace HPCS

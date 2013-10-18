@@ -35,8 +35,12 @@
 #include "mpi.h"
 
 // GETPOT
+
+#pragma GCC diagnostic ignored "-Wconversion-null"
+
 #include <source/GetPot>
 
+#pragma GCC diagnostic warning "-Wconversion-null"
 
 // DEFINITION OF MASTER PROC
 #define MASTER 0

@@ -12,9 +12,6 @@ using namespace HPCS;
 typedef DataSet dataSet_Type;
 typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
 
-typedef DataSet::data_Type data_Type;
-typedef DataSet::dataPtr_Type dataPtr_Type;
-
 typedef DataSet::matrix_Type matrix_Type;
 typedef DataSet::matrixPtr_Type matrixPtr_Type;
 

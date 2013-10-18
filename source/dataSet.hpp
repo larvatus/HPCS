@@ -11,7 +11,9 @@
 #ifndef _DATASET_HPP__
 #define _DATASET_HPP__
 
+#pragma GCC diagnostic ignored "-Wenum-compare"
 #include <Eigen/Dense>
+#pragma GCC diagnostic warning "-Wenum-compare"
 
 #include <source/HPCSDefs.hpp>
 

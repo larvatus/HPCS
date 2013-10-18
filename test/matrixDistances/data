@@ -1,0 +1,12 @@
+[MATRIXDISTANCES]
+
+	nbSamples = 15
+
+	nbPts = 10
+
+	inputFile1 = dataSet.1.dat
+
+	inputFile2 = dataSet.2.dat
+
+[../]
+  
