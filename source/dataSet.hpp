@@ -40,6 +40,12 @@ public:
        //! Shared pointer to the matrix type
        typedef boost::shared_ptr< matrix_Type > matrixPtr_Type;
        
+       //! Typedef for the vector type
+       typedef Eigen::Matrix< Real, Eigen::Dynamic, 1 > vector_Type;
+       
+       //! Shared pointer to a vector type
+       typedef boost::shared_ptr< vector_Type > vectorPtr_Type;
+       
 //        //! Shared pointer to a constant matrix object
 //        typedef boost::shared_ptr< const matrix_Type > constMatrixPtr_Type;
        
@@ -159,6 +165,9 @@ public:
 	//! Getter of the data structure
 	dataPtr_Type getData(){ return this->M_data; };
     
+	//! Getter of the data structure
+	const data_Type & data(){ return *this->M_data; };
+	
 	//! Getter of a row subset
 	/*!
 	 * It returns a shared pointer to a subset (i.e. a smaller data set) containing the rows specified by the std::vector of IDs.
@@ -190,6 +199,9 @@ public:
 	
 	//! @todo finish me!
 	void popPoints( const std::vector< UInt > & IDs );
+	
+	//! @todo finish me!
+	void subtractMeanValue();
 
 	//! Method to read data from an external file
 	/*!

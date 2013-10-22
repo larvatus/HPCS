@@ -42,12 +42,8 @@ namespace HPCS
      M_dataSetPtr2( dataSetPtr2 ),
      M_distPtr( matrixDistPtr ),
      M_niter( NIter )
-     {
-       
-	assert( dataSetPtr1->nbSamples() == dataSetPtr2->nbSamples() );
-       
+     {       
 	assert( dataSetPtr1->nbPts() == dataSetPtr2->nbPts() );
-	
      }
  
      PermutationTest::
@@ -58,11 +54,8 @@ namespace HPCS
      M_dataSetPtr2( dataSetPtr2 ),
      M_distPtr( new matrixDist_Type() ),
      M_niter( NIter )
-     {
-       	assert( dataSetPtr1->nbSamples() == dataSetPtr2->nbSamples() );
-       
+     {       
 	assert( dataSetPtr1->nbPts() == dataSetPtr2->nbPts() );
-  
      }
     
 //     void
@@ -80,10 +73,7 @@ namespace HPCS
     void
     PermutationTest::
     setData( const dataSetPtr_Type & dataSetPtr1, const dataSetPtr_Type & dataSetPtr2 )
-    {
-      
-      assert( dataSetPtr1->nbSamples() == dataSetPtr2->nbSamples() );
-       
+    {       
       assert( dataSetPtr1->nbPts() == dataSetPtr2->nbPts() );
 
       this->M_dataSetPtr1 = dataSetPtr1;
@@ -93,8 +83,6 @@ namespace HPCS
       return;
     }
 
-
-    
     void
     PermutationTest::
     setDistance( const matrixDistPtr_Type & matrixDistPtr )
@@ -112,13 +100,16 @@ namespace HPCS
       
 	return;
     }
-    
-    
+        
     void
     PermutationTest::
     apply()
     {
 	this->M_pValue = 0;
+	
+	this->M_dataSetPtr1->subtractMeanValue();
+	
+	this->M_dataSetPtr2->subtractMeanValue();
 	
 	varCov_Type varCov( this->M_dataSetPtr1->getData() );
 	
@@ -127,16 +118,16 @@ namespace HPCS
 	varCov.setData( this->M_dataSetPtr2->getData() );
 	
 	matrixPtr_Type varMatrixPtr2( varCov.varCovMatrix() );
-      
 	
 	const Real dist0 = this->M_distPtr->compute( varMatrixPtr1, varMatrixPtr2 );
 	
-	const UInt N = this->M_dataSetPtr1->nbSamples();
-		
-	std::vector< UInt > drawnSampleIDs;	
-	std::vector< UInt > allSampleIDs( 2 * N );
+	const UInt N1 = this->M_dataSetPtr1->nbSamples();
+	const UInt N2 = this->M_dataSetPtr2->nbSamples()	;
 	
-	for ( UInt iN(0); iN < 2 * N; ++iN )
+	std::vector< UInt > drawnSampleIDs;	
+	std::vector< UInt > allSampleIDs( N1 + N2 );
+	
+	for ( UInt iN(0); iN < N1 + N2; ++iN )
 	{
 	  allSampleIDs[ iN ] = iN;
 	}
@@ -145,15 +136,15 @@ namespace HPCS
 	
   	for ( UInt it(0); it < this->M_niter; ++it )
   	{
-	  std::cout << " Iteration " << it << std::endl;	
+	  std::cout << " Iteration #" << it << std::endl;	
 	 
 	  drawnSampleIDs.clear();
 	  
-	  drawnSampleIDs.reserve( N );
+	  drawnSampleIDs.reserve( N1 );
 	  
-	  while( drawnSampleIDs.size() != N )
+	  while( drawnSampleIDs.size() != N1 )
  	  {	    
- 	    const UInt temp( static_cast< UInt >( ( 2 * N ) * drand48() ) );
+ 	    const UInt temp( static_cast< UInt >( ( N1 + N2 - 1) * drand48() ) );
  		    
  	    if ( std::find( drawnSampleIDs.begin(), drawnSampleIDs.end(), temp ) == drawnSampleIDs.end() )
  	    {
@@ -164,7 +155,7 @@ namespace HPCS
  	  
  	  std::sort( drawnSampleIDs.begin(), drawnSampleIDs.end() );
  	  
-	  std::vector< UInt > remainingSampleIDs( N );
+	  std::vector< UInt > remainingSampleIDs( N2 );
 	  
 	  std::set_difference( allSampleIDs.begin(), allSampleIDs.end(), 
 			       drawnSampleIDs.begin(), drawnSampleIDs.end(), 
@@ -173,25 +164,27 @@ namespace HPCS
 	  dataSetPtr_Type dataUnionPtr( new dataSet_Type( M_dataSetPtr1->getData() ) );
 	  
 	  dataUnionPtr->addSamples( this->M_dataSetPtr2->getData() );	  
+/*	  
+ 	  std::cout << " SAMPLES " << std::endl;
 	  
-// 	  std::cout << " SAMPLES " << std::endl;
+	  std::cout << " ** pop 1 " << std::endl;
+ 	  for ( std::vector< UInt >::iterator it( drawnSampleIDs.begin() ); it != drawnSampleIDs.end(); ++it )
+ 	  {
+ 	      std::cout << *it << " ";
+ 	  }
+ 	  
+ 	  std::cout << std::endl;
+ 	  std::cout << " ** pop 2 " << std::endl;
+ 	  
+ 	  for ( std::vector< UInt >::iterator it( remainingSampleIDs.begin() ); it != remainingSampleIDs.end(); ++it )
+ 	  {
+ 	      std::cout << *it << " ";
+ 	  }
+ 	  
+ 	  std::cout << std::endl;
 	  
-// 	  for ( UInt i(0); i < N; ++i )
-// 	  {
-// 	      std::cout << drawnSampleIDs[ i ] << " ";
-// 	  }
-// 	  
-// 	  std::cout << std::endl;
-// 	  
-// 	  for ( UInt i(0); i < N; ++i )
-// 	  {
-// 	      std::cout << remainingSampleIDs[ i ] << " ";
-// 	  }
-// 	  
-// 	  std::cout << std::endl;
-	  
-//   dataUnionPtr->showMe();
-	  
+	  dataUnionPtr->showMe();
+*/
   	  matrixPtr_Type G1 = dataUnionPtr->getRowSubSet( drawnSampleIDs );
  
   	  matrixPtr_Type G2 = dataUnionPtr->getRowSubSet( remainingSampleIDs );
@@ -216,7 +209,7 @@ namespace HPCS
 	  
 	  const Real distCurr = this->M_distPtr->compute( varG1, varG2 );
 	  
-	  std::cout << " DistCurr = " << distCurr << "\t Dist0 = " << dist0 << std::endl;
+	  std::cout << "\t DistCurr = " << distCurr << "\t Dist0 = " << dist0 << std::endl;
 	  
 	  if( distCurr >= dist0 ) 
 	  {  
@@ -226,7 +219,5 @@ namespace HPCS
 	
 	return;
     }
-    
-  
   
 }

@@ -31,7 +31,9 @@ int main( int argc, char * argv[] )
     
     const UInt nIter = dataFile( ( baseName + "/NIter" ).data(), 100 );
     
-    const UInt nbSamples = dataFile( ( baseName + "/nbSamples" ).data(), 1 );
+    const UInt nbSamples1 = dataFile( ( baseName + "/nbSamples1" ).data(), 1 );
+    
+    const UInt nbSamples2 = dataFile( ( baseName + "/nbSamples2" ).data(), 1 );
     
     const UInt nbPts = dataFile( ( baseName + "/nbPts" ).data(), 1 );
    
@@ -41,8 +43,8 @@ int main( int argc, char * argv[] )
   
     std::cout << " *** READING DATA " << std::endl;
     
-    dataSetPtr_Type dataSetPtr1( new dataSet_Type( nbSamples, nbPts ) );
-    dataSetPtr_Type dataSetPtr2( new dataSet_Type( nbSamples, nbPts ) );    
+    dataSetPtr_Type dataSetPtr1( new dataSet_Type( nbSamples1, nbPts ) );
+    dataSetPtr_Type dataSetPtr2( new dataSet_Type( nbSamples2, nbPts ) );    
     
     std::cout << " ### Dataset 1 " << std::endl;
     

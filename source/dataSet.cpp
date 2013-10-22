@@ -331,8 +331,6 @@ DataSet::
 addSamples( const dataPtr_Type & dataPtr )
 {
     assert( dataPtr->cols() == this->M_nbPts );
-  
-    std::cout << " RESIZING OF " << this->M_nbSamples + dataPtr->rows() << std::endl;
     
     this->M_data->conservativeResize( this->M_nbSamples + dataPtr->rows(), Eigen::NoChange );
     
@@ -346,6 +344,26 @@ addSamples( const dataPtr_Type & dataPtr )
     return;
 }
 
+
+// It subtract the mean value
+void
+DataSet::
+subtractMeanValue()
+{
+   vector_Type meanValue( this->M_nbPts );
+      
+   for ( UInt iCol(0); iCol < this->M_nbPts; ++iCol )
+   {
+     meanValue( iCol ) = this->M_data->col( iCol ).mean(); 
+   }
+      
+   for ( UInt iRow(0); iRow < this->M_nbSamples; ++iRow )
+   {
+      this->M_data->row( iRow ) -= meanValue;
+   }
+   
+      return;
+}
 
 
 /////////////////////////////////////////////////////////////////

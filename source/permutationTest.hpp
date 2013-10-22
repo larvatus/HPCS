@@ -76,7 +76,6 @@ namespace HPCS
     
     Real M_pValue;
     
-    
   };
   
 }

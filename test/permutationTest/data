@@ -16,13 +16,19 @@
 
 	NIter = 1000
 
-	nbSamples = 15
+	nbSamples1 = 125
 
-	nbPts = 10
+	nbSamples2 = 25
 
-	inputFile1 = dataSet.1.dat
+	nbPts = 100
+	inputFile1 = Popolazione1.txt
+	inputFile2 = Popolazione2.txt
 
-	inputFile2 = dataSet.2.dat
+#	nbPts = 30
+#	inputFile1 = dataSet.3.dat
+#	inputFile2 = dataSet.4.dat
+
+
 
 
 [../] 
