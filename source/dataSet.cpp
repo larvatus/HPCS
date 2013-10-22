@@ -57,6 +57,17 @@ M_rightOffset( 0 )
   this->setData( data, nbSamples, nbPts ) ;
 }
 
+// Copy constructor
+DataSet::
+DataSet( const DataSet & dataSet )
+:
+M_leftOffset( dataSet.M_leftOffset ),
+M_rightOffset( dataSet.M_rightOffset ),
+M_nbPts( dataSet.nbPts() ),
+M_nbSamples( dataSet.nbSamples() ),
+M_data( new data_Type( *(dataSet.M_data) ) )
+{}
+
 // Constructor from the std::vector data array, the number of samples and the number of points
 DataSet::
 DataSet( const std::vector< Real > & data, const UInt & nbSamples, const UInt & nbPts )
@@ -92,7 +103,7 @@ DataSet( const dataPtr_Type & dataPtr )
 :
 M_leftOffset( 0 ),
 M_rightOffset( 0 ),
-M_data( dataPtr ),
+M_data( new data_Type( *dataPtr ) ),
 M_nbSamples( dataPtr->rows() ),
 M_nbPts( dataPtr->cols() )
 // M_corMatrixPtr( new matrix_Type() ),
@@ -294,6 +305,48 @@ setOffset( const UInt & leftOffset, const UInt & rightOffset )
     
     return;
 }
+
+// It adds new points to the dataSet
+void
+DataSet::
+addPoints( const dataPtr_Type & dataPtr )
+{
+    assert( dataPtr->rows() == this->M_nbSamples );
+  
+    this->M_data->conservativeResize( Eigen::NoChange, this->M_nbPts + dataPtr->cols() );
+    
+    for ( UInt iCol(0); iCol < dataPtr->cols(); ++iCol )
+    {
+	this->M_data->col( this->M_nbPts + iCol ) = dataPtr->col( iCol );
+    }
+  
+    this->M_nbPts += dataPtr->cols();
+  
+    return;
+}
+
+// It adds new Samples to the dataSet
+void
+DataSet::
+addSamples( const dataPtr_Type & dataPtr )
+{
+    assert( dataPtr->cols() == this->M_nbPts );
+  
+    std::cout << " RESIZING OF " << this->M_nbSamples + dataPtr->rows() << std::endl;
+    
+    this->M_data->conservativeResize( this->M_nbSamples + dataPtr->rows(), Eigen::NoChange );
+    
+    for ( UInt iRow(0); iRow < dataPtr->rows(); ++iRow )
+    {
+	this->M_data->row( this->M_nbSamples + iRow ) = dataPtr->row( iRow );
+    }
+
+    this->M_nbSamples += dataPtr->rows();
+   
+    return;
+}
+
+
 
 /////////////////////////////////////////////////////////////////
 

@@ -8,4 +8,4 @@ EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}}/fbplot.r ${CMAKE_CUR
 # A first executable
 
 ADD_EXECUTABLE(main_fbplot.exe main_fbplot.cpp )
-TARGET_LINK_LIBRARIES(main_fbplot.exe ${MPI_LIBRARIES} mbd)
+TARGET_LINK_LIBRARIES(main_fbplot.exe ${MPI_LIBRARIES} HPCS)

@@ -7,7 +7,7 @@ EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/weights.w ${CMAKE_CUR
 # A first executable
 
 ADD_EXECUTABLE(main_robustAll.exe main_robustAll.cpp )
-TARGET_LINK_LIBRARIES(main_robustAll.exe ${MPI_LIBRARIES} mbd)
+TARGET_LINK_LIBRARIES(main_robustAll.exe ${MPI_LIBRARIES} HPCS)
 
 ADD_EXECUTABLE(main_robustRef.exe main_robustRef )
-TARGET_LINK_LIBRARIES(main_robustRef.exe ${MPI_LIBRARIES} mbd)
+TARGET_LINK_LIBRARIES(main_robustRef.exe ${MPI_LIBRARIES} HPCS)

@@ -44,7 +44,7 @@ int main( int argc, char * argv[] )
         
     dataSetPtr->showMe();
 
-    varCovStructure_Type varCov( dataSetPtr );
+    varCovStructure_Type varCov( dataSetPtr->getData() );
     
     matrixPtr_Type varMatrixPtr;
     matrixPtr_Type corMatrixPtr;

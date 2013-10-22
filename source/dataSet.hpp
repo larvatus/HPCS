@@ -40,6 +40,9 @@ public:
        //! Shared pointer to the matrix type
        typedef boost::shared_ptr< matrix_Type > matrixPtr_Type;
        
+//        //! Shared pointer to a constant matrix object
+//        typedef boost::shared_ptr< const matrix_Type > constMatrixPtr_Type;
+       
        //! Typedef for the current matrix type consituting the data structure
        typedef matrix_Type data_Type;
        
@@ -95,6 +98,9 @@ public:
        * @param dataPtr is a shared pointer to a matrix type object used to build this data set.
        */
       DataSet( const dataPtr_Type & dataPtr );
+      
+      //! @todo finish me
+      DataSet( const DataSet & data );
     
       //! Standard distructor
       virtual ~DataSet();
@@ -169,8 +175,21 @@ public:
     
       //@}
       
-      //! @name Misc. Public Types
+      //! @name Misc. Public Methods
       //@{
+	
+	
+	//! @todo finish me!
+	void addPoints( const dataPtr_Type & dataPtr );
+	
+	//! @todo finish me!
+	void addSamples( const dataPtr_Type & dataPtr );
+	
+	//! @todo finish me!
+	void popSamples( const std::vector< UInt > & IDs );
+	
+	//! @todo finish me!
+	void popPoints( const std::vector< UInt > & IDs );
 
 	//! Method to read data from an external file
 	/*!
@@ -227,6 +246,7 @@ protected:
 	
 	//! Number of character offsets from right when reading data from file 
 	UInt M_rightOffset;
+	
   
     //@}
 	

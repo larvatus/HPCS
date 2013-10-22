@@ -24,11 +24,19 @@ namespace HPCS
       
       MatrixDistanceBase( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
+      virtual Real compute(){};
+    
+      Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+    
+      Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+      
   protected:
     
       matrixPtr_Type M_matrixPtr1;
       
       matrixPtr_Type M_matrixPtr2;
+      
+      Real M_distance;
       
   };
   
@@ -48,13 +56,13 @@ namespace HPCS
     
     Real compute();
     
-    Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+//     Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
     
-    Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+//     Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
     
-  private:
+//   private:
     
-    Real M_distance;    
+//     Real M_distance;    
     
   };
   
@@ -74,13 +82,13 @@ namespace HPCS
     
     Real compute();
     
-    Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+//     Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
     
-    Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+//     Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
     
-  private:
+//   private:
     
-    Real M_distance;
+//     Real M_distance;
     
   };
   
@@ -102,15 +110,15 @@ namespace HPCS
       
       Real compute();
       
-      Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+//       Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
-      Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+//       Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
       
   private:
     
       matrixPtr_Type operatorSqrt( const matrixPtr_Type & matrixPtr ) const;
     
-      Real M_distance;      
+//       Real M_distance;      
     
   };
   
@@ -130,14 +138,14 @@ namespace HPCS
       
       Real compute();
       
-      Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+//       Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
-      Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+//       Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
 
    
-  private:
+//   private:
     
-      Real M_distance;      
+//       Real M_distance;      
   };
   
   
@@ -157,16 +165,16 @@ namespace HPCS
       
       Real compute();
       
-      Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+//       Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
-      Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+//       Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
 
    
   private:
     
       matrixPtr_Type operatorSqrt( const matrixPtr_Type & matrixPtr ) const;
     
-      Real M_distance;      
+//       Real M_distance;      
   };
   
   

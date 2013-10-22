@@ -1,0 +1,28 @@
+[MATRIX_DISTANCES]
+
+	nbSamples = 15
+
+	nbPts = 10
+
+	inputFile1 = dataSet.1.dat
+
+	inputFile2 = dataSet.2.dat
+
+[../]
+ 
+
+
+[PERMUTATION_TEST]
+
+	NIter = 1000
+
+	nbSamples = 15
+
+	nbPts = 10
+
+	inputFile1 = dataSet.1.dat
+
+	inputFile2 = dataSet.2.dat
+
+
+[../] 

@@ -27,7 +27,7 @@ int main( int argc, char * argv[] )
     
     GetPot dataFile( data_file_name.data() );
 
-    const std::string baseName( "MATRIXDISTANCES" );
+    const std::string baseName( "MATRIX_DISTANCES" );
     
     const UInt nbSamples = dataFile( ( baseName + "/nbSamples" ).data(), 1 );
     
@@ -48,7 +48,7 @@ int main( int argc, char * argv[] )
     dataSetPtr1->showMe();
     
     std::cout << std::endl << std::endl;
-    std::cout << " ### Dataset 1 " << std::endl;
+    std::cout << " ### Dataset 2 " << std::endl;
     
     dataSetPtr2->readData( inputFile2 );
     dataSetPtr2->showMe();
@@ -57,9 +57,9 @@ int main( int argc, char * argv[] )
     
     std::cout << " *** COMPUTING VAR-COV MATRICES " << std::endl;
     
-    varCovStructure_Type varCovStructure1( dataSetPtr1 );
+    varCovStructure_Type varCovStructure1( dataSetPtr1->getData() );
     
-    varCovStructure_Type varCovStructure2( dataSetPtr2 );
+    varCovStructure_Type varCovStructure2( dataSetPtr2->getData() );
        
     matrixPtr_Type varPtr1( new matrix_Type( nbPts, nbPts ) );
     matrixPtr_Type varPtr2( new matrix_Type( nbPts, nbPts ) );

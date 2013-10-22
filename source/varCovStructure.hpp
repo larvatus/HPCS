@@ -19,22 +19,28 @@ public:
     //! @name Public Types
     //@{
       
-    //! Typedef for the data set type  
-    typedef DataSet dataSet_Type;
+//     //! Typedef for the data set type  
+//     typedef DataSet dataSet_Type;
     
-    //! Typedef for the shared pointer to the data set type
-    typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
+//     //! Typedef for the shared pointer to the data set type
+//     typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
     
     //! Typedef for the matrix type
     typedef DataSet::matrix_Type matrix_Type;
+    
+//     //! Typedef for the shared pointer to a constant matrix object
+//     typedef DataSet::constMatrixPtr_Type constMatrixPtr_Type;
     
     //! Typedef for the shared pointer to a matrix object
     typedef DataSet::matrixPtr_Type matrixPtr_Type;
 
     //@}
  
-    //! Constructor from a (polymorphic) data set pointer
-    VarCovStructure( const dataSetPtr_Type & dataSetPtr );
+//      //! Constructor from a data set pointer
+//      VarCovStructure( const dataSetPtr_Type & dataSetPtr );
+    
+    //! Constructor from a data matrix shared pointer
+    VarCovStructure( const matrixPtr_Type & data );
 
     //! @name Public methods for statistical computations
     //@{
@@ -46,12 +52,22 @@ public:
      */
      void varCovMatrix( matrixPtr_Type & matrixPtr );
 
+     //! @todo Finish me!
+     matrixPtr_Type varCovMatrix();     
+     
+     //! @todo Implementa anche una versione in cui restituisce una referenza costante alla matrice contenuta.
+
+     
     //! Method to get the correlation matrix (via shared pointer)
     /*!
      * @todo Implement a parallel version for distributed computation of correlation, maybe exploiting a distributed storage of dataset
       */
      void corMatrix( matrixPtr_Type & matrixPtr );
     
+     //! @todo Finish me!
+     matrixPtr_Type corMatrix();
+    
+     
     
     //! Method to perform the spectral decomposition of the var-cov or correlation matrix
     /*!
@@ -70,12 +86,15 @@ public:
     //! Method to get the eigenvalues computed during the spectral decomposition
     template < typename _containerType > 
        void eigenValues( boost::shared_ptr< _containerType > & contPtr ) const;
-      
+           //! @todo Finish me!
     template < typename _containerType >
        void eigenValues( _containerType & container ) const;
-      
+           //! @todo Finish me!
     template < typename _iteratorType >
        void eigenValues( const _iteratorType & begin, const _iteratorType & end ) const;
+       
+         //! @todo Finish me!
+       void setData( const matrixPtr_Type & matrixPtr );
 
     //@}
 	
@@ -113,7 +132,10 @@ private:
   //@{
 
     //! The shared pointer to the data set object
-    dataSetPtr_Type M_dataSetPtr;
+//     dataSetPtr_Type M_dataSetPtr;
+
+    //! The shared pointer to the data matrix
+    matrixPtr_Type M_dataPtr;
     
     //! Flag indicating wether the variance matrix has been already computed or not.
     bool M_varCovMatrixComputedFlag;

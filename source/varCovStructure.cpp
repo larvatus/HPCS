@@ -12,9 +12,11 @@ namespace HPCS
   
   
   VarCovStructure::
-  VarCovStructure( const dataSetPtr_Type & dataSetPtr )
+//   VarCovStructure( const dataSetPtr_Type & dataSetPtr )
+  VarCovStructure( const matrixPtr_Type & data )
   :
-  M_dataSetPtr( dataSetPtr ),
+//   M_dataSetPtr( dataSetPtr ),
+  M_dataPtr( new matrix_Type( *data ) ),
   M_varCovMatrixComputedFlag( false ),
   M_corMatrixComputedFlag( false ),
   M_varCovMatrixPtr( new matrix_Type() ),
@@ -28,9 +30,14 @@ namespace HPCS
   VarCovStructure::
   computeVarCovMatrix()
   {    
-    const UInt nbSamples( this->M_dataSetPtr->nbSamples() );
+//     const UInt nbSamples( this->M_dataSetPtr->nbSamples() );
 
-    const UInt nbPts( this->M_dataSetPtr->nbPts() );
+//     const UInt nbPts( this->M_dataSetPtr->nbPts() );
+    
+    const UInt nbSamples( this->M_dataPtr->rows() );
+    
+    const UInt nbPts( this->M_dataPtr->cols() );
+    
     
     if ( this->M_varCovMatrixComputedFlag == true )
     {
@@ -47,7 +54,9 @@ namespace HPCS
       
       for ( UInt iSample(0); iSample < nbSamples; ++iSample )
       {
-	iPtAve += (*this->M_dataSetPtr)( iSample, iPt );	   
+// 	iPtAve += (*this->M_dataSetPtr)( iSample, iPt );	   
+
+ 	iPtAve += (*this->M_dataPtr)( iSample, iPt );	   
       }
       
       iPtAve /= nbSamples;
@@ -60,16 +69,25 @@ namespace HPCS
 	
 	for ( UInt iSample(0); iSample < nbSamples; ++iSample )
 	{
-	  jPtAve += (*this->M_dataSetPtr)( iSample, jPt );
+// 	  jPtAve += (*this->M_dataSetPtr)( iSample, jPt );
+
+	   jPtAve += (*this->M_dataPtr)( iSample, jPt );
+	  
 	}      
 	
 	jPtAve /= nbSamples;
 	
 	for ( UInt iSample(0); iSample < nbSamples; ++iSample )
 	{
-	  (*this->M_varCovMatrixPtr)( iPt, jPt ) += ( iPtAve - ( *this->M_dataSetPtr )( iSample, iPt ) ) 
+// 	  (*this->M_varCovMatrixPtr)( iPt, jPt ) += ( iPtAve - ( *this->M_dataSetPtr )( iSample, iPt ) ) 
+// 						  * 
+// 						( jPtAve - ( *this->M_dataSetPtr )( iSample, jPt )  ) ;
+
+	  (*this->M_varCovMatrixPtr)( iPt, jPt ) += ( iPtAve - ( *this->M_dataPtr )( iSample, iPt ) ) 
 						  * 
-						( jPtAve - ( *this->M_dataSetPtr )( iSample, jPt )  ) ;
+						( jPtAve - ( *this->M_dataPtr )( iSample, jPt )  ) ;
+
+
 	}
 	  
 	(*this->M_varCovMatrixPtr)( iPt, jPt ) /= ( nbSamples - 1 ); 
@@ -89,7 +107,9 @@ namespace HPCS
   VarCovStructure::
   computeCorMatrix()
   {
-    const UInt nbPts( this->M_dataSetPtr->nbPts() );
+//     const UInt nbPts( this->M_dataSetPtr->nbPts() );
+
+    const UInt nbPts( this->M_dataPtr->cols() );
 
     
     if ( this->M_corMatrixComputedFlag == true )
@@ -128,16 +148,34 @@ namespace HPCS
   void 
   VarCovStructure::
   varCovMatrix( matrixPtr_Type & matrixPtr )
-  {
+  {    
+    if ( this->M_varCovMatrixComputedFlag == false )
+      
+      this->computeVarCovMatrix();
+    
+    matrixPtr.reset( new matrix_Type( *this->M_varCovMatrixPtr) );
+    
+    
+    
+    return;
+  }
+  
+  // Method to get the variance matrix
+  VarCovStructure::matrixPtr_Type 
+  VarCovStructure::
+  varCovMatrix()
+  {      
     
     if ( this->M_varCovMatrixComputedFlag == false )
       
       this->computeVarCovMatrix();
     
-    matrixPtr = this->M_varCovMatrixPtr;
+    matrixPtr_Type matrixPtr( new matrix_Type( *this->M_varCovMatrixPtr ) );
+ 
+    return matrixPtr;
     
-    return;
   }
+  
 
   // Method to get the correlation matrix
   void 
@@ -148,9 +186,25 @@ namespace HPCS
 	
 	this->computeCorMatrix();
     
-      matrixPtr = this->M_corMatrixPtr;
+      matrixPtr.reset( new matrix_Type( *this->M_corMatrixPtr ) );
       
       return;
+  }
+  
+  // Method to get the correlation matrix
+  VarCovStructure::matrixPtr_Type 
+  VarCovStructure::
+  corMatrix()
+  {      
+    
+    if ( this->M_corMatrixComputedFlag == false )
+      
+      this->computeCorMatrix();
+    
+    matrixPtr_Type matrixPtr( new matrix_Type( *this->M_corMatrixPtr ) );
+ 
+    return matrixPtr;
+    
   }
 	
   // Method to compute the spectral decomposition of the var-cov/correlation matrix
@@ -179,6 +233,19 @@ namespace HPCS
       matrixPtr.reset( new matrix_Type( this->M_eigenSolverPtr->eigenvectors() ) );
       
       return;
+  }
+  
+  void
+  VarCovStructure::
+  setData( const matrixPtr_Type & matrixPtr )
+  {
+    this->M_dataPtr.reset( new matrix_Type( *matrixPtr ) );
+    
+    this->M_varCovMatrixComputedFlag = false;
+    
+    this->M_corMatrixComputedFlag = false;
+
+    return;
   }
   
 }

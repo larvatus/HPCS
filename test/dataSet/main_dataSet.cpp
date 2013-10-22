@@ -56,7 +56,7 @@ int main( int argc, char * argv[] )
     
     dataSetPtr1->showMe();
     
-    varCovStructure_Type varCov1( dataSetPtr1 );
+    varCovStructure_Type varCov1( dataSetPtr1->getData() );
     
     matrixPtr_Type varMatrixPtr;
     matrixPtr_Type corMatrixPtr;
@@ -88,7 +88,7 @@ int main( int argc, char * argv[] )
         
     dataSetPtr2->showMe();
 
-    varCovStructure_Type varCov2( dataSetPtr2 );
+    varCovStructure_Type varCov2( dataSetPtr2->getData() );
     
     varCov2.varCovMatrix( varMatrixPtr );
     varCov2.corMatrix( corMatrixPtr );
