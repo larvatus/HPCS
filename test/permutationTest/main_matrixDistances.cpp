@@ -17,6 +17,9 @@ typedef VarCovStructure varCovStructure_Type;
 typedef MatrixDistanceBase::matrix_Type matrix_Type;
 typedef MatrixDistanceBase::matrixPtr_Type matrixPtr_Type;
 
+typedef MatrixDistanceFactory distFactory_Type;
+typedef boost::shared_ptr< MatrixDistanceBase > distPtr_Type;
+
 typedef ProcrustesDistance dist_Type;
 
 int main( int argc, char * argv[] )
@@ -33,6 +36,8 @@ int main( int argc, char * argv[] )
     
     const UInt nbPts = dataFile( ( baseName + "/nbPts" ).data(), 1 );
    
+    const std::string distanceID = dataFile( ( baseName + "/distance" ).data(), "Frobenius" );
+    
     const std::string inputFile1 = dataFile( ( baseName + "/inputFile1" ).data(), "dataSet1.dat" );
     
     const std::string inputFile2 = dataFile( ( baseName + "/inputFile2" ).data(), "dataSet2.dat" );
@@ -61,9 +66,9 @@ int main( int argc, char * argv[] )
     
     varCovStructure_Type varCovStructure2( dataSetPtr2->getData() );
        
-    matrixPtr_Type varPtr1( new matrix_Type( nbPts, nbPts ) );
-    matrixPtr_Type varPtr2( new matrix_Type( nbPts, nbPts ) );
-/*   
+     matrixPtr_Type varPtr1( new matrix_Type( nbPts, nbPts ) );
+     matrixPtr_Type varPtr2( new matrix_Type( nbPts, nbPts ) );
+ 
       for ( UInt iPt(0); iPt < nbPts; ++iPt )
       {
 	for ( UInt jPt(0); jPt < nbPts; ++jPt )
@@ -72,11 +77,11 @@ int main( int argc, char * argv[] )
 	    
 	    (*varPtr2)( iPt, jPt ) = 2;
 	}
-      }*/
+      }
 
     std::cout << " ### Var-Cov matrix 1 " << std::endl;
     
-    varCovStructure1.varCovMatrix( varPtr1 );
+//     varCovStructure1.varCovMatrix( varPtr1 );
     
     std::cout << *varPtr1 << std::endl;
     
@@ -84,7 +89,7 @@ int main( int argc, char * argv[] )
     
     std::cout << " ### Var-Cov matrix 2 " << std::endl;
     
-   varCovStructure2.varCovMatrix( varPtr2 );
+//    varCovStructure2.varCovMatrix( varPtr2 );
     
     std::cout << *varPtr2 << std::endl;
     
@@ -92,9 +97,11 @@ int main( int argc, char * argv[] )
     
     std::cout << " *** COMPUTING THE DISTANCE " << std::endl;
     
-    dist_Type varCovDistance( varPtr1, varPtr2 );
+    distFactory_Type distFactory;
     
-    std::cout << " #### DISTANCE is " << varCovDistance.compute() << std::endl;
+    distPtr_Type distPtr( distFactory.create( distanceID ) );
+    
+    std::cout << " #### DISTANCE is " << distPtr->compute( varPtr1, varPtr2 ) << std::endl;
     
     std::cout << "##################################################" << std::endl;
     

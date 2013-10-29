@@ -4,6 +4,12 @@
 
 	nbPts = 10
 
+#	distance = Procrustes
+#	distance = Spectral
+#	distance = Sqrt
+#	distance = L2
+	distance = Frobenius
+
 	inputFile1 = dataSet.1.dat
 
 	inputFile2 = dataSet.2.dat
@@ -14,7 +20,7 @@
 
 [PERMUTATION_TEST]
 
-	NIter = 10000
+	NIter = 1000
 
 #	distance = Procrustes
 #	distance = Spectral
@@ -22,21 +28,24 @@
 #	distance = L2
 	distance = Frobenius
 
-	nbSamples1 = 125
-	nbSubSamples1 = 25
+#	nbSamples1 = 125
+#	nbSubSamples1 = 25
+	nbSamples1 = 101
+	nbSubSamples1 = 51
 	seed1 = 1
 
-	nbSamples2 = 25
-	nbSubSamples2 = 25
+#	nbSamples2 = 25
+#	nbSubSamples2 = 25
+	nbSamples2 = 48
+	nbSubSamples2 = 48
 	seed2 = 1
 
-	nbPts = 100
-	inputFile1 = Popolazione1.dat
-	inputFile2 = Popolazione2.dat
+	nbPts = 70
+#	inputFile1 = Popolazione1.dat
+#	inputFile2 = Popolazione2.dat
 
-#	nbPts = 30
-#	inputFile1 = dataSet.3.dat
-#	inputFile2 = dataSet.4.dat
+	inputFile1 = ECG_V2_Sani.txt
+	inputFile2 = ECG_V2_LBBB.txt
 
 
 

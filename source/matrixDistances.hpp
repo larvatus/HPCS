@@ -32,9 +32,9 @@ namespace HPCS
       
       virtual Real compute(){};
     
-      Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+      virtual Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 ){};
     
-      Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+      virtual Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 ){};
       
   protected:
     
@@ -62,6 +62,10 @@ namespace HPCS
     
     FrobeniusDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
     
+    Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+    
+    Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+    
     Real compute();
             
   };
@@ -81,6 +85,10 @@ namespace HPCS
     L2Distance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
     
     L2Distance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+    
+    Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+    
+    Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
     
     Real compute();
 
@@ -103,6 +111,10 @@ namespace HPCS
       SqrtDistance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
       
       SqrtDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+      
+      Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+    
+      Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
       Real compute();
           
@@ -128,6 +140,10 @@ namespace HPCS
       
       SpectralDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
+      Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+    
+      Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+      
       Real compute();
     
   };
@@ -148,6 +164,10 @@ namespace HPCS
       ProcrustesDistance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
       
       ProcrustesDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
+      
+      Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
+    
+      Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
       Real compute();
       

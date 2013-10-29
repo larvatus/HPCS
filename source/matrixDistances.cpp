@@ -34,37 +34,6 @@ namespace HPCS
   M_distance(-1)
   {}
   
-  Real
-  MatrixDistanceBase::
-  compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
-  {
-      //! TODO Riflettici sopra
-      this->M_matrixPtr1.reset( new matrix_Type( *matrixPtr1 ) );
- 
-      //! TODO Riflettici sopra       
-      this->M_matrixPtr2.reset( new matrix_Type( *matrixPtr2 ) );
-    
-      this->M_distance = ( *matrixPtr1 - *matrixPtr2 ).norm();
-   
-      return this->M_distance;
-  }
-  
- 
-  Real
-  MatrixDistanceBase::
-  compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
-  {
-      //! TODO Riflettici sopra
-      this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
-
-      //! TODO Riflettici sopra
-      this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
-    
-      this->M_distance = ( *this->M_matrixPtr1 - *this->M_matrixPtr2 ).norm();
-      
-      return this->M_distance;
-  }  
-  
   /////////////////////////////////
   ////	 FROBENIUS  DISTANCE   ////
   /////////////////////////////////
@@ -96,6 +65,33 @@ namespace HPCS
     return this->M_distance;
   }
 
+  Real
+  FrobeniusDistance::
+  compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( *matrixPtr1 ) );
+ 
+      //! TODO Riflettici sopra       
+      this->M_matrixPtr2.reset( new matrix_Type( *matrixPtr2 ) );
+    
+      return this->compute();
+  }
+  
+ 
+  Real
+  FrobeniusDistance::
+  compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
+
+      //! TODO Riflettici sopra
+      this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
+
+      return this->compute();
+ }  
+  
 /*  
   MatrixDistanceBase *
   FrobeniusDistance::
@@ -158,6 +154,33 @@ namespace HPCS
     return this->M_distance;
   }
   
+  Real
+  L2Distance::
+  compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( *matrixPtr1 ) );
+ 
+      //! TODO Riflettici sopra       
+      this->M_matrixPtr2.reset( new matrix_Type( *matrixPtr2 ) );
+    
+      return this->compute();
+  }
+  
+ 
+  Real
+  L2Distance::
+  compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
+
+      //! TODO Riflettici sopra
+      this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
+
+      return this->compute();
+ }  
+  
   /////////////////////////////////
   ////	   SQRT     DISTANCE   ////
   /////////////////////////////////
@@ -213,6 +236,32 @@ namespace HPCS
       
   }
   
+  Real
+  SqrtDistance::
+  compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( *matrixPtr1 ) );
+ 
+      //! TODO Riflettici sopra       
+      this->M_matrixPtr2.reset( new matrix_Type( *matrixPtr2 ) );
+    
+      return this->compute();
+  }
+  
+ 
+  Real
+  SqrtDistance::
+  compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
+
+      //! TODO Riflettici sopra
+      this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
+
+      return this->compute();
+ }  
   
   /////////////////////////////////
   //// SPECTRAL     DISTANCE   ////
@@ -254,6 +303,32 @@ namespace HPCS
     return this->M_distance;
   }
   
+  Real
+  SpectralDistance::
+  compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( *matrixPtr1 ) );
+ 
+      //! TODO Riflettici sopra       
+      this->M_matrixPtr2.reset( new matrix_Type( *matrixPtr2 ) );
+    
+      return this->compute();
+  }
+  
+ 
+  Real
+  SpectralDistance::
+  compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
+
+      //! TODO Riflettici sopra
+      this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
+
+      return this->compute();
+ }  
   
   /////////////////////////////////
   //// PROCRUSTES   DISTANCE   ////
@@ -315,6 +390,33 @@ namespace HPCS
       return matrixSqrtPtr;
       
   }
+  
+  Real
+  ProcrustesDistance::
+  compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( *matrixPtr1 ) );
+ 
+      //! TODO Riflettici sopra       
+      this->M_matrixPtr2.reset( new matrix_Type( *matrixPtr2 ) );
+    
+      return this->compute();
+  }
+  
+ 
+  Real
+  ProcrustesDistance::
+  compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
+  {
+      //! TODO Riflettici sopra
+      this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
+
+      //! TODO Riflettici sopra
+      this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
+
+      return this->compute();
+ }  
   
   //////////////////////////////////
   //// 	MATRIXDISTANCEFACTORY	////

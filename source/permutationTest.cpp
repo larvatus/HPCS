@@ -188,15 +188,20 @@ namespace HPCS
 	  
 	  drawnSampleIDs.reserve( N1 );
 	  
+	  UInt iterID(0);
+	  
 	  while( drawnSampleIDs.size() != N1 )
  	  {	    
- 	    const UInt temp( static_cast< UInt >( ( N1 + N2 - 1) * drand48() ) );
+//  	    const UInt temp( static_cast< UInt >( ( N1 + N2 - 1) * drand48() ) );
  		    
- 	    if ( std::find( drawnSampleIDs.begin(), drawnSampleIDs.end(), temp ) == drawnSampleIDs.end() )
- 	    {
- 		drawnSampleIDs.push_back( temp );
+//  	    if ( std::find( drawnSampleIDs.begin(), drawnSampleIDs.end(), temp ) == drawnSampleIDs.end() )
+//  	    {
+//  		drawnSampleIDs.push_back( temp );
+ 		drawnSampleIDs.push_back( iterID++ );
 		
- 	    } 	    
+		std::cout << drawnSampleIDs[ iterID-1 ] << "\t";
+		
+//  	    } 	    
  	  }
  	  
  	  std::sort( drawnSampleIDs.begin(), drawnSampleIDs.end() );
