@@ -338,7 +338,7 @@ namespace HPCS
      
      flag = flag & ( this->registerProduct( "L2",  wrapper_Type( Ptr_Type( new CreateL2Distance() ) ) ) );
       
-     flag = flag & ( this->registerProduct( "Frobenius", wrapper_Type( Ptr_Type( new CreateL2Distance() ) ) ) );
+     flag = flag & ( this->registerProduct( "Frobenius", wrapper_Type( Ptr_Type( new CreateFrobeniusDistance() ) ) ) );
 	
      assert( flag == true );
     

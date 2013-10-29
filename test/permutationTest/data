@@ -14,7 +14,7 @@
 
 [PERMUTATION_TEST]
 
-	NIter = 1000
+	NIter = 10000
 
 #	distance = Procrustes
 #	distance = Spectral
