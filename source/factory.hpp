@@ -190,6 +190,30 @@ namespace HPCS
   M_creationRulePtr( rulePtr )
   {}
 
+
+  //////////////////////////////////
+  ////	GENERIC PROXY CLASS	////
+  /////////////////////////////////
+  
+  
+//   template < typename T, typename ProductType >
+//   class Proxy
+//   {
+//   public:
+//     
+//     Proxy( const char * const & name );
+//     
+//     virtual ~Proxy(){};
+//     
+//     static ProductType * build();
+//     
+//   private:
+//     
+//     Proxy( const Proxy & proxy ){};
+//     
+//     Proxy & operator=( Proxy const & proxy ){};
+//     
+//   };
   
 }
 #endif

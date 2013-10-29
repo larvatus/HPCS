@@ -63,9 +63,7 @@ namespace HPCS
       this->M_distance = ( *this->M_matrixPtr1 - *this->M_matrixPtr2 ).norm();
       
       return this->M_distance;
-  }
-
-  
+  }  
   
   /////////////////////////////////
   ////	 FROBENIUS  DISTANCE   ////
@@ -97,38 +95,16 @@ namespace HPCS
     
     return this->M_distance;
   }
-  
-//   Real
-//   FrobeniusDistance::
-//   compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
-//   {
-//	 //! TODO Riflettici sopra
-//       this->M_matrixPtr1.reset( new matrix_Type( *matrixPtr1 ) );
-// 
-//	 //! TODO Riflettici sopra       
-//       this->M_matrixPtr2.reset( new matrix_Type( *matrixPtr2 ) );
-//     
-//       this->M_distance = ( *matrixPtr1 - *matrixPtr2 ).norm();
-//             
-//       return this->M_distance;
-//   }
-//   
-// 
-//   Real
-//   FrobeniusDistance::
-//   compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
-//   {
-//       //! TODO Riflettici sopra
-//       this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
-// 
-//       //! TODO Riflettici sopra
-//       this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
-//     
-//       this->M_distance = ( *this->M_matrixPtr1 - *this->M_matrixPtr2 ).norm();
-//       
-//       return this->M_distance;
-//   }
 
+/*  
+  MatrixDistanceBase *
+  FrobeniusDistance::
+  clone()
+  {
+      return new FrobeniusDistance();
+  }
+*/
+  
   /////////////////////////////////
   ////	    L2	    DISTANCE   ////
   /////////////////////////////////
@@ -136,8 +112,7 @@ namespace HPCS
   L2Distance::
   L2Distance()
   :
-  MatrixDistanceBase()//,
-//   M_distance( -1 )
+  MatrixDistanceBase()
   {}
   
   L2Distance::
@@ -150,37 +125,10 @@ namespace HPCS
   L2Distance::
   L2Distance( const matrix_Type & matrix1, const matrix_Type & matrix2 )
   :
-  MatrixDistanceBase( matrix1, matrix2 )//,
-//   M_distance( -1 )
+  MatrixDistanceBase( matrix1, matrix2 )
   {}
   
-//   Real
-//   L2Distance::
-//   compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
-//   {
-//       this->M_matrixPtr1 = matrixPtr1;
-//       
-//       this->M_matrixPtr2 = matrixPtr2;
-//     
-//       return this->compute();
-//   }
-//   
-// 
-//   Real
-//   L2Distance::
-//   compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
-//   {
-//      
-//       this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
-// 
-//      
-//       this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
-// 
-//     
-//       return this->compute();
-//     
-//   }
-//   
+
   Real
   L2Distance::
   compute()
@@ -217,22 +165,19 @@ namespace HPCS
   SqrtDistance::
   SqrtDistance()
   :
-  MatrixDistanceBase()//,
-//   M_distance( -1 )
+  MatrixDistanceBase()
   {}
   
   SqrtDistance::
   SqrtDistance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
   :
-  MatrixDistanceBase( matrixPtr1, matrixPtr2 )//,
-//   M_distance( -1 )
+  MatrixDistanceBase( matrixPtr1, matrixPtr2 )
   {}
   
   SqrtDistance::
   SqrtDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 )
   :
-  MatrixDistanceBase( matrix1, matrix2 )//,
-//   M_distance( -1 )
+  MatrixDistanceBase( matrix1, matrix2 )
   {}
   
   Real
@@ -276,47 +221,20 @@ namespace HPCS
   SpectralDistance::
   SpectralDistance()
   :
-  MatrixDistanceBase()//,
-//   M_distance( -1 )
+  MatrixDistanceBase()
   {}
   
   SpectralDistance::
   SpectralDistance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
   :
-  MatrixDistanceBase( matrixPtr1, matrixPtr2 )//,
-//   M_distance( -1 )
+  MatrixDistanceBase( matrixPtr1, matrixPtr2 )
   {}
   
   SpectralDistance::
   SpectralDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 )
   :
-  MatrixDistanceBase( matrix1, matrix2 )//,
-//   M_distance( -1 )
+  MatrixDistanceBase( matrix1, matrix2 )
   {}
-  
-//   Real
-//   SpectralDistance::
-//   compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
-//   {
-//       this->M_matrixPtr1 = matrixPtr1;
-//       
-//       this->M_matrixPtr2 = matrixPtr2;
-//     
-//       return this->compute();
-//   }
-//   
-// 
-//   Real
-//   SpectralDistance::
-//   compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
-//   {
-//       this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
-//       
-//       this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
-//     
-//       return this->compute();
-//     
-//   }
   
   Real
   SpectralDistance::
@@ -328,6 +246,9 @@ namespace HPCS
     
     eigenSolver.compute( *this->M_matrixPtr1 - *this->M_matrixPtr2 );
     
+    
+    // TODO IMPROVE THIS! Is it possible to compute the max and min eigenvalue with, say, power method and
+    // inverse power method? Then you take max( abs( eigenMin, eigenMax ) )
     this->M_distance = eigenSolver.eigenvalues().array().abs().maxCoeff();
        
     return this->M_distance;
@@ -348,40 +269,14 @@ namespace HPCS
   ProcrustesDistance::
   ProcrustesDistance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
   :
-  MatrixDistanceBase( matrixPtr1, matrixPtr2 )//,
-//   M_distance( -1 )
+  MatrixDistanceBase( matrixPtr1, matrixPtr2 )
   {}
   
   ProcrustesDistance::
   ProcrustesDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 )
   :
-  MatrixDistanceBase( matrix1, matrix2 )//,
-//   M_distance( -1 )
+  MatrixDistanceBase( matrix1, matrix2 )
   {}
-  
-//   Real
-//   ProcrustesDistance::
-//   compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
-//   {
-//       this->M_matrixPtr1 = matrixPtr1;
-//       
-//       this->M_matrixPtr2 = matrixPtr2;
-//     
-//       return this->compute();
-//   }
-//   
-// 
-//   Real
-//   ProcrustesDistance::
-//   compute( const matrix_Type & matrix1, const matrix_Type & matrix2 )
-//   {
-//       this->M_matrixPtr1.reset( new matrix_Type( matrix1 ) );
-//       
-//       this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
-//     
-//       return this->compute();
-//     
-//   }
   
   Real
   ProcrustesDistance::
@@ -420,5 +315,30 @@ namespace HPCS
       return matrixSqrtPtr;
       
   }
+  
+  //////////////////////////////////
+  //// 	MATRIXDISTANCEFACTORY	////
+  //////////////////////////////////
+/*  
+  MatrixDistanceFactory::
+  MatrixDistanceFactory()
+  {
+*/
+    
+    // Registering rules, exploiting the wrapper to use the different creator functors
+    
+//     bool flag = this->registerProduct( "Procrustes", );
+      
+//     flag = flag & ( this->registerProduct( "Spectral", ) );
+    
+//     flag = flag & ( this->registerProduct( "Sqrt", new SqrtDistance() ) );
+     
+//     flag = flag & ( this->registerProduct( "L2", new L2Distance() ) );
+      
+//      bool flag = /*flag & */ ( this->registerProduct( "Frobenius", boost::bind< MatrixDistanceWrapper< FrobeniusDistance >::build() > ) );
+	
+//     assert( flag == true );
+    
+//   }
   
 }

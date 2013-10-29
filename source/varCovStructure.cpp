@@ -1,7 +1,5 @@
 
-
 #include <source/varCovStructure.hpp>
-
 
 namespace HPCS
 {
@@ -10,12 +8,20 @@ namespace HPCS
   ////	 VAR COV STRUCTURE  ////
   //////////////////////////////
   
+  VarCovStructure::
+  VarCovStructure()
+  :
+  M_dataPtr( new matrix_Type() ),
+  M_varCovMatrixComputedFlag( false ),
+  M_corMatrixComputedFlag( false ),
+  M_varCovMatrixPtr( new matrix_Type() ),
+  M_corMatrixPtr( new matrix_Type() ),
+  M_eigenSolverPtr( new eigenSolver_Type() )
+  {}
   
   VarCovStructure::
-//   VarCovStructure( const dataSetPtr_Type & dataSetPtr )
   VarCovStructure( const matrixPtr_Type & data )
   :
-//   M_dataSetPtr( dataSetPtr ),
   M_dataPtr( new matrix_Type( *data ) ),
   M_varCovMatrixComputedFlag( false ),
   M_corMatrixComputedFlag( false ),
@@ -29,11 +35,7 @@ namespace HPCS
   void 
   VarCovStructure::
   computeVarCovMatrix()
-  {    
-//     const UInt nbSamples( this->M_dataSetPtr->nbSamples() );
-
-//     const UInt nbPts( this->M_dataSetPtr->nbPts() );
-    
+  {
     const UInt nbSamples( this->M_dataPtr->rows() );
     
     const UInt nbPts( this->M_dataPtr->cols() );
@@ -54,8 +56,6 @@ namespace HPCS
       
       for ( UInt iSample(0); iSample < nbSamples; ++iSample )
       {
-// 	iPtAve += (*this->M_dataSetPtr)( iSample, iPt );	   
-
  	iPtAve += (*this->M_dataPtr)( iSample, iPt );	   
       }
       
@@ -69,25 +69,16 @@ namespace HPCS
 	
 	for ( UInt iSample(0); iSample < nbSamples; ++iSample )
 	{
-// 	  jPtAve += (*this->M_dataSetPtr)( iSample, jPt );
-
-	   jPtAve += (*this->M_dataPtr)( iSample, jPt );
-	  
+	   jPtAve += (*this->M_dataPtr)( iSample, jPt ); 
 	}      
 	
 	jPtAve /= nbSamples;
 	
 	for ( UInt iSample(0); iSample < nbSamples; ++iSample )
 	{
-// 	  (*this->M_varCovMatrixPtr)( iPt, jPt ) += ( iPtAve - ( *this->M_dataSetPtr )( iSample, iPt ) ) 
-// 						  * 
-// 						( jPtAve - ( *this->M_dataSetPtr )( iSample, jPt )  ) ;
-
 	  (*this->M_varCovMatrixPtr)( iPt, jPt ) += ( iPtAve - ( *this->M_dataPtr )( iSample, iPt ) ) 
 						  * 
 						( jPtAve - ( *this->M_dataPtr )( iSample, jPt )  ) ;
-
-
 	}
 	  
 	(*this->M_varCovMatrixPtr)( iPt, jPt ) /= ( nbSamples - 1 ); 
@@ -107,8 +98,6 @@ namespace HPCS
   VarCovStructure::
   computeCorMatrix()
   {
-//     const UInt nbPts( this->M_dataSetPtr->nbPts() );
-
     const UInt nbPts( this->M_dataPtr->cols() );
 
     

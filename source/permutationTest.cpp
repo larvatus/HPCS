@@ -3,36 +3,11 @@
 
 
 namespace HPCS
-{   /////////////////////////
+{   
+  
+    /////////////////////////
     //// PermutationTest ////
     /////////////////////////
-    
-//     PermutationTest::
-//     PermutationTest()
-//     :
-//     M_niter(1000),
-//     M_distPtr( new matrixDist_Type() )
-//     {}
-    
-//      PermutationTest::
-//      PermutationTest( const matrixPtr_Type & dataPtr1, const matrixPtr_Type & dataPtr2, 
-// 		      const matrixDistPtr_Type & matrixDistPtr, const UInt & NIter /* = 1000 */ )
-//      :
-//      M_dataPtr1( dataPtr1 ),
-//      M_dataPtr2( dataPtr2 ),
-//      M_distPtr( matrixDistPtr ),
-//      M_niter( NIter )
-//      {}
-    
-//      PermutationTest::
-//      PermutationTest( const matrixPtr_Type & dataPtr1, const matrixPtr_Type & dataPtr2,
-// 		      const UInt & NIter /* = 1000 */ )
-//      :
-//      M_dataPtr1( dataPtr1 ),
-//      M_dataPtr2( dataPtr2 ),
-//      M_distPtr( new matrixDist_Type() ),
-//      M_niter( NIter )
-//      {}    
     
      PermutationTest::
      PermutationTest( const dataSetPtr_Type & dataSetPtr1, const dataSetPtr_Type & dataSetPtr2, 
@@ -41,7 +16,8 @@ namespace HPCS
      M_dataSetPtr1( dataSetPtr1 ),
      M_dataSetPtr2( dataSetPtr2 ),
      M_distPtr( matrixDistPtr ),
-     M_niter( NIter )
+     M_niter( NIter ),
+     M_mpiUtilityPtr( new mpiUtility_Type() )
      {       
 	assert( dataSetPtr1->nbPts() == dataSetPtr2->nbPts() );
      }
@@ -53,22 +29,11 @@ namespace HPCS
      M_dataSetPtr1( dataSetPtr1 ),
      M_dataSetPtr2( dataSetPtr2 ),
      M_distPtr( new matrixDist_Type() ),
-     M_niter( NIter )
+     M_niter( NIter ),
+     M_mpiUtilityPtr( new mpiUtility_Type() )
      {       
 	assert( dataSetPtr1->nbPts() == dataSetPtr2->nbPts() );
      }
-    
-//     void
-//     PermutationTest::
-//     setData( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 )
-//     {
-// 
-//       this->M_dataPtr1 = matrixPtr1;
-//       
-//       this->M_dataPtr2 = matrixPtr2;
-// 	
-//       return;
-//     }
     
     void
     PermutationTest::
@@ -101,25 +66,97 @@ namespace HPCS
 	return;
     }
         
+    void 
+    PermutationTest::
+    setFirstSubDataSet( const UInt & nbSubSamples, const UInt & seed /* = 1*/ )
+    {
+      assert( nbSubSamples <= this->M_dataSetPtr1->nbSamples() );
+            
+      std::vector< UInt > sampleIDs;
+      
+      srand48( seed );
+
+      sampleIDs.reserve( nbSubSamples );
+      
+      while( sampleIDs.size() != nbSubSamples )
+      {
+	  UInt temp = static_cast< UInt >( drand48() * ( this->M_dataSetPtr1->nbSamples() - 1 ) );
+	
+	  if ( std::find( sampleIDs.begin(), sampleIDs.end(), temp ) == sampleIDs.end() )
+	  {
+	      sampleIDs.push_back( temp );
+	  }
+      }
+      
+      typedef dataSet_Type::dataPtr_Type dataPtr_Type;
+      
+      dataPtr_Type subsetPtr( this->M_dataSetPtr1->getRowSubSet( sampleIDs ) );
+      
+      this->M_dataSetPtr1->setData( subsetPtr );
+      
+      return;
+    }
+
+    void 
+    PermutationTest::
+    setSecondSubDataSet( const UInt & nbSubSamples, const UInt & seed /* = 1*/ )
+    {
+      assert( nbSubSamples <= this->M_dataSetPtr2->nbSamples() );
+            
+      std::vector< UInt > sampleIDs;
+      
+      srand48( seed );
+
+      sampleIDs.reserve( nbSubSamples );
+      
+      while( sampleIDs.size() != nbSubSamples )
+      {
+	  UInt temp = static_cast< UInt >( drand48() * ( this->M_dataSetPtr2->nbSamples() - 1 ) );
+	
+	  if ( std::find( sampleIDs.begin(), sampleIDs.end(), temp ) == sampleIDs.end() )
+	  {
+	      sampleIDs.push_back( temp );
+	  }
+      }
+      
+      typedef dataSet_Type::dataPtr_Type dataPtr_Type;
+      
+      dataPtr_Type subsetPtr( this->M_dataSetPtr2->getRowSubSet( sampleIDs ) );
+      
+      this->M_dataSetPtr2->setData( subsetPtr );
+      
+      return;
+    }
+    
     void
     PermutationTest::
     apply()
     {
 	this->M_pValue = 0;
-	
+		
 	this->M_dataSetPtr1->subtractMeanValue();
 	
 	this->M_dataSetPtr2->subtractMeanValue();
-	
-	varCov_Type varCov( this->M_dataSetPtr1->getData() );
-	
-	matrixPtr_Type varMatrixPtr1( varCov.varCovMatrix() );
 
-	varCov.setData( this->M_dataSetPtr2->getData() );
+	varCov_Type varCov;
 	
-	matrixPtr_Type varMatrixPtr2( varCov.varCovMatrix() );
+	Real dist0(-1);
 	
-	const Real dist0 = this->M_distPtr->compute( varMatrixPtr1, varMatrixPtr2 );
+ 	if ( this->M_mpiUtilityPtr->isMaster() )
+ 	{
+	  varCov.setData( this->M_dataSetPtr1->getData() );
+	
+	  matrixPtr_Type varMatrixPtr1( varCov.varCovMatrix() );
+
+	  varCov.setData( this->M_dataSetPtr2->getData() );
+	
+	  matrixPtr_Type varMatrixPtr2( varCov.varCovMatrix() );
+	  
+	  dist0 = this->M_distPtr->compute( varMatrixPtr1, varMatrixPtr2 );
+	  
+ 	}
+	
+ 	MPI_Bcast( & dist0, 1, MPI_DOUBLE_PRECISION, MASTER, MPI_COMM_WORLD );
 	
 	const UInt N1 = this->M_dataSetPtr1->nbSamples();
 	const UInt N2 = this->M_dataSetPtr2->nbSamples()	;
@@ -132,11 +169,20 @@ namespace HPCS
 	  allSampleIDs[ iN ] = iN;
 	}
 	
-	srand48( time( NULL ) );
+	srand48( this->M_mpiUtilityPtr->myRank() * time( NULL ) );
 	
-  	for ( UInt it(0); it < this->M_niter; ++it )
+	const UInt niterSlave = static_cast< UInt >( std::ceil( this->M_niter / this->M_mpiUtilityPtr->nbThreads() ) );
+	const UInt niterMaster = niterSlave + this->M_niter % this->M_mpiUtilityPtr->nbThreads();
+	
+	printf( "niterSlave = %d \t niterMaster = %d\n", niterSlave, niterMaster );
+	
+	UInt niterMine;
+	
+	this->M_mpiUtilityPtr->isMaster() ? niterMine = niterMaster : niterMine = niterSlave;
+	
+  	for ( UInt it(0); it < niterMine; ++it )
   	{
-	  std::cout << " Iteration #" << it << std::endl;	
+	  printf( " Proc %d is at iteration %d of %d\n", this->M_mpiUtilityPtr->myRank(), it, niterMine );	
 	 
 	  drawnSampleIDs.clear();
 	  
@@ -209,13 +255,23 @@ namespace HPCS
 	  
 	  const Real distCurr = this->M_distPtr->compute( varG1, varG2 );
 	  
-	  std::cout << "\t DistCurr = " << distCurr << "\t Dist0 = " << dist0 << std::endl;
+	  printf( "\t DistCurr = %f \t Dist0 = %f\n", distCurr, dist0 );
 	  
 	  if( distCurr >= dist0 ) 
 	  {  
 	    this->M_pValue += 1./this->M_niter;
 	  }	  
   	}
+  	
+  	Real pvalue(-1);
+	
+	printf( " Proc %d has p-value = %f\n", this->M_mpiUtilityPtr->myRank(), this->M_pValue );
+  	
+  	MPI_Reduce( & this->M_pValue, & pvalue, 1, MPI_DOUBLE_PRECISION, MPI_SUM, MASTER, MPI_COMM_WORLD );  
+	
+ 	MPI_Bcast( & pvalue, 1, MPI_DOUBLE_PRECISION, MASTER, MPI_COMM_WORLD );	
+	
+	this->M_pValue = pvalue;
 	
 	return;
     }

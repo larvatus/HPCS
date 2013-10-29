@@ -3,9 +3,13 @@
 
 #include <source/HPCSDefs.hpp>
 
+#pragma GCC diagnostic ignored "-Wenum-compare"
 #include <Eigen/Dense>
 
 #include <Eigen/Eigenvalues>
+#pragma GCC diagnostic warning "-Wenum-compare"
+
+#include <source/factory.hpp>
 
 namespace HPCS
 {
@@ -19,6 +23,8 @@ namespace HPCS
       typedef boost::shared_ptr< matrix_Type > matrixPtr_Type;
     
       MatrixDistanceBase();
+      
+      virtual ~MatrixDistanceBase(){};
       
       MatrixDistanceBase( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
       
@@ -50,20 +56,14 @@ namespace HPCS
     
     FrobeniusDistance();
     
+    virtual ~FrobeniusDistance(){};
+    
     FrobeniusDistance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
     
     FrobeniusDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
     
     Real compute();
-    
-//     Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
-    
-//     Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
-    
-//   private:
-    
-//     Real M_distance;    
-    
+            
   };
   
   class L2Distance : public MatrixDistanceBase
@@ -76,20 +76,14 @@ namespace HPCS
     
     L2Distance();
     
+    virtual ~L2Distance(){};
+    
     L2Distance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
     
     L2Distance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
     
     Real compute();
-    
-//     Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
-    
-//     Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
-    
-//   private:
-    
-//     Real M_distance;
-    
+
   };
   
   
@@ -104,21 +98,17 @@ namespace HPCS
       
       SqrtDistance();
       
+      virtual ~SqrtDistance(){};
+      
       SqrtDistance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
       
       SqrtDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
       Real compute();
-      
-//       Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
-      
-//       Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
-      
+          
   private:
     
-      matrixPtr_Type operatorSqrt( const matrixPtr_Type & matrixPtr ) const;
-    
-//       Real M_distance;      
+      matrixPtr_Type operatorSqrt( const matrixPtr_Type & matrixPtr ) const;    
     
   };
   
@@ -132,20 +122,14 @@ namespace HPCS
       
       SpectralDistance();
       
+      virtual ~SpectralDistance(){};
+      
       SpectralDistance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
       
       SpectralDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
       Real compute();
-      
-//       Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
-      
-//       Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
-
-   
-//   private:
     
-//       Real M_distance;      
   };
   
   
@@ -159,23 +143,55 @@ namespace HPCS
       
       ProcrustesDistance();
       
+      virtual ~ProcrustesDistance(){};
+      
       ProcrustesDistance( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
       
       ProcrustesDistance( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
       Real compute();
       
-//       Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
-      
-//       Real compute( const matrixPtr_Type & matrixPtr1, const matrixPtr_Type & matrixPtr2 );
-
-   
   private:
     
       matrixPtr_Type operatorSqrt( const matrixPtr_Type & matrixPtr ) const;
     
-//       Real M_distance;      
   };
+  /*
+  template < typename T >
+  struct MatrixDistanceWrapper
+  {
+  public:
+    
+      MatrixDistanceWrapper(){};
+      
+      MatrixDistanceBase * build() const;
+      
+      virtual ~MatrixDistanceWrapper(){};
+    
+  };
+  
+  template < typename T >
+  MatrixDistanceBase *
+  MatrixDistanceWrapper< T >::
+  build()
+  const
+  {
+      return new T;
+  }
+  
+  
+  class MatrixDistanceFactory
+  :
+  public Factory< MatrixDistanceBase, std::string, CreationRule< : > >
+  {
+  public:
+    
+    MatrixDistanceFactory();
+    
+    virtual ~MatrixDistanceFactory(){};
+    
+  };
+  */
   
   
 }

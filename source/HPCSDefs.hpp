@@ -30,6 +30,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 #include <boost/static_assert.hpp>
+#include <boost/bind.hpp>
 
 // MPI
 #include "mpi.h"

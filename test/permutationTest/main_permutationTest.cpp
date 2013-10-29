@@ -14,13 +14,21 @@ typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
 typedef MatrixDistanceBase::matrix_Type matrix_Type;
 typedef MatrixDistanceBase::matrixPtr_Type matrixPtr_Type;
 
-typedef FrobeniusDistance dist_Type;
+typedef SpectralDistance dist_Type;
 typedef boost::shared_ptr< dist_Type > distPtr_Type;
 
 typedef PermutationTest permutationTest_Type;
 
 int main( int argc, char * argv[] )
 {
+  MPI_Init( & argc, & argv );
+  
+    int myRank, nbThreads;
+    
+    MPI_Comm_size( MPI_COMM_WORLD, & nbThreads );
+    
+    MPI_Comm_rank( MPI_COMM_WORLD,  & myRank );
+  
     GetPot command_line( argc, argv );
       
     const string data_file_name = command_line.follow( "data", 2, "-f", "--file" );
@@ -32,8 +40,12 @@ int main( int argc, char * argv[] )
     const UInt nIter = dataFile( ( baseName + "/NIter" ).data(), 100 );
     
     const UInt nbSamples1 = dataFile( ( baseName + "/nbSamples1" ).data(), 1 );
+    const UInt nbSubSamples1 = dataFile( ( baseName + "/nbSubSamples1" ).data(), static_cast< int >( nbSamples1 ) );
+    const UInt seed1 = dataFile( ( baseName + "/seed1" ).data(), 1 );
     
     const UInt nbSamples2 = dataFile( ( baseName + "/nbSamples2" ).data(), 1 );
+    const UInt nbSubSamples2 = dataFile( ( baseName + "/nbSubSamples2" ).data(), static_cast< int >( nbSamples2 ) );
+    const UInt seed2 = dataFile( ( baseName + "/seed2" ).data(), 1 );
     
     const UInt nbPts = dataFile( ( baseName + "/nbPts" ).data(), 1 );
    
@@ -63,6 +75,16 @@ int main( int argc, char * argv[] )
     
     permutationTest_Type Test( dataSetPtr1, dataSetPtr2, distPtr, nIter );
     
+    if ( nbSubSamples1 != nbSamples1 )
+    {
+	Test.setFirstSubDataSet( nbSubSamples1, seed1 );
+    }
+    
+    if ( nbSubSamples2 != nbSamples2 )
+    {
+	Test.setSecondSubDataSet( nbSubSamples2, seed2 );
+    }
+    
     Test.apply();
     
     std::cout << " THE P-Value is " << Test.pValue() << std::endl;
@@ -70,6 +92,7 @@ int main( int argc, char * argv[] )
    
     std::cout << "##################################################" << std::endl;
     
+  MPI_Finalize();
   
     return EXIT_SUCCESS;
 }

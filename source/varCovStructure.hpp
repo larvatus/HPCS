@@ -18,27 +18,18 @@ public:
   
     //! @name Public Types
     //@{
-      
-//     //! Typedef for the data set type  
-//     typedef DataSet dataSet_Type;
-    
-//     //! Typedef for the shared pointer to the data set type
-//     typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
-    
+       
     //! Typedef for the matrix type
     typedef DataSet::matrix_Type matrix_Type;
-    
-//     //! Typedef for the shared pointer to a constant matrix object
-//     typedef DataSet::constMatrixPtr_Type constMatrixPtr_Type;
-    
+        
     //! Typedef for the shared pointer to a matrix object
     typedef DataSet::matrixPtr_Type matrixPtr_Type;
 
     //@}
  
-//      //! Constructor from a data set pointer
-//      VarCovStructure( const dataSetPtr_Type & dataSetPtr );
-    
+    //! Default constructor
+    VarCovStructure();
+      
     //! Constructor from a data matrix shared pointer
     VarCovStructure( const matrixPtr_Type & data );
 
@@ -130,10 +121,7 @@ private:
      
   //! @name Private members
   //@{
-
-    //! The shared pointer to the data set object
-//     dataSetPtr_Type M_dataSetPtr;
-
+    
     //! The shared pointer to the data matrix
     matrixPtr_Type M_dataPtr;
     

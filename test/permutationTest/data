@@ -16,17 +16,21 @@
 
 	NIter = 1000
 
-	nbSamples1 = 25
+	nbSamples1 = 125
+	nbSubSamples1 = 25
+	seed1 = 1
 
-	nbSamples2 = 125
+	nbSamples2 = 25
+	nbSubSamples2 = 25
+	seed2 = 1
 
-#	nbPts = 100
-#	inputFile1 = Popolazione1.dat
-#	inputFile2 = Popolazione2.dat
+	nbPts = 100
+	inputFile1 = Popolazione1.dat
+	inputFile2 = Popolazione2.dat
 
-	nbPts = 30
-	inputFile1 = dataSet.3.dat
-	inputFile2 = dataSet.4.dat
+#	nbPts = 30
+#	inputFile1 = dataSet.3.dat
+#	inputFile2 = dataSet.4.dat
 
 
 
