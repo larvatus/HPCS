@@ -20,34 +20,51 @@
 
 [PERMUTATION_TEST]
 
-	NIter = 1000
+#	NIter = 1000
 
 #	distance = Procrustes
 #	distance = Spectral
 #	distance = Sqrt
 #	distance = L2
-	distance = Frobenius
+#	distance = Frobenius
 
-#	nbSamples1 = 125
-#	nbSubSamples1 = 25
-	nbSamples1 = 101
-	nbSubSamples1 = 51
-	seed1 = 1
+#	nbSamples1 = 101
+#	nbSubSamples1 = 51
+#	seed1 = 1
 
-#	nbSamples2 = 25
-#	nbSubSamples2 = 25
-	nbSamples2 = 48
-	nbSubSamples2 = 48
+#	nbSamples2 = 48
+#	nbSubSamples2 = 48
+#	seed2 = 1
+
+#	nbPts = 175
+
+#	inputFile1 = ECG_red_V2_Sani.txt
+#	inputFile2 = ECG_red_V2_LBBB.txt
+
+##########################################
+
+	NIter = 1000
+
+	distance = Procrustes
+#	distance = Spectral
+#	distance = Sqrt
+#	distance = L2
+#	distance = Frobenius
+
+	nbPts = 100
+
+	nbSamples1 = 125
+	nbSubSamples1 = 25
+	seed1 = 2
+
+	nbSamples2 = 25
+	nbSubSamples2 = 25
 	seed2 = 1
 
-	nbPts = 70
-#	inputFile1 = Popolazione1.dat
-#	inputFile2 = Popolazione2.dat
+	inputFile1 = Popolazione1.txt
+	inputFile2 = Popolazione2.txt
 
-	inputFile1 = ECG_V2_Sani.txt
-	inputFile2 = ECG_V2_LBBB.txt
-
-
+##########################################
 
 
 [../] 
