@@ -14,8 +14,8 @@ typedef boost::shared_ptr< dataSet_Type > dataSetPtr_Type;
 typedef MatrixDistanceBase::matrix_Type matrix_Type;
 typedef MatrixDistanceBase::matrixPtr_Type matrixPtr_Type;
 
-typedef SpectralDistance dist_Type;
-typedef boost::shared_ptr< dist_Type > distPtr_Type;
+typedef MatrixDistanceFactory distFactory_Type;
+typedef boost::shared_ptr< MatrixDistanceBase > distPtr_Type;
 
 typedef PermutationTest permutationTest_Type;
 
@@ -48,6 +48,8 @@ int main( int argc, char * argv[] )
     const UInt seed2 = dataFile( ( baseName + "/seed2" ).data(), 1 );
     
     const UInt nbPts = dataFile( ( baseName + "/nbPts" ).data(), 1 );
+    
+    const std::string distanceID = dataFile( ( baseName + "/distance").data(), "Frobenius" );
    
     const std::string inputFile1 = dataFile( ( baseName + "/inputFile1" ).data(), "dataSet1.dat" );
     
@@ -61,17 +63,19 @@ int main( int argc, char * argv[] )
     std::cout << " ### Dataset 1 " << std::endl;
     
     dataSetPtr1->readData( inputFile1 );
-    dataSetPtr1->showMe();
+//     dataSetPtr1->showMe();
     
     std::cout << std::endl << std::endl;
     std::cout << " ### Dataset 2 " << std::endl;
     
     dataSetPtr2->readData( inputFile2 );
-    dataSetPtr2->showMe();
+//     dataSetPtr2->showMe();
 
     std::cout << std::endl << std::endl;
     
-    distPtr_Type distPtr( new dist_Type() );
+    distFactory_Type distFactory;
+    
+    distPtr_Type distPtr( distFactory.create( distanceID ) );
     
     permutationTest_Type Test( dataSetPtr1, dataSetPtr2, distPtr, nIter );
     

@@ -156,33 +156,88 @@ namespace HPCS
       matrixPtr_Type operatorSqrt( const matrixPtr_Type & matrixPtr ) const;
     
   };
-  /*
-  template < typename T >
-  struct MatrixDistanceWrapper
+  
+  
+     struct CreateFrobeniusDistance : public CreationRule< MatrixDistanceBase >
   {
-  public:
+    //! Default constructor
+    CreateFrobeniusDistance(){}
     
-      MatrixDistanceWrapper(){};
+     //! Overload of operator() to reach the functor functionality
+    MatrixDistanceBase * operator()() const
+    {    
+           std::cout << " USING FROBENIUS DISTANCE " << std::endl;
+
       
-      MatrixDistanceBase * build() const;
-      
-      virtual ~MatrixDistanceWrapper(){};
-    
+      return new FrobeniusDistance();
+    }
   };
   
-  template < typename T >
-  MatrixDistanceBase *
-  MatrixDistanceWrapper< T >::
-  build()
-  const
+  struct CreateL2Distance : public CreationRule< MatrixDistanceBase >
   {
-      return new T;
-  }
+    //! Default constructor
+    CreateL2Distance(){}
+    
+     //! Overload of operator() to reach the functor functionality
+    MatrixDistanceBase * operator()() const
+    {    
+           std::cout << " USING L2 DISTANCE " << std::endl;
+
+      
+      return new L2Distance();
+    }
+  };
   
+  struct CreateSpectralDistance : public CreationRule< MatrixDistanceBase >
+  {
+    //! Default constructor
+    CreateSpectralDistance(){}
+    
+     //! Overload of operator() to reach the functor functionality
+    MatrixDistanceBase * operator()() const
+    {    
+     std::cout << " USING SPECTRAL DISTANCE " << std::endl;
+
+      
+      return new SpectralDistance();
+    }
+  };
+  
+  
+  struct CreateSqrtDistance : public CreationRule< MatrixDistanceBase >
+  {
+    //! Default constructor
+    CreateSqrtDistance(){}
+    
+     //! Overload of operator() to reach the functor functionality
+    MatrixDistanceBase * operator()() const
+    {    
+      std::cout << " USING SQRT DISTANCE " << std::endl;
+      
+      return new SqrtDistance();
+    }
+  };
+  
+  
+  struct CreateProcrustesDistance : public CreationRule< MatrixDistanceBase >
+  {
+    //! Default constructor
+    CreateProcrustesDistance(){}
+    
+     //! Overload of operator() to reach the functor functionality
+    MatrixDistanceBase * operator()() const
+    {    
+      
+           std::cout << " USING PROCRUSTES DISTANCE " << std::endl;
+
+      return new ProcrustesDistance();
+    }
+  };
+
   
   class MatrixDistanceFactory
   :
-  public Factory< MatrixDistanceBase, std::string, CreationRule< : > >
+  public Factory< MatrixDistanceBase, std::string, CreationRulePtrWrapper< MatrixDistanceBase  > >
   {
   public:
     
@@ -191,7 +246,9 @@ namespace HPCS
     virtual ~MatrixDistanceFactory(){};
     
   };
-  */
+  
+  
+  
   
   
 }

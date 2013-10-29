@@ -16,6 +16,12 @@
 
 	NIter = 1000
 
+#	distance = Procrustes
+#	distance = Spectral
+#	distance = Sqrt
+#	distance = L2
+	distance = Frobenius
+
 	nbSamples1 = 125
 	nbSubSamples1 = 25
 	seed1 = 1

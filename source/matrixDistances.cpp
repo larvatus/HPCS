@@ -318,27 +318,30 @@ namespace HPCS
   
   //////////////////////////////////
   //// 	MATRIXDISTANCEFACTORY	////
-  //////////////////////////////////
-/*  
+  ////////////////////////////////// 
+  
   MatrixDistanceFactory::
   MatrixDistanceFactory()
   {
-*/
+
+    typedef boost::shared_ptr< CreationRule< MatrixDistanceBase > > Ptr_Type;
+    
+    typedef CreationRulePtrWrapper< MatrixDistanceBase > wrapper_Type;    
     
     // Registering rules, exploiting the wrapper to use the different creator functors
     
-//     bool flag = this->registerProduct( "Procrustes", );
+     bool flag = this->registerProduct( "Procrustes",  wrapper_Type( Ptr_Type( new CreateProcrustesDistance() ) ) );
       
-//     flag = flag & ( this->registerProduct( "Spectral", ) );
+     flag = flag & ( this->registerProduct( "Spectral",  wrapper_Type( Ptr_Type( new CreateSpectralDistance() ) ) ) );
     
-//     flag = flag & ( this->registerProduct( "Sqrt", new SqrtDistance() ) );
+     flag = flag & ( this->registerProduct( "Sqrt",  wrapper_Type( Ptr_Type( new CreateSqrtDistance() ) ) ) );
      
-//     flag = flag & ( this->registerProduct( "L2", new L2Distance() ) );
+     flag = flag & ( this->registerProduct( "L2",  wrapper_Type( Ptr_Type( new CreateL2Distance() ) ) ) );
       
-//      bool flag = /*flag & */ ( this->registerProduct( "Frobenius", boost::bind< MatrixDistanceWrapper< FrobeniusDistance >::build() > ) );
+     flag = flag & ( this->registerProduct( "Frobenius", wrapper_Type( Ptr_Type( new CreateL2Distance() ) ) ) );
 	
-//     assert( flag == true );
+     assert( flag == true );
     
-//   }
+   }
   
 }
