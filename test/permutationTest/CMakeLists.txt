@@ -18,6 +18,10 @@ EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/ECG_V2_LBBB.txt ${CMA
 EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/ECGder_V2_LBBB.txt ${CMAKE_CURRENT_BINARY_DIR}/ECGder_V2_LBBB.txt )
 EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/ECGder_V2_Sani.txt ${CMAKE_CURRENT_BINARY_DIR}/ECGder_V2_Sani.txt  )
 
+
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/powerMethod.1.dat ${CMAKE_CURRENT_BINARY_DIR}/powerMethod.1.dat  )
+EXECUTE_PROCESS( COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR}/powerMethod.2.dat ${CMAKE_CURRENT_BINARY_DIR}/powerMethod.2.dat  )
+
 # First executable
 
 ADD_EXECUTABLE(main_matrixDistances.exe main_matrixDistances )
@@ -27,3 +31,8 @@ TARGET_LINK_LIBRARIES(main_matrixDistances.exe ${MPI_LIBRARIES} HPCS)
 
 ADD_EXECUTABLE(main_permutationTest.exe main_permutationTest )
 TARGET_LINK_LIBRARIES(main_permutationTest.exe ${MPI_LIBRARIES} HPCS)
+
+# Third executable
+
+ADD_EXECUTABLE(main_powerMethod.exe main_powerMethod )
+TARGET_LINK_LIBRARIES(main_powerMethod.exe ${MPI_LIBRARIES} HPCS)

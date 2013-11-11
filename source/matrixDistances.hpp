@@ -7,6 +7,9 @@
 #include <Eigen/Dense>
 
 #include <Eigen/Eigenvalues>
+
+#include <Eigen/LU>
+
 #pragma GCC diagnostic warning "-Wenum-compare"
 
 #include <source/factory.hpp>
@@ -19,6 +22,8 @@ namespace HPCS
     public:
     
       typedef Eigen::Matrix< Real, Eigen::Dynamic, Eigen::Dynamic > matrix_Type;
+      
+      typedef Eigen::Matrix< Real, Eigen::Dynamic, 1 > vector_Type;
       
       typedef boost::shared_ptr< matrix_Type > matrixPtr_Type;
     
@@ -132,6 +137,8 @@ namespace HPCS
       
       typedef MatrixDistanceBase::matrixPtr_Type matrixPtr_Type;
       
+      typedef MatrixDistanceBase::vector_Type vector_Type;
+      
       SpectralDistance();
       
       virtual ~SpectralDistance(){};
@@ -145,6 +152,12 @@ namespace HPCS
       Real compute( const matrix_Type & matrix1, const matrix_Type & matrix2 );
       
       Real compute();
+      
+  private:
+    
+    Real powerMethod( const matrix_Type & matrix, const UInt & maxIter );
+    
+    Real shiftInvPowerMethod( const matrix_Type & matrix, const UInt & maxIter, const Real & shift );
     
   };
   

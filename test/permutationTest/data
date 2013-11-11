@@ -68,3 +68,18 @@
 
 
 [../] 
+
+[POWER_METHOD]
+
+    
+	nbSamples1 = 10
+
+	nbSamples2 = 10
+
+	nbPts = 10
+
+	inputFile1 = powerMethod.1.dat
+
+	inputFile2 = powerMethod.2.dat
+
+[../]

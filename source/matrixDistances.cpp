@@ -291,15 +291,23 @@ namespace HPCS
   {    
     typedef Eigen::SelfAdjointEigenSolver< matrix_Type > eigenSolver_Type;
     
-    eigenSolver_Type eigenSolver;
+//     eigenSolver_Type eigenSolver;
     
-    eigenSolver.compute( *this->M_matrixPtr1 - *this->M_matrixPtr2 );
+//     eigenSolver.compute( *this->M_matrixPtr1 - *this->M_matrixPtr2 );
     
     
     // TODO IMPROVE THIS! Is it possible to compute the max and min eigenvalue with, say, power method and
     // inverse power method? Then you take max( abs( eigenMin, eigenMax ) )
-    this->M_distance = eigenSolver.eigenvalues().array().abs().maxCoeff();
-       
+//     this->M_distance = eigenSolver.eigenvalues().array().abs().maxCoeff();
+    
+    const Real PMEigenvalue = this->powerMethod( *this->M_matrixPtr1 - *this->M_matrixPtr2, 1000);
+    
+    const Real IPMEigenvalue = this->shiftInvPowerMethod( *this->M_matrixPtr1 - *this->M_matrixPtr2, 1000, 0. );
+
+    this->M_distance = std::max( PMEigenvalue, IPMEigenvalue );
+    
+    std::cout << " IPMEigenvalue is " << IPMEigenvalue << std::endl;
+    
     return this->M_distance;
   }
   
@@ -328,8 +336,90 @@ namespace HPCS
       this->M_matrixPtr2.reset( new matrix_Type( matrix2 ) );
 
       return this->compute();
- }  
+ }
   
+ 
+ Real
+ SpectralDistance::
+ powerMethod( const matrix_Type & matrix, const UInt & maxIter )
+ {
+   
+   const UInt nCols( matrix.cols() );
+   
+   vector_Type q( nCols );
+      
+   srand48( time( NULL ) );
+   
+   for ( UInt i(0); i < nCols; ++i )
+   {
+      q[ i ] = drand48(); 
+   }
+   
+   Real leadingEigenvalue = q.norm();
+   
+   q = q / leadingEigenvalue;
+   
+   for ( UInt iter(0); iter < maxIter; ++iter )
+   {
+      q = matrix * q;
+      
+      leadingEigenvalue = q.norm();
+      
+      q = q / leadingEigenvalue;
+      
+      leadingEigenvalue = q.transpose() * matrix * q;
+   }
+ 
+   
+   return leadingEigenvalue;
+   
+ }
+ 
+ 
+  Real
+  SpectralDistance::
+  shiftInvPowerMethod( const matrix_Type & matrix, const UInt & maxIter, const Real & shift )
+  {
+    const UInt nCols( matrix.cols() );
+    
+    vector_Type q( nCols );
+	
+    srand48( time( NULL ) );
+    
+    for ( UInt i(0); i < nCols; ++i )
+    {
+	q[ i ] = drand48(); 
+    }
+    
+    Real leadingEigenvalue = q.norm();
+    
+    q = q / leadingEigenvalue;
+    
+    matrix_Type LHS = matrix;
+    
+    LHS.diagonal().array() -= shift;
+    
+    Eigen::LDLT< matrix_Type > LDLTSolver( LHS );
+        
+    std::cout << "LHS is " << std::endl << LHS << std::endl;
+    
+     for ( UInt iter(0); iter < maxIter; ++iter )
+     {
+ 	q = LDLTSolver.solve( q );
+ 	
+ 	leadingEigenvalue = q.norm();
+ 	
+ 	q = q / leadingEigenvalue;
+ 	
+ 	leadingEigenvalue = q.transpose() * matrix * q;
+     }
+   
+    
+    return leadingEigenvalue;
+    
+  }
+  
+
   /////////////////////////////////
   //// PROCRUSTES   DISTANCE   ////
   /////////////////////////////////

@@ -42,10 +42,9 @@ MPI_Init( & argc, & argv );
    baseNames[ 0 ] = "MBDALL/first";
    baseNames[ 1 ] = "MBDALL/second";
    baseNames[ 2 ] = "MBDALL/third";
-   baseNames[ 3 ] = "MBDALL/fourth";
+   baseNames[ 3 ] = "MBDALL/fourth";   
    
-   
-   for ( UInt iJ(0); iJ < 4; ++iJ )
+   for ( UInt iJ(0); iJ < baseNames.size(); ++iJ )
     {
 	if ( myRank == MASTER )
 	{
@@ -112,9 +111,9 @@ MPI_Init( & argc, & argv );
       
       const std::string outputRKS4( dataFile( ( baseNames[ 3 ] + "/ranksFilename" ).data(), "rks.4.dat" ) );
       
-      std::string commandString = "gnuplot -p -e \"mbd1=\'" + outputMBD1 + "\'; mbd2=\'" + outputMBD2 + "\'; mbd3=\'" + outputMBD3 + "\'; mbd4=\'" + outputMBD4 + "\';";
+      std::string commandString = "gnuplot -p -e \"mbd2=\'" + outputMBD1 + "\'; mbd3=\'" + outputMBD2 + "\'; mbd4=\'" + outputMBD3 + "\'; mbd5=\'" + outputMBD4 + "\';";
 
-      commandString += "rks1=\'" + outputRKS1 + "\'; rks2=\'" + outputRKS2 + "\'; rks3=\'" + outputRKS3 + "\'; rks4=\'" + outputRKS4 + "\'\" robust.plot";
+      commandString += "rks2=\'" + outputRKS1 + "\'; rks3=\'" + outputRKS2 + "\'; rks4=\'" + outputRKS3 + "\'; rks5=\'" + outputRKS4 + "\'\" robust.plot";
       
       system( commandString.data() );
     
